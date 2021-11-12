@@ -119,3 +119,49 @@ hypothesis_solution <- function(x) {
   if (isFALSE(include_solution)) return(empty_str)
   paste("H_0: ", paste(paste0("\\mu_",1:x$J), collapse="=" )  )
 }
+
+
+result_table <- function(x) {
+  report_table <- data.frame(Quelle=c("Zwischen","Innerhalb","Total"),
+                             QS=c(x$qs_tot, x$qs_btw, x$qs_wth), 
+                             df=c(x$df_tot, x$df_btw, x$df_wth),
+                             MQS=c(x$mqs_tot, x$mqs_btw, NA),
+                             F = c(x$Fval,NA,NA),
+                             p = c(x$Fp, NA, NA),
+                             eta2=c(x$eta2,NA,NA))
+  
+  knitr::kable(report_table)
+}
+
+data_table <- function(x) {
+  
+  wdat<-pivot_wider(x$dat,names_from = 2, values_from=1)  
+  knitr::kable(wdat[,-1],col.names = x$factor_level_names)
+}
+
+
+f_crit <- function(x) {
+  if (isFALSE(include_solution)) return(empty_str)
+  paste0("Der kritische Wert einer *F*-Verteilung mit ",x$df_btw, " Zählerfreiheitsgraden und ", x$df_wth, " Nennerfreiheitsgraden und einem Signifikanzniveau von ",x$alpha*100,"% ist ", x$Fcrit,".")
+  
+}
+
+effect_solution <- function(x) {
+  if (isFALSE(include_solution)) return(empty_str)
+  paste0("\\hat{\\eta}^2=\\frac{",x$qs_btw,"}{",x$qs_tot,"}=",x$eta2)
+  
+}
+
+group_means_solution <- function(x) {
+  if (isFALSE(include_solution)) return(empty_str)
+  wdat<-pivot_wider(x$dat,names_from = 2, values_from=1)  
+  strlist <- ""
+  for (j in 1:x$J) {
+    strlist <-paste0(strlist, paste0("\\bar{x}_",j,"=\\frac{", paste0(simplify2array(wdat[,j+1]),collapse="+") ,"}{",x$nz,"}=", x$factor_means[j]  ),"\\\\")
+  }
+  
+  strlist <- paste( strlist, "\\\\",
+                    "\\bar{x}=",x$grand_mean)
+  
+  strlist
+}

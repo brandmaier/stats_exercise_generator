@@ -1,30 +1,138 @@
 ---
-title: "Untitled"
-author: "Andreas M. Brandmaier"
-date: "11/12/2021"
-output: html_document
+title: "Arbeitsblatt 2 - Chi Quadrat Tests"
+author: "Statistik II - Andreas M. Brandmaier"
+date: "11/11/2021"
+output:
+  html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+knitr::opts_chunk$set(echo = FALSE)
+
+source("R/mcnemar.R")
+
+include_solution <- !TRUE
+
+empty_str <- "\\ "
 ```
 
-## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+# Aufgabe 1
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+In einer randomisierten Studie haben 40 Patienten ein neuartiges Antidepressivum erhalten und 40 Patienten ein Placebo. Nach vier Wochen wurde erhoben, ob sich eine Verbesserung der Symptomatik eingestellt hat. Dies wurde als dichotomes Merkmal _Verbesserung_ (ja/nein) erhoben. Ein Forscherteam hat die Hypothese, dass das neuartige Antidepressivum wirksamer als eine Placebo-Behandlung ist.
 
-```{r cars}
-summary(cars)
+Folgende Daten wurden beobachtet:
+
+```{r}
+generate_chisq <- function(labels.a=c("Antidepressivum","Placebo"), labels.b=c("ja","nein"),
+                           tbl = matrix(c(25,33,15,7),ncol=2), alpha=0.05 ) {
+  
+    df <- data.frame(tbl)
+  rownames(df) <- labels.a
+  colnames(df) <- labels.b
+  
+  nrows = nrow(df)
+  ncols = ncol(df)
+  
+  df_raw <- data.frame(df)
+ 
+    rsums <- rowSums(df)
+   df$c <- rsums
+   csums <- colSums(df)
+   total <- csums[length(csums)]
+   df <- rbind(df, csums)
+   rownames(df)[nrow(df)] <- ""  
+   colnames(df)[ncol(df)] <- ""
+  
+   df_sums <- data.frame(df)
+
+  
+ 
+    for (i in 1:nrows) {
+      for (j in 1:ncols) {
+        df[i,j] <- rsums[i]*csums[j]/total
+      }
+    }
+  
+   
+   df_indep <- data.frame(df)
+  
+  list(labels.a=labels.a, labels.b=labels.b,tbl=tbl,df_raw=df_raw, df_sums=df_sums, df_indep=df_indep, nrows=nrows, ncols=ncols,alpha=alpha)
+}
+
+chisq_data_table <- function(x, with_sums=FALSE, expected=FALSE) {
+
+    if (with_sums) {
+      knitr::kable( x$df_raw )
+    } else {
+      if (expected) {
+        knitr::kable(x$df_indep)   
+      } else {
+       knitr::kable( x$df_sums )
+      }
+    }
+    
+}
+
+chisq_solution <- function(x) {
+  
+  nij <- simplify(x$df_raw)
+  eij <- simplify(x$df_indep[1:x$nrows,1:x$ncols])
+  
+  chisq <- round(sum((nij-eij)^2/eij),2)
+  
+  paste0("\\chi^2=",
+  paste0(
+    
+    "\\frac{(",nij,"-",eij,")^2}{",eij,"}", collapse="+"
+    
+  ),"=",chisq
+  )
+  
+}
+
+chisq_crit <- function(x) {
+  df <- (x$ncols-1)*(x$nrows-1)
+  chisqcrt <- round(qchisq(1-x$alpha, df),2)
+  paste0("Der kritische Wert einer $\\chi^2$-Verteilung mit ",df," Freiheitsgrad(en) ist ",chisqcrt)
+}
 ```
 
-## Including Plots
+Berechnen Sie zunächst die Spalten- und Randsummen für diese Häufigkeits-Tabelle. Erstellen Sie dann eine Tabelle von Häufigkeiten, die man erwarten würde, wenn es keinen Zusammenhang gäbe. Berechnen Sie dann die Prüfgröße für den Unabhängigkeits-Test und treffen Sie eine statistische Entscheidung.
 
-You can also embed plots, for example:
+```{r}
+csq <- generate_chisq()
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+chisq_data_table(csq)
+
+chisq_data_table(csq, TRUE)
+
+chisq_data_table(csq, TRUE, TRUE)
+
+chisq_crit(csq)
 ```
+$`r chisq_solution(csq)`$
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+# Aufgabe 2
+
+In zweites Forscher-Team untersucht dasselbe Antidepressivum wie das Forscher-Team aus der ersten Aufgabe. Allerdings haben sich die Forschenden hier für ein Design entschieden, in dem jede Person zweimal untersucht wird und zwar in einem Zeitraum, in dem sie das Medikament erhält und nach einem Zeitraum in dem sie das Medikament nicht erhalten hat.  Kann der Zufall die Unterschiede in den beobachteten Häufigkeiten produzieren? Formulieren Sie die Null-Hypothese und rechnen Sie den richtigen Test. Treffen Sie eine statistisch informierte Entscheidung. Welche Effektstärke kann man hier berichten?
+
+# Aufgabe 3
+
+Laut einer Statista-Studie gehen wir davon aus, dass in der Bevölkerung die Vorliebe für Haustiere folgendermaßen verteilt ist:
+
+Katzen: 15.7%
+Hunde: 10.7%
+Andere: 13%  
+Keine: 60.6%
+
+In einer Studie wurde untersucht, ob sich die Vorlieben bei Psychologiestudierenden von der Normalbevölkerung unterscheiden. Beobachtet wurden folgende Häufigkeiten in einer Stichprobe von 100 Studierenden:
+
+Katzen: 24
+Hunde: 11
+Andere: 10
+Keine: 55
