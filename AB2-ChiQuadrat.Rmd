@@ -12,6 +12,7 @@ library(tidyverse)
 knitr::opts_chunk$set(echo = FALSE)
 
 source("R/mcnemar.R")
+source("R/chisq.R")
 
 include_solution <- !TRUE
 
@@ -26,95 +27,36 @@ In einer randomisierten Studie haben 40 Patienten ein neuartiges Antidepressivum
 Folgende Daten wurden beobachtet:
 
 ```{r}
-generate_chisq <- function(labels.a=c("Antidepressivum","Placebo"), labels.b=c("ja","nein"),
-                           tbl = matrix(c(25,33,15,7),ncol=2), alpha=0.05 ) {
-  
-    df <- data.frame(tbl)
-  rownames(df) <- labels.a
-  colnames(df) <- labels.b
-  
-  nrows = nrow(df)
-  ncols = ncol(df)
-  
-  df_raw <- data.frame(df)
- 
-    rsums <- rowSums(df)
-   df$c <- rsums
-   csums <- colSums(df)
-   total <- csums[length(csums)]
-   df <- rbind(df, csums)
-   rownames(df)[nrow(df)] <- ""  
-   colnames(df)[ncol(df)] <- ""
-  
-   df_sums <- data.frame(df)
+set.seed(3249)
+csq <- generate_chisq()
 
-  
- 
-    for (i in 1:nrows) {
-      for (j in 1:ncols) {
-        df[i,j] <- rsums[i]*csums[j]/total
-      }
-    }
-  
-   
-   df_indep <- data.frame(df)
-  
-  list(labels.a=labels.a, labels.b=labels.b,tbl=tbl,df_raw=df_raw, df_sums=df_sums, df_indep=df_indep, nrows=nrows, ncols=ncols,alpha=alpha)
-}
-
-chisq_data_table <- function(x, with_sums=FALSE, expected=FALSE) {
-
-    if (with_sums) {
-      knitr::kable( x$df_raw )
-    } else {
-      if (expected) {
-        knitr::kable(x$df_indep)   
-      } else {
-       knitr::kable( x$df_sums )
-      }
-    }
-    
-}
-
-chisq_solution <- function(x) {
-  
-  nij <- simplify(x$df_raw)
-  eij <- simplify(x$df_indep[1:x$nrows,1:x$ncols])
-  
-  chisq <- round(sum((nij-eij)^2/eij),2)
-  
-  paste0("\\chi^2=",
-  paste0(
-    
-    "\\frac{(",nij,"-",eij,")^2}{",eij,"}", collapse="+"
-    
-  ),"=",chisq
-  )
-  
-}
-
-chisq_crit <- function(x) {
-  df <- (x$ncols-1)*(x$nrows-1)
-  chisqcrt <- round(qchisq(1-x$alpha, df),2)
-  paste0("Der kritische Wert einer $\\chi^2$-Verteilung mit ",df," Freiheitsgrad(en) ist ",chisqcrt)
-}
+chisq_data_table(csq)
 ```
 
 Berechnen Sie zunächst die Spalten- und Randsummen für diese Häufigkeits-Tabelle. Erstellen Sie dann eine Tabelle von Häufigkeiten, die man erwarten würde, wenn es keinen Zusammenhang gäbe. Berechnen Sie dann die Prüfgröße für den Unabhängigkeits-Test und treffen Sie eine statistische Entscheidung.
 
 ```{r}
-csq <- generate_chisq()
 
-chisq_data_table(csq)
 
 chisq_data_table(csq, TRUE)
 
 chisq_data_table(csq, TRUE, TRUE)
 
-chisq_crit(csq)
-```
-$`r chisq_solution(csq)`$
 
+```
+
+`r if (isTRUE(include_solution)){ "_Lösung:_"} `
+
+Dies ist die Kontigenztabelle mit Zeilensummen und Spaltensummen:
+`r chisq_data_table(csq, TRUE, FALSE)`
+
+Dies ist die Tabelle der erwarteten Häufigkeiten unter der Unabhängigkeitsannahme:
+`r chisq_data_table(csq, TRUE, TRUE)`
+
+$`r chisq_solution(csq)`$
+`r chisq_crit(csq)`
+
+Der empirische _F_-Wert ist größer als der kritische Wert. Wir lehnen daher die Nullhypothese ab. Es gibt Unterschiede in der Wirksamkeit zwischen Antidepressivum und Placebo.
 
 
 # Aufgabe 2
@@ -123,7 +65,7 @@ In zweites Forscher-Team untersucht dasselbe Antidepressivum wie das Forscher-Te
 
 # Aufgabe 3
 
-Laut einer Statista-Studie gehen wir davon aus, dass in der Bevölkerung die Vorliebe für Haustiere folgendermaßen verteilt ist:
+Laut einer Statista-Studie (https://de.statista.com/statistik/daten/studie/30157/umfrage/anzahl-der-haustiere-in-deutschen-haushalten-seit-2008/) gehen wir davon aus, dass in der Bevölkerung die Vorliebe für Haustiere folgendermaßen verteilt ist:
 
 Katzen: 15.7%
 Hunde: 10.7%
@@ -136,3 +78,43 @@ Katzen: 24
 Hunde: 11
 Andere: 10
 Keine: 55
+
+```{r}
+obs <- c(24,11,10,55)
+n <- sum(obs)
+labels <- c("Katzen","Hunde","Andere","Keine")
+expected <- c(15.7,10.7,13,60.6)*n/100
+csq <- generate_chisq_uni( obs=obs,exp=expected,labels=labels )
+chisq_uni_data_table(csq)
+```
+
+# Aufgabe 4
+
+In einer (fiktiven) Studie wurde untersucht, ob sich die Fehlzeiten von Studierenden über die Semester hinweg unterscheiden. Folgende Daten wurden erhoben:
+
+```{r}
+csq <- generate_chisq(labels.b = c("SS19","WS19/20","SS20","SS20/21"), labels.a=c("ja","nein"),tbl = matrix(c(88,12,95,5, 93,7,95,5), ncol=5))
+
+chisq_data_table(csq)
+
+
+
+```
+
+Dies ist die Kontingenztabelle unter der Unabhängigkeitsannahme:
+`r chisq_data_table(csq, TRUE,TRUE)`
+$`r chisq_solution(csq)`$
+`r chisq_crit(csq)`
+
+# Aufgabe 5
+Wie müsste die Kontingenztabelle der beobachteten Häufigkeiten lauten, wenn man testen möchte, ob sich die Anwesenheit in den Sommer- und Wintersemestern unterscheidet? Führen Sie den entsprechenden Test durch.
+
+```{r}
+tbl <- cbind(rowSums(csq$tbl[,1:4]),csq$tbl[,5])
+csq <- generate_chisq(labels.b = c("Mo bis Do","Fr"), labels.a=c("ja","nein"),tbl=tbl)
+chisq_data_table(csq, FALSE, FALSE)
+
+```
+
+$`r chisq_solution(csq)`$
+`r chisq_crit(csq)`
