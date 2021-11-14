@@ -54,6 +54,7 @@ Dies ist die Tabelle der erwarteten Häufigkeiten unter der Unabhängigkeitsanna
 `r chisq_data_table(csq, TRUE, TRUE)`
 
 $`r chisq_solution(csq)`$
+
 `r chisq_crit(csq)`
 
 Der empirische _F_-Wert ist größer als der kritische Wert. Wir lehnen daher die Nullhypothese ab. Es gibt Unterschiede in der Wirksamkeit zwischen Antidepressivum und Placebo.
@@ -93,7 +94,7 @@ chisq_uni_data_table(csq)
 In einer (fiktiven) Studie wurde untersucht, ob sich die Fehlzeiten von Studierenden über die Semester hinweg unterscheiden. Folgende Daten wurden erhoben:
 
 ```{r}
-csq <- generate_chisq(labels.b = c("SS19","WS19/20","SS20","SS20/21"), labels.a=c("ja","nein"),tbl = matrix(c(88,12,95,5, 93,7,95,5), ncol=5))
+csq <- generate_chisq(labels.b = c("SS19","WS19/20","SS20","SS20/21"), labels.a=c("ja","nein"),tbl = matrix(c(88,12,95,5, 93,7,95,5), ncol=4))
 
 chisq_data_table(csq)
 
@@ -103,18 +104,26 @@ chisq_data_table(csq)
 
 Dies ist die Kontingenztabelle unter der Unabhängigkeitsannahme:
 `r chisq_data_table(csq, TRUE,TRUE)`
+
 $`r chisq_solution(csq)`$
+
 `r chisq_crit(csq)`
 
 # Aufgabe 5
 Wie müsste die Kontingenztabelle der beobachteten Häufigkeiten lauten, wenn man testen möchte, ob sich die Anwesenheit in den Sommer- und Wintersemestern unterscheidet? Führen Sie den entsprechenden Test durch.
 
 ```{r}
-tbl <- cbind(rowSums(csq$tbl[,1:4]),csq$tbl[,5])
-csq <- generate_chisq(labels.b = c("Mo bis Do","Fr"), labels.a=c("ja","nein"),tbl=tbl)
+tbl <- cbind(rowSums(csq$tbl[,c(1,3)]),rowSums(csq$tbl[,c(2,4)]))
+csq <- generate_chisq(labels.b = c("Sommer","Winter"), labels.a=c("ja","nein"),tbl=tbl)
 chisq_data_table(csq, FALSE, FALSE)
 
 ```
 
+Tabelle unter Unabhängigkeitsannahme:
+`r chisq_data_table(csq, TRUE, TRUE)`
+
 $`r chisq_solution(csq)`$
+
 `r chisq_crit(csq)`
+
+Der empirische Wert der Prüfgröße ist kleiner als der kritische Wert. Wir können die Nullhypothese nicht ablehnen.
