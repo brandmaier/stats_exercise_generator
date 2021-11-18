@@ -3,8 +3,8 @@ title: "Arbeitsblatt 2 - Chi Quadrat Tests"
 author: "Statistik II - Andreas M. Brandmaier"
 date: "11/11/2021"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -62,11 +62,12 @@ Der empirische _F_-Wert ist größer als der kritische Wert. Wir lehnen daher di
 
 # Aufgabe 2
 
-In zweites Forscher-Team untersucht dasselbe Antidepressivum wie das Forscher-Team aus der ersten Aufgabe. Allerdings haben sich die Forschenden hier für ein Design entschieden, in dem jede Person zweimal untersucht wird und zwar in einem Zeitraum, in dem sie das Medikament erhält und nach einem Zeitraum in dem sie das Medikament nicht erhalten hat.  Kann der Zufall die Unterschiede in den beobachteten Häufigkeiten produzieren? Formulieren Sie die Null-Hypothese und rechnen Sie den richtigen Test. Treffen Sie eine statistisch informierte Entscheidung. Welche Effektstärke kann man hier berichten?
+Ein Forscherteam untersucht die Wirksamkeit einer Anti-Raucher-Kampagne. Dazu wird das Rauchverhalten (ja/nein ) in einer Stichprobe zweimal untersucht: einmal vor der Kampagne und einmal nach der Kampagne. Die Vermutung ist, dass die Rauchkampagne wirksam ist. Untersuchen Sie dies mit einer gerichteten Hypothese.
+Formulieren Sie die Null-Hypothese und rechnen Sie den richtigen Test. Treffen Sie eine statistisch informierte Entscheidung. Welche Effektstärke kann man hier berichten?
 
 ```{r}
-csq <- generate_chisq(labels.a = c("Vorher","Nachher"),labels.b=c("Mit Medikament","Ohne Medikament"),
-                       tbl = matrix(c(45,33,35,43),ncol=2,byrow = FALSE))
+csq <- generate_chisq(labels.a = c("Ja (vorher)"," Nein (vorher)"),labels.b=c("Ja (Nachher)","Nein (Nachher)"),
+                       tbl = matrix(c(45,13,25,43),ncol=2,byrow = FALSE))
 
 chisq_data_table(csq)
 ```
@@ -74,9 +75,13 @@ chisq_data_table(csq)
 $`r mcnemar_solution(csq)`$
 
 
-`r chisq_crit(csq)`
+`r chisq_crit(csq, undirected=FALSE)`
 
-$`r mcnemar_effectsize(csq)`$
+Als Effektstärke können wir das Verhältnis der Wechsler berechnen:
+$`r mcnemar_effectsize(csq,1)`$
+
+oder als Prozent der Wechsler von Raucher zu Nichtraucher:
+$`r mcnemar_effectsize(csq,2)`$
 
 # Aufgabe 3
 
@@ -101,7 +106,10 @@ chisq_uni_data_table(csq)
 
 _Lösung_:
 
-$`r solution_chisq_uni(csq)`$
+
+$$`r solution_chisq_uni(csq)`$$
+
+`r chisq_crit(csq)`
 
 # Aufgabe 4
 
