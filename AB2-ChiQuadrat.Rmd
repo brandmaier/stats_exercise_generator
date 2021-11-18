@@ -38,9 +38,9 @@ Berechnen Sie zunächst die Spalten- und Randsummen für diese Häufigkeits-Tabe
 ```{r}
 
 
-chisq_data_table(csq, TRUE)
+chisq_data_table(csq, type="sums")
 
-chisq_data_table(csq, TRUE, TRUE)
+chisq_data_table(csq, type="indep")
 
 
 ```
@@ -64,6 +64,20 @@ Der empirische _F_-Wert ist größer als der kritische Wert. Wir lehnen daher di
 
 In zweites Forscher-Team untersucht dasselbe Antidepressivum wie das Forscher-Team aus der ersten Aufgabe. Allerdings haben sich die Forschenden hier für ein Design entschieden, in dem jede Person zweimal untersucht wird und zwar in einem Zeitraum, in dem sie das Medikament erhält und nach einem Zeitraum in dem sie das Medikament nicht erhalten hat.  Kann der Zufall die Unterschiede in den beobachteten Häufigkeiten produzieren? Formulieren Sie die Null-Hypothese und rechnen Sie den richtigen Test. Treffen Sie eine statistisch informierte Entscheidung. Welche Effektstärke kann man hier berichten?
 
+```{r}
+csq <- generate_chisq(labels.a = c("Vorher","Nachher"),labels.b=c("Mit Medikament","Ohne Medikament"),
+                       tbl = matrix(c(45,33,35,43),ncol=2,byrow = FALSE))
+
+chisq_data_table(csq)
+```
+
+$`r mcnemar_solution(csq)`$
+
+
+`r chisq_crit(csq)`
+
+$`r mcnemar_effectsize(csq)`$
+
 # Aufgabe 3
 
 Laut einer Statista-Studie (https://de.statista.com/statistik/daten/studie/30157/umfrage/anzahl-der-haustiere-in-deutschen-haushalten-seit-2008/) gehen wir davon aus, dass in der Bevölkerung die Vorliebe für Haustiere folgendermaßen verteilt ist:
@@ -73,25 +87,25 @@ Hunde: 10.7%
 Andere: 13%  
 Keine: 60.6%
 
-In einer Studie wurde untersucht, ob sich die Vorlieben bei Psychologiestudierenden von der Normalbevölkerung unterscheiden. Beobachtet wurden folgende Häufigkeiten in einer Stichprobe von 100 Studierenden:
+Wir gehen weiterhin davon aus, dass keine Mehrfachnennungen möglich sind. In einer Studie wurde untersucht, ob sich die Vorlieben bei Psychologiestudierenden von der Normalbevölkerung unterscheiden. Beobachtet wurden folgende absoluten Häufigkeiten in einer Stichprobe von 100 Studierenden:
 
-Katzen: 24
-Hunde: 11
-Andere: 10
-Keine: 55
 
 ```{r}
 obs <- c(24,11,10,55)
 n <- sum(obs)
 labels <- c("Katzen","Hunde","Andere","Keine")
-expected <- c(15.7,10.7,13,60.6)*n/100
+expected <- c(15.7,10.7,13,60.6)
 csq <- generate_chisq_uni( obs=obs,exp=expected,labels=labels )
-chisq_uni_data_table(csq)
+chisq_uni_data_table(csq) 
 ```
+
+_Lösung_:
+
+$`r solution_chisq_uni(csq)`$
 
 # Aufgabe 4
 
-In einer (fiktiven) Studie wurde untersucht, ob sich die Fehlzeiten von Studierenden über die Semester hinweg unterscheiden. Folgende Daten wurden erhoben:
+In einer Studie wurde untersucht, ob sich die Fehlzeiten von Studierenden über die Jahrgänge hinweg unterscheiden. Die Stichproben sind unabhängig, d.h. es wurden in einem Kalenderjahr Studierende aus verschiedenen Anfangssemestern befragt. Folgende Daten der Jahrgänge wurden erhoben:
 
 ```{r}
 csq <- generate_chisq(labels.b = c("SS19","WS19/20","SS20","SS20/21"), labels.a=c("ja","nein"),tbl = matrix(c(88,12,95,5, 93,7,95,5), ncol=4))
@@ -101,6 +115,8 @@ chisq_data_table(csq)
 
 
 ```
+
+Testen Sie, ob sich die Fehlzeiten über die Semester hinweg unterscheiden.
 
 Dies ist die Kontingenztabelle unter der Unabhängigkeitsannahme:
 `r chisq_data_table(csq, TRUE,TRUE)`
@@ -112,18 +128,22 @@ $`r chisq_solution(csq)`$
 # Aufgabe 5
 Wie müsste die Kontingenztabelle der beobachteten Häufigkeiten lauten, wenn man testen möchte, ob sich die Anwesenheit in den Sommer- und Wintersemestern unterscheidet? Führen Sie den entsprechenden Test durch.
 
-```{r}
+```{r} 
 tbl <- cbind(rowSums(csq$tbl[,c(1,3)]),rowSums(csq$tbl[,c(2,4)]))
 csq <- generate_chisq(labels.b = c("Sommer","Winter"), labels.a=c("ja","nein"),tbl=tbl)
-chisq_data_table(csq, FALSE, FALSE)
 
 ```
 
-Tabelle unter Unabhängigkeitsannahme:
-`r chisq_data_table(csq, TRUE, TRUE)`
+`r if (isTRUE(include_solution)){ "_Lösung:_"} `
+
+
+
+`r chisq_data_table(csq,  caption="Zusammengefasste Datentabelle")`
+
+
+`r chisq_data_table(csq, type="indep", caption="Tabelle unter Unabhängigkeitsannahme")`
 
 $`r chisq_solution(csq)`$
 
 `r chisq_crit(csq)`
 
-Der empirische Wert der Prüfgröße ist kleiner als der kritische Wert. Wir können die Nullhypothese nicht ablehnen.
