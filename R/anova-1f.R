@@ -52,31 +52,31 @@ generate_anova <- function(av.name = "",
   J <- num.facs
   n <- num.obs.per.fac*num.facs
   
-  df_btw <- J-1
-  df_wth <- n-J
-  df_tot <- df_btw + df_wth
+  df1 <- J-1
+  df2 <- n-J
+  df_tot <- df1 + df2
   
   mqs_tot <- round( qs_tot / df_tot, 2)
-  mqs_btw <- round( qs_btw / df_btw, 2)
-  mqs_wth <- round( qs_wth / df_wth, 2)
+  mqs_btw <- round( qs_btw / df1, 2)
+  mqs_wth <- round( qs_wth / df2, 2)
   
   Fval <- round( mqs_btw / mqs_wth, 2)
   
-  Fp <- round( df(Fval, df_btw, df_wth), 2)
-  Fcrit <- round(qf(1-alpha, df_btw, df_wth),2)
+  Fp <- round( df(Fval, df1, df2), 2)
+  Fcrit <- round(qf(1-alpha, df1, df2),2)
   
   eta2 <- round(qs_btw/(qs_tot),2)
   
   factor_means=cmns
   nz=num.obs.per.fac
   grand_mean=xm
-  result <- list(qs_tot=qs_tot, qs_btw=qs_btw, qs_wth=qs_wth, df_tot=df_tot,df_btw=df_btw, df_wth=df_wth, mqs_tot=mqs_tot, mqs_btw=mqs_btw, mqs_wth=mqs_wth, Fval=Fval, Fp=Fp,Fcrit=Fcrit,eta2=eta2, factor_means=factor_means, nz=nz, grand_mean=grand_mean, dat=dat, alpha=alpha,J=J,
+  result <- list(qs_tot=qs_tot, qs_btw=qs_btw, qs_wth=qs_wth, df_tot=df_tot,df1=df1, df2=df2, mqs_tot=mqs_tot, mqs_btw=mqs_btw, mqs_wth=mqs_wth, Fval=Fval, Fp=Fp,Fcrit=Fcrit,eta2=eta2, factor_means=factor_means, nz=nz, grand_mean=grand_mean, dat=dat, alpha=alpha,J=J,
                  factor_level_names=factor_level_names)
   return(result)
 }
 
 qs_solution <- function(x, id) {
-  if (isFALSE(include_solution)) return(empty_str)
+
   strsol = paste0( "QS_{tot} = ",paste0("(",x$dat$av,"-",x$grand_mean,")^2",collapse=" + \\\\"),"=\\\\",
                    paste( round((x$dat$av-x$grand_mean)^2,2),collapse=" + " ),"= \\\\",
                    x$qs_tot
@@ -103,20 +103,20 @@ qs_solution <- function(x, id) {
 }
 
 mqs_solution <- function(x) {
-  if (isFALSE(include_solution)) return(empty_str)
+
   paste( "\\\\",
-         paste0("MQS_{zw} = \\frac{ ", x$qs_btw, "}{",x$df_btw,"}=",x$mqs_btw),"\\\\",
-         paste0("MQS_{inn} = \\frac{ ", x$qs_wth, "}{",x$df_wth,"}=",x$mqs_wth)
+         paste0("MQS_{zw} = \\frac{ ", x$qs_btw, "}{",x$df1,"}=",x$mqs_btw),"\\\\",
+         paste0("MQS_{inn} = \\frac{ ", x$qs_wth, "}{",x$df2,"}=",x$mqs_wth)
   )
 }
 
 f_solution <- function(x) {
-  if (isFALSE(include_solution)) return(empty_str)
+
   paste0("F=\\frac{",x$mqs_btw,"}{",x$mqs_wth,"}=",x$Fval)
 }
 
 hypothesis_solution <- function(x) {
-  if (isFALSE(include_solution)) return(empty_str)
+
   paste("H_0: ", paste(paste0("\\mu_",1:x$J), collapse="=" )  )
 }
 
@@ -124,7 +124,7 @@ hypothesis_solution <- function(x) {
 result_table <- function(x) {
   report_table <- data.frame(Quelle=c("Zwischen","Innerhalb","Total"),
                              QS=c(x$qs_tot, x$qs_btw, x$qs_wth), 
-                             df=c(x$df_tot, x$df_btw, x$df_wth),
+                             df=c(x$df_tot, x$df1, x$df2),
                              MQS=c(x$mqs_tot, x$mqs_btw, NA),
                              F = c(x$Fval,NA,NA),
                              p = c(x$Fp, NA, NA),
@@ -141,19 +141,19 @@ data_table <- function(x) {
 
 
 f_crit <- function(x) {
-  if (isFALSE(include_solution)) return(empty_str)
-  paste0("Der kritische Wert einer *F*-Verteilung mit ",x$df_btw, " Zählerfreiheitsgraden und ", x$df_wth, " Nennerfreiheitsgraden und einem Signifikanzniveau von ",x$alpha*100,"% ist ", x$Fcrit,".")
+  
+  paste0("Der kritische Wert einer *F*-Verteilung mit ",x$df1, " Zählerfreiheitsgraden und ", x$df2, " Nennerfreiheitsgraden und einem Signifikanzniveau von ",x$alpha*100,"% ist ", x$Fcrit,".")
   
 }
 
 effect_solution <- function(x) {
-  if (isFALSE(include_solution)) return(empty_str)
+ 
   paste0("\\hat{\\eta}^2=\\frac{",x$qs_btw,"}{",x$qs_tot,"}=",x$eta2)
   
 }
 
 group_means_solution <- function(x) {
-  if (isFALSE(include_solution)) return(empty_str)
+
   wdat<-pivot_wider(x$dat,names_from = 2, values_from=1)  
   strlist <- ""
   for (j in 1:x$J) {
@@ -166,31 +166,28 @@ group_means_solution <- function(x) {
   strlist
 }
 
-contrast <- function(x, ctr) {
+contrast <- function(x) {
+  ctr <- x$ctr
   ln <- length(ctr)
   cntr <- paste0("$$\\Lambda=",paste0(ctr,"\\cdot \\mu_", 1:ln,collapse="+") , "$$")
   
-  L <- round( sum(ctr, x$factor_means),2 )
+ 
   
-  cntr2 <- paste0("$$L=",paste0(ctr,"\\cdot",x$factor_means, collapse="+"), "=",L,"$$")
+  cntr2 <- paste0("$$L=",paste0(ctr,"\\cdot",x$aov$factor_means, collapse="+"), "=",x$L,"$$")
   
-
-    L2 <- round(L*L,2)
-    k2sum <- sum(ctr*ctr)
-    ksum<- round( 1/x$nz*(k2sum),2 )
-
-    rslt <- round(L2/ksum,2)
+ 
       
-  cntr3 <- paste0("$$QS_{Kontrast}=\\frac{L^2}{\\sum^J_{j=1}{\\frac{K^2_j}{n_z}}}=\\frac{",L2,"}{",ksum,"}=",rslt,"$$")
+  cntr3 <- paste0("$$QS_{Kontrast}=\\frac{L^2}{\\sum^J_{j=1}{\\frac{K^2_j}{n_z}}}=\\frac{",
+                  x$L2,"}{",x$ksum,"}=",x$qs_kontrast,"$$")
   
   paste0(cntr, cntr2, cntr3, collapse="\n")
   
 }
 
 orthogonal <- function(ctr1, ctr2) {
-  result = round(sum(ctr1*ctr2),2)
+  result = round(sum(ctr1$ctr*ctr2$ctr),2)
   paste0( "Test auf Orthogonalität:\n$$",
-    paste0( ctr1,"\\cdot",ctr2,collapse="+"),"=",result,
+    paste0( ctr1$ctr,"\\cdot",ctr2$ctr,collapse="+"),"=",result,
     "$$\nDas Ergebnis ist ",result," => Die Kontraste sind ",ifelse(result==0,"","nicht "),"orthogonal"
     
     )
@@ -210,12 +207,27 @@ contrast_hypotheses <- function(x, direction) {
   paste0("$H_0: \\Lambda ", cmpH0, "0$ and $H_1: \\Lambda", cmpH1," 0$")
 }
 
-generate_contrast <- function(x, ctr) {
-  F <- NA
-  qs
-  return(list(ctr=ctr,F=F))
+generate_contrast <- function(x, ctr, alpha=0.05) {
+
+  
+  L <- round( sum(ctr, x$factor_means),2 )
+  L2 <- round(L*L,2)
+  k2sum <- sum(ctr*ctr)
+  ksum<- round( 1/x$nz*(k2sum),2 )
+  
+  qs_kontrast <- round(L2/ksum,2)
+  
+  Fest <- round(qs_kontrast/x$qs_wth, 2)
+
+  df1 <- 1
+  df2 <- x$df2
+  Fcrit <- round(qf(1-alpha, df1, df2),2)
+  
+  return(list(ctr=ctr,L=L,L2=L2,qs_kontrast=qs_kontrast,Fest=Fest, 
+              aov=x,ksum=ksum,df1=df1,df2=df2,Fcrit=Fcrit,alpha=alpha))
 }
 
 contrast_F <- function(x) {
-  paste0("F=\\frac{MQS_{Kontrast}}{MQS_{inn}}=\\frac{",x$qs_kontrast,"}{",x$qs_inn,"}=",x$F,)
+  #
+  paste0("$$F=\\frac{MQS_{Kontrast}}{MQS_{inn}}=\\frac{",x$qs_kontrast,"}{",x$aov$qs_wth,"}=",x$Fest,"$$")
 }

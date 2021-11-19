@@ -33,13 +33,18 @@ aov1 <- generate_anova(factor_level_names = c("Eigene Texte","Fremde Texte", "Fo
 ```
 
 ```{r results="asis"}
-ctr1 <- c(-1,-1,1,1)
-ctr2 <- c(0,0,-1,1)
-cat(contrast(aov1, ctr1))
+ctr_coeff1 <- c(-1,-1,1,1)
+ctr_coeff2 <- c(0,0,-1,1)
+
+ctr1 <- generate_contrast(aov1, ctr_coeff1)
+ctr2 <- generate_contrast(aov1, ctr_coeff2)
+
+
+cat(contrast(ctr1))
 cat("\n")
 cat(contrast_hypotheses(x,0))
 cat("\n")
-cat(contrast(aov1, ctr2))
+cat(contrast(ctr2))
 cat("\n")
 cat(contrast_hypotheses(x,1))
 cat("\n\n\n")
@@ -64,14 +69,18 @@ Dabei waren folgende Faktorstufenmittelwerte gefunden worden:
 knitr::kable( data.frame(aov1$factor_level_names, aov1$factor_means) )
 ```
 
+Außerdem ist die mittlere Innerhalb-Quadratsummer bekannt: $MQS_{inn}=`r aov1$qs_wth`$.
+
 Im Vorfeld gab es die Vermutung, dass die working alliance von Personen mit einer emotional instabilen Persönlichkeitsstörung oder einer Abhängigkeitsstörung niederiger ist als bei den anderen untersuchten Störungen. Formulieren Sie das passende Hypothesenpaar und testen Sie dies in einem Kontrast. Formulieren Sie zusätzlich noch einen Kontrast, der orthogonal zu dem ersten ist.
  
 ```{r results="asis"}
-ctr1 <- c(1,-1,-1,1)
-cntr <- generate_contrast(aov1,ctr)
-cat(contrast(aov1, ctr1))
+ctr_coeff1 <- c(-1,1,1,-1)
+ctr1 <- generate_contrast(aov1,ctr_coeff1)
+cat(contrast(ctr1))
 cat("\n")
-cat(contrast_hypotheses(aov1,0))
+cat(contrast_hypotheses(ctr1,0))
 cat("\n")
-cat(contrast_F(aov1))
+cat(contrast_F(ctr1))
+cat("\n")
+cat(f_crit(ctr1))
 ```
