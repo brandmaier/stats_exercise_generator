@@ -177,9 +177,11 @@ contrast <- function(x, ctr) {
 
     L2 <- round(L*L,2)
     k2sum <- sum(ctr*ctr)
-    ksum<-1/x$nz*(k2sum)
-  
-  cntr3 <- paste0("$$QS_{Kontrast}=\\frac{L^2}{\\sum^J_{j=1}{\\frac{K^2_j}{n_z}}}=\\frac{",L2,"}{",ksum,"}$$")
+    ksum<- round( 1/x$nz*(k2sum),2 )
+
+    rslt <- round(L2/ksum,2)
+      
+  cntr3 <- paste0("$$QS_{Kontrast}=\\frac{L^2}{\\sum^J_{j=1}{\\frac{K^2_j}{n_z}}}=\\frac{",L2,"}{",ksum,"}=",rslt,"$$")
   
   paste0(cntr, cntr2, cntr3, collapse="\n")
   
@@ -206,4 +208,14 @@ contrast_hypotheses <- function(x, direction) {
     cmpH0 <- "\\ge"
   }
   paste0("$H_0: \\Lambda ", cmpH0, "0$ and $H_1: \\Lambda", cmpH1," 0$")
+}
+
+generate_contrast <- function(x, ctr) {
+  F <- NA
+  qs
+  return(list(ctr=ctr,F=F))
+}
+
+contrast_F <- function(x) {
+  paste0("F=\\frac{MQS_{Kontrast}}{MQS_{inn}}=\\frac{",x$qs_kontrast,"}{",x$qs_inn,"}=",x$F,)
 }

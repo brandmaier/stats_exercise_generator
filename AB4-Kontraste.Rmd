@@ -47,3 +47,31 @@ cat(orthogonal(ctr1, ctr2))
 ```
 
 # Aufgabe 2
+
+Wir betrachten nochmal die Aufgabe des Arbeitsblattes "Einfaktorielle Varianzanalyse", in der working alliance (also das Vertrauen und die Bereitschaft zur Zusammenarbeit) von Patienten in einer psychiatrischen Klinik untersucht wurde.
+```{r}
+set.seed(34059)
+aov1 <- generate_anova(factor_level_names = c("Abhängigkeitssyndrom","Angststörung","Depressive Episode","Persönlichkeitsstörung"),num.facs = 4, num.obs.per.fac = 7,obs_round = 0, 
+                       between=4,within=2, overallmean = 10,
+                       obs_min=1,
+                       obs_max=20,
+                       alpha=0.01
+                       )
+```
+
+Dabei waren folgende Faktorstufenmittelwerte gefunden worden:
+```{r}
+knitr::kable( data.frame(aov1$factor_level_names, aov1$factor_means) )
+```
+
+Im Vorfeld gab es die Vermutung, dass die working alliance von Personen mit einer emotional instabilen Persönlichkeitsstörung oder einer Abhängigkeitsstörung niederiger ist als bei den anderen untersuchten Störungen. Formulieren Sie das passende Hypothesenpaar und testen Sie dies in einem Kontrast. Formulieren Sie zusätzlich noch einen Kontrast, der orthogonal zu dem ersten ist.
+ 
+```{r results="asis"}
+ctr1 <- c(1,-1,-1,1)
+cntr <- generate_contrast(aov1,ctr)
+cat(contrast(aov1, ctr1))
+cat("\n")
+cat(contrast_hypotheses(aov1,0))
+cat("\n")
+cat(contrast_F(aov1))
+```
