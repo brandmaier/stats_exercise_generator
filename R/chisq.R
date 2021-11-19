@@ -61,15 +61,15 @@ chisq_data_table <- function(x, type="",caption="") {
   # }
   if (type=="") {
     if (caption=="") caption="Kontingenztabelle"
-    knitr::kable( x$data_raw, caption=caption, col.names = x$labels.b )
+    print(knitr::kable( x$data_raw, caption=caption, col.names = x$labels.b ))
   } else if (type=="indep") {
     if (caption=="") caption="Kontingenztabelle unter Unabhängigkeitsannahme"
-    knitr::kable(x$data_indep, caption=caption)   
+    print(knitr::kable(x$data_indep, caption=caption)   )
   } else if (type=="sums") {
     if (caption=="") caption="Kontingenztabelle mit Randsummen"
-    knitr::kable( x$data_sums, caption=caption )
+    print(knitr::kable( x$data_sums, caption=caption ))
   } else {
-    print("")
+    print(paste0("Unknown type :",type))
   }
   
 }
@@ -147,7 +147,7 @@ chisq_decision <- function(x) {
 generate_chisq_uni <- function(obs, exp_relative, labels, alpha=0.05) {
   
   n <- sum(obs)
-  exp <- exp_relative*n/100
+  exp <- exp_relative*n
   terms <- round( (obs-exp)^2/exp, 2)
   
   chisq <- round(sum(terms),2)
@@ -160,23 +160,27 @@ generate_chisq_uni <- function(obs, exp_relative, labels, alpha=0.05) {
        labels=labels,exp_relative=exp_relative, chisq=chisq, alpha=alpha)
 }
 
-solution_chisq_uni <- function(x)
+solution_chisq_uni <- function(x, part=1)
 {
   part1 <- paste0(
     " e_{",x$label,"}=",x$exp_relative,"\\cdot",x$n,"=",x$exp,
-    collapse="\\\\ "
+    collapse="\\\\"
   )
   
   part2 <- paste0("\\chi^2=",
          paste0(
            
-           "\\frac{(",x$obs,"-",x$exp,")^2}{",x$exp,"}", collapse="+"
+           "{\\frac{(",x$obs,"-",x$exp,")^2}{",x$exp,"}}", collapse="+"
            
          ),"=",x$chisq
   )
-  
- # paste( "\\begin{align}",part1,"\\end{align}","\\\\", part2, collapse=" \\n ")
-  paste0(part1,"\\\\",part2)
+
+  if (part==1) {
+    return(part1)
+  } else {
+    return(part2)
+  }
+
 }
 
 chisq_effectsize <- function(x) {

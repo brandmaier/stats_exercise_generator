@@ -3,39 +3,50 @@ title: "Arbeitsblatt 2 - Chi Quadrat Tests"
 author: "Statistik II - Andreas M. Brandmaier"
 date: "11/11/2021"
 output:
-  pdf_document: default
+  pdf_document: 
+    extra_dependencies: ["float","breqn"]
   html_document: default
 ---
 
 ```{r setup, include=FALSE}
 library(tidyverse)
 knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(fig.pos = "!H", out.extra = "") # prevent LaTeX tables from floating around
 
 source("R/mcnemar.R")
 source("R/chisq.R")
 
-include_solution <- !TRUE
+include_solution <- TRUE
 
 empty_str <- "\\ "
+
+wrap_math_inline <- function(x){cat(paste0("$",x,"$"))}
+wrap_math_block <- function(x){cat(paste0("$$",x,"$$"))}
+wrap_math_align <- function(x) {cat(paste0("\\begin{align}\n",x,"\n\\end{align}"))}
 ```
 
 
 # Aufgabe 1
 
+```{r}
+# generate data for exercise 1
+set.seed(3249)
+csq <- generate_chisq()
+```
+
 In einer randomisierten Studie haben 40 Patienten ein neuartiges Antidepressivum erhalten und 40 Patienten ein Placebo. Nach vier Wochen wurde erhoben, ob sich eine Verbesserung der Symptomatik eingestellt hat. Dies wurde als dichotomes Merkmal _Verbesserung_ (ja/nein) erhoben. Ein Forscherteam hat die Hypothese, dass das neuartige Antidepressivum wirksamer als eine Placebo-Behandlung ist.
 
 Folgende Daten wurden beobachtet:
 
-```{r}
-set.seed(3249)
-csq <- generate_chisq()
-
+```{r, results="asis"}
 chisq_data_table(csq)
 ```
 
+
 Berechnen Sie zunächst die Spalten- und Randsummen für diese Häufigkeits-Tabelle. Erstellen Sie dann eine Tabelle von Häufigkeiten, die man erwarten würde, wenn es keinen Zusammenhang gäbe. Berechnen Sie dann die Prüfgröße für den Unabhängigkeits-Test und treffen Sie eine statistische Entscheidung.
 
-```{r}
+
+```{r, results="asis", eval=include_solution}
 
 
 chisq_data_table(csq, type="sums")
@@ -61,55 +72,66 @@ Der empirische _F_-Wert ist größer als der kritische Wert. Wir lehnen daher di
 
 
 # Aufgabe 2
-
-Ein Forscherteam untersucht die Wirksamkeit einer Anti-Raucher-Kampagne. Dazu wird das Rauchverhalten (ja/nein ) in einer Stichprobe zweimal untersucht: einmal vor der Kampagne und einmal nach der Kampagne. Die Vermutung ist, dass die Rauchkampagne wirksam ist. Untersuchen Sie dies mit einer gerichteten Hypothese.
-Formulieren Sie die Null-Hypothese und rechnen Sie den richtigen Test. Treffen Sie eine statistisch informierte Entscheidung. Welche Effektstärke kann man hier berichten?
-
 ```{r}
 csq <- generate_chisq(labels.a = c("Ja (vorher)"," Nein (vorher)"),labels.b=c("Ja (Nachher)","Nein (Nachher)"),
                        tbl = matrix(c(45,13,25,43),ncol=2,byrow = FALSE))
 
+```
+Ein Forscherteam untersucht die Wirksamkeit einer Anti-Raucher-Kampagne. Dazu wird das Rauchverhalten (ja/nein ) in einer Stichprobe zweimal untersucht: einmal vor der Kampagne und einmal nach der Kampagne. Die Vermutung ist, dass die Rauchkampagne wirksam ist. Untersuchen Sie dies mit einer gerichteten Hypothese.
+Formulieren Sie die Null-Hypothese und rechnen Sie den richtigen Test. Treffen Sie eine statistisch informierte Entscheidung. Welche Effektstärke kann man hier berichten?
+
+
+
+```{r, results="asis"}
 chisq_data_table(csq)
 ```
 
-$`r mcnemar_solution(csq)`$
+```{r, results="asis", eval=include_solution}
+cat("_Lösung:_\n\n")
+
+wrap_math_block(mcnemar_solution(csq))
+cat("\n")
+cat(chisq_crit(csq, undirected=FALSE),"\n")
+ 
+cat("Als Effektstärke können wir das Verhältnis der Wechsler berechnen:\n")
+wrap_math_block(mcnemar_effectsize(csq,1))
+
+cat("oder als Prozent der Wechsler von Raucher zu Nichtraucher:\n")
+wrap_math_block(mcnemar_effectsize(csq,2))
+```
 
 
-`r chisq_crit(csq, undirected=FALSE)`
-
-Als Effektstärke können wir das Verhältnis der Wechsler berechnen:
-$`r mcnemar_effectsize(csq,1)`$
-
-oder als Prozent der Wechsler von Raucher zu Nichtraucher:
-$`r mcnemar_effectsize(csq,2)`$
 
 # Aufgabe 3
 
 Laut einer Statista-Studie (https://de.statista.com/statistik/daten/studie/30157/umfrage/anzahl-der-haustiere-in-deutschen-haushalten-seit-2008/) gehen wir davon aus, dass in der Bevölkerung die Vorliebe für Haustiere folgendermaßen verteilt ist:
 
-Katzen: 15.7%
-Hunde: 10.7%
-Andere: 13%  
-Keine: 60.6%
+- Katzen: 15.7%
+- Hunde: 10.7%
+- Andere: 13%
+- Keine: 60.6%
 
-Wir gehen weiterhin davon aus, dass keine Mehrfachnennungen möglich sind. In einer Studie wurde untersucht, ob sich die Vorlieben bei Psychologiestudierenden von der Normalbevölkerung unterscheiden. Beobachtet wurden folgende absoluten Häufigkeiten in einer Stichprobe von 100 Studierenden:
+Wir gehen weiterhin davon aus, dass keine Mehrfachnennungen möglich sind. In einer Studie wurde untersucht, ob sich die Vorlieben bei Psychologiestudierenden von der Normalbevölkerung unterscheiden. Beobachtet wurden folgende absoluten Häufigkeiten in einer Stichprobe von 120 Studierenden:
 
 
 ```{r}
-obs <- c(24,11,10,55)
+obs <- c(29,16,15,60)
 n <- sum(obs)
 labels <- c("Katzen","Hunde","Andere","Keine")
-expected <- c(15.7,10.7,13,60.6)
+expected <- c(15.7,10.7,13,60.6)/100
 csq <- generate_chisq_uni( obs=obs,exp=expected,labels=labels )
 chisq_uni_data_table(csq) 
 ```
 
-_Lösung_:
+```{r, results="asis", eval=include_solution}
+cat("_Lösung:_\n\n")
 
+wrap_math_align(solution_chisq_uni(csq,1))
+wrap_math_block(solution_chisq_uni(csq,2))
+cat("\n")
+cat(chisq_crit(csq))
+```
 
-$$`r solution_chisq_uni(csq)`$$
-
-`r chisq_crit(csq)`
 
 # Aufgabe 4
 
@@ -117,41 +139,47 @@ In einer Studie wurde untersucht, ob sich die Fehlzeiten von Studierenden über 
 
 ```{r}
 csq <- generate_chisq(labels.b = c("SS19","WS19/20","SS20","SS20/21"), labels.a=c("ja","nein"),tbl = matrix(c(88,12,95,5, 93,7,95,5), ncol=4))
+```
 
-chisq_data_table(csq)
-
-
-
+```{r results="asis"}
+chisq_data_table(csq) 
 ```
 
 Testen Sie, ob sich die Fehlzeiten über die Semester hinweg unterscheiden.
 
-Dies ist die Kontingenztabelle unter der Unabhängigkeitsannahme:
-`r chisq_data_table(csq, TRUE,TRUE)`
+```{r, results="asis", eval=include_solution}
+cat("_Lösung:_\n\n")
 
-$`r chisq_solution(csq)`$
-
-`r chisq_crit(csq)`
+chisq_data_table(csq, "indep")
+cat("\n")
+wrap_math_block(chisq_solution(csq))
+cat("\n")
+cat(chisq_crit(csq))
+```
 
 # Aufgabe 5
 Wie müsste die Kontingenztabelle der beobachteten Häufigkeiten lauten, wenn man testen möchte, ob sich die Anwesenheit in den Sommer- und Wintersemestern unterscheidet? Führen Sie den entsprechenden Test durch.
 
 ```{r} 
+# code to generate data of exercise 5
 tbl <- cbind(rowSums(csq$tbl[,c(1,3)]),rowSums(csq$tbl[,c(2,4)]))
 csq <- generate_chisq(labels.b = c("Sommer","Winter"), labels.a=c("ja","nein"),tbl=tbl)
-
 ```
 
-`r if (isTRUE(include_solution)){ "_Lösung:_"} `
 
 
+```{r, results="asis", eval=include_solution}
+#
+# solution block - exercise 5
+#
+cat("_Lösung:_\n\n")
 
-`r chisq_data_table(csq,  caption="Zusammengefasste Datentabelle")`
+chisq_data_table(csq,  caption="Zusammengefasste Datentabelle")
+cat("\n")
+chisq_data_table(csq, type="indep", caption="Tabelle unter Unabhängigkeitsannahme")
 
-
-`r chisq_data_table(csq, type="indep", caption="Tabelle unter Unabhängigkeitsannahme")`
-
-$`r chisq_solution(csq)`$
-
-`r chisq_crit(csq)`
+wrap_math_block(chisq_solution(csq))
+cat("\n")
+cat(chisq_crit(csq))
+```
 
