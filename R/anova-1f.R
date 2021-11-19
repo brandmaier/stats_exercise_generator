@@ -165,3 +165,17 @@ group_means_solution <- function(x) {
   
   strlist
 }
+
+contrast <- function(x, ctr) {
+  ln <- length(ctr)
+  cntr <- paste0("\\Lambda=",paste0(ctr,"\\cdot \\mu_", 1:ln) )
+  
+  
+}
+
+orthogonal <- function(ctr1, ctr2) {
+  result = round(sum(ctr1*ctr2),2)
+  paste0( 
+    paste0( ctr1,"\\cdot",ctr2,collapse="+"),"=",result
+    )
+}
