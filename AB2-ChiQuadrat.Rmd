@@ -21,9 +21,7 @@ include_solution <- TRUE
 
 empty_str <- "\\ "
 
-wrap_math_inline <- function(x){cat(paste0("$",x,"$"))}
-wrap_math_block <- function(x){cat(paste0("$$",x,"$$"))}
-wrap_math_align <- function(x) {cat(paste0("\\begin{align}\n",x,"\n\\end{align}"))}
+
 ```
 
 
@@ -48,7 +46,7 @@ Berechnen Sie zunächst die Spalten- und Randsummen für diese Häufigkeits-Tabe
 
 
 ```{r, results="asis", eval=include_solution}
-
+cat("_Lösung:_\n\n")
 
 chisq_data_table(csq, type="sums")
 
