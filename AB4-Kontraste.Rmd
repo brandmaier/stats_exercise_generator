@@ -1,0 +1,49 @@
+---
+title: "Kontrastanalyse"
+author: "Andreas M. Brandmaier"
+date: "11/19/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+knitr::opts_chunk$set(echo = FALSE)
+
+source("R/helper.R")
+source("R/anova-1f.R")
+
+include_solution <- !TRUE
+
+empty_str <- "\\ "
+```
+
+
+# Aufgabe 1
+
+In einer Studie wurde untersucht, inwiefern die unterschiedliche Bereitstellungsformen von Social Media Inhalten die Beliebtheit von Probandinnen beeinflußt. Konkret wurden Probandinnen randomisiert in verschiedene Gruppen aufgeteilt, die Inhalte nur über eine der vier Formen verbreiten sollten (Eigene Texte, Übernahme fremder Texte, eigene Fotos, eigene Videos). Eine einfaktorielle Varianzanalyse zeigte signifikante Unterschiede zwischen den vier Bedingungen. Folgende zwei spezifischen Hypothesen standen bereits vor der Datenerhebung fest und sollen mittels einer Kontrastanalyse untersucht werden:
+
+1. Gibt es Unterschiede in der Beliebheit wenn statt Textinhalten Fotos oder Videos geteilt werden?
+2. Ist die Beliebtheit größer in der Gruppe, die Videos teilt, als in der Gruppe, die Bilder teilt?
+
+Führen Sie die Kontrastanalyse durch. Entscheiden Sie anhand der Fragestellung, ob es sich um einen gerichteten oder ungerichteten Test handeln muss. Sind die beiden Kontraste orthogonal?
+
+```{r}
+set.seed(23509)
+aov1 <- generate_anova(factor_level_names = c("Eigene Texte","Fremde Texte", "Fotos","Videos"), within = 3, between=3, obs_round = 1)
+```
+
+```{r results="asis"}
+ctr1 <- c(-1,-1,1,1)
+ctr2 <- c(0,0,-1,1)
+cat(contrast(aov1, ctr1))
+cat("\n")
+cat(contrast_hypotheses(x,0))
+cat("\n")
+cat(contrast(aov1, ctr2))
+cat("\n")
+cat(contrast_hypotheses(x,1))
+cat("\n\n\n")
+cat(orthogonal(ctr1, ctr2))
+```
+
+# Aufgabe 2

@@ -168,14 +168,42 @@ group_means_solution <- function(x) {
 
 contrast <- function(x, ctr) {
   ln <- length(ctr)
-  cntr <- paste0("\\Lambda=",paste0(ctr,"\\cdot \\mu_", 1:ln) )
+  cntr <- paste0("$$\\Lambda=",paste0(ctr,"\\cdot \\mu_", 1:ln,collapse="+") , "$$")
   
+  L <- round( sum(ctr, x$factor_means),2 )
+  
+  cntr2 <- paste0("$$L=",paste0(ctr,"\\cdot",x$factor_means, collapse="+"), "=",L,"$$")
+  
+
+    L2 <- round(L*L,2)
+    k2sum <- sum(ctr*ctr)
+    ksum<-1/x$nz*(k2sum)
+  
+  cntr3 <- paste0("$$QS_{Kontrast}=\\frac{L^2}{\\sum^J_{j=1}{\\frac{K^2_j}{n_z}}}=\\frac{",L2,"}{",ksum,"}$$")
+  
+  paste0(cntr, cntr2, cntr3, collapse="\n")
   
 }
 
 orthogonal <- function(ctr1, ctr2) {
   result = round(sum(ctr1*ctr2),2)
-  paste0( 
-    paste0( ctr1,"\\cdot",ctr2,collapse="+"),"=",result
+  paste0( "Test auf Orthogonalität:\n$$",
+    paste0( ctr1,"\\cdot",ctr2,collapse="+"),"=",result,
+    "$$\nDas Ergebnis ist ",result," => Die Kontraste sind ",ifelse(result==0,"","nicht "),"orthogonal"
+    
     )
+}
+
+contrast_hypotheses <- function(x, direction) {
+  if (direction == 0) {
+    cmpH0 <- "="
+    cmpH1 <- "\\ne"
+  } else if (direction>0) {
+    cmpH1 <- ">"
+    cmpH0 <- "\\le"
+  } else {
+    cmpH1 <- "<"
+    cmpH0 <- "\\ge"
+  }
+  paste0("$H_0: \\Lambda ", cmpH0, "0$ and $H_1: \\Lambda", cmpH1," 0$")
 }
