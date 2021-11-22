@@ -12,8 +12,10 @@ library(tidyverse)
 knitr::opts_chunk$set(echo = FALSE)
 
 source("R/anova-1f.R")
+source("R/helper.R")
 
-include_solution <- !TRUE
+include_solution <- TRUE
+
 
 empty_str <- "\\ "
 ```
@@ -35,27 +37,26 @@ data_table(aov1)
 
 Formulieren Sie die Nullhypothese und führen Sie den geeigneten statistischen Test zur Auswertung durch. Berechnen Sie auch die Effektgröße. Formulieren Sie einen Antwortsatz.
 
-`r if (isTRUE(include_solution)){ "_Lösung:_"} `
 
-$`r hypothesis_solution(aov1)`$
+```{r, results="asis", eval=include_solution}
+cat("_Lösung:_")
 
-$`r group_means_solution(aov1)`$
+wrap_math_block(hypothesis_solution(aov1))
+wrap_math_block(group_means_solution(aov1))
 
-$`r qs_solution(aov1,1)`$
+wrap_math_block(qs_solution(aov1,1))
+wrap_math_block(qs_solution(aov1,2))
+wrap_math_block(qs_solution(aov1,3))
+wrap_math_block( mqs_solution(aov1) )
+wrap_math_block( f_solution(aov1) )
 
-$`r qs_solution(aov1,2)`$
+f_crit(aov1)
 
-$`r qs_solution(aov1,3)`$
 
-$`r mqs_solution(aov1)`$
+wrap_math_block(effect_solution(aov1))
 
-$`r f_solution(aov1)`$
-
-`r f_crit(aov1)`
-
-$`r effect_solution(aov1)`$
-
-`r if (isTRUE(include_solution)){ "Wir finden keinen signifikanten Unterschied im Wohlbefinden zwischen den Gruppen."} `
+cat("Wir finden keinen signifikanten Unterschied im Wohlbefinden zwischen den Gruppen.")
+```
 
 ```{r}
 aov1<-NULL
@@ -83,32 +84,25 @@ data_table(aov1)
 
 Die Psychologin hat bereits berechnet: $QS_{tot}=`r aov1$qs_tot`$.Formulieren Sie die Nullhypothese und führen Sie den geeigneten statistischen Test zur Auswertung durch. Formulieren Sie einen Antwortsatz, der auch eine Effektgröße enthält. Das Signifikanzniveau sei 1%.
 
-`r if (isTRUE(include_solution)){ "_Lösung:_"} `
+```{r, results="asis", eval=include_solution}
+cat("_Lösung:_")
+wrap_math_block(hypothesis_solution(aov1))
+wrap_math_block(group_means_solution(aov1))
 
-$`r hypothesis_solution(aov1)`$
+wrap_math_block(qs_solution(aov1,1))
+wrap_math_block(qs_solution(aov1,2))
+wrap_math_block(qs_solution(aov1,3))
+wrap_math_block( mqs_solution(aov1) )
+wrap_math_block( f_solution(aov1) )
 
-$`r group_means_solution(aov1)`$
-
-$`r qs_solution(aov1,2)`$
-
-$`r qs_solution(aov1,3)`$
-
-$`r mqs_solution(aov1)`$
-
-$`r f_solution(aov1)`$
-
-`r f_crit(aov1)`
-
-$`r effect_solution(aov1)`$
-
-`r if (isTRUE(include_solution)){ "Die Nullhypothese wird verworfen. Wir finden einen signifikanten Unterschied in der _working alliance_ zwischen den Diagnosen."} `
+f_crit(aov1)
 
 
+wrap_math_block(effect_solution(aov1))
 
-```{r}
-
-
+cat("Die Nullhypothese wird verworfen. Wir finden einen signifikanten Unterschied in der _working alliance_ zwischen den Diagnosen.")
 ```
+
 
 # Aufgabe 3
 

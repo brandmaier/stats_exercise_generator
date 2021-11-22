@@ -12,6 +12,10 @@ generate_anova <- function(av.name = "",
                            obs_max = 20
 ) {
   
+  if (!is.null(factor_level_names)) {
+    stopifnot(length(factor_level_names)==num.facs)
+  }
+  
   n <- num.facs*num.obs.per.fac
   
   if (any(is.null(factor_level_names))) {
@@ -19,7 +23,11 @@ generate_anova <- function(av.name = "",
   }
   
   
-  grp_means <- rnorm(n = num.facs,overallmean,between)
+  if (length(between)==1) {
+    grp_means <- rnorm(n = num.facs,overallmean,between)
+  } else {
+    grp_means <- between
+  }
   dat <- round( rnorm(n=n, rep(grp_means, each=num.obs.per.fac), within), obs_round)
   dat <- pmax(dat, obs_min)
   dat <- pmin(dat, obs_max)
@@ -166,7 +174,7 @@ group_means_solution <- function(x) {
   strlist
 }
 
-contrast <- function(x) {
+contrast_qs <- function(x) {
   ctr <- x$ctr
   ln <- length(ctr)
   cntr <- paste0("$$\\Lambda=",paste0(ctr,"\\cdot \\mu_", 1:ln,collapse="+") , "$$")
@@ -177,7 +185,7 @@ contrast <- function(x) {
   
  
       
-  cntr3 <- paste0("$$QS_{Kontrast}=\\frac{L^2}{\\sum^J_{j=1}{\\frac{K^2_j}{n_z}}}=\\frac{",
+  cntr3 <- paste0("$$QS_{Kontrast}=\\frac{L^2}{\\frac{1}{n_z} \\cdot \\sum^J_{j=1}{K^2_j}}=\\frac{",
                   x$L2,"}{",x$ksum,"}=",x$qs_kontrast,"$$")
   
   paste0(cntr, cntr2, cntr3, collapse="\n")
@@ -204,13 +212,14 @@ contrast_hypotheses <- function(x, direction) {
     cmpH1 <- "<"
     cmpH0 <- "\\ge"
   }
-  paste0("$H_0: \\Lambda ", cmpH0, "0$ and $H_1: \\Lambda", cmpH1," 0$")
+  paste0("$$H_0: \\Lambda ", cmpH0, "0 \\mathrm{\\; und\\; } H_1: \\Lambda", cmpH1," 0$$")
 }
 
-generate_contrast <- function(x, ctr, alpha=0.05) {
+generate_contrast <- function(x, ctr, alpha=0.05, directed=FALSE) {
 
+  if (directed) alpha = alpha*2
   
-  L <- round( sum(ctr, x$factor_means),2 )
+  L <- round( sum(ctr * x$factor_means),2 )
   L2 <- round(L*L,2)
   k2sum <- sum(ctr*ctr)
   ksum<- round( 1/x$nz*(k2sum),2 )
