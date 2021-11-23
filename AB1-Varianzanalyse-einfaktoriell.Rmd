@@ -1,7 +1,7 @@
 ---
 title: "Arbeitsblatt 1 - Einfaktorielle Varianzanalyse"
 author: "Statistik II - Andreas M. Brandmaier"
-date: "11/11/2021"
+date: "`r format(Sys.time(), '%d. %B %Y')`"
 output:
   pdf_document: default
   html_document: default
@@ -42,7 +42,7 @@ Formulieren Sie die Nullhypothese und führen Sie den geeigneten statistischen T
 cat("_Lösung:_")
 
 wrap_math_block(hypothesis_solution(aov1))
-wrap_math_block(group_means_solution(aov1))
+wrap_math_align(group_means_solution(aov1))
 
 wrap_math_block(qs_solution(aov1,1))
 wrap_math_block(qs_solution(aov1,2))
@@ -87,11 +87,14 @@ Die Psychologin hat bereits berechnet: $QS_{tot}=`r aov1$qs_tot`$.Formulieren Si
 ```{r, results="asis", eval=include_solution}
 cat("_Lösung:_")
 wrap_math_block(hypothesis_solution(aov1))
-wrap_math_block(group_means_solution(aov1))
+wrap_math_align(group_means_solution(aov1))
 
 wrap_math_block(qs_solution(aov1,1))
+cat("\n")
 wrap_math_block(qs_solution(aov1,2))
+cat("\n")
 wrap_math_block(qs_solution(aov1,3))
+cat("\n")
 wrap_math_block( mqs_solution(aov1) )
 wrap_math_block( f_solution(aov1) )
 

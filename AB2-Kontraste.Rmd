@@ -1,8 +1,10 @@
 ---
-title: "Arbeitsblatt 4 - Kontrastanalyse"
+title: "Arbeitsblatt 2 - Kontrastanalyse"
 author: "Statistik II - Andreas M. Brandmaier"
 date: "`r format(Sys.time(), '%d. %B %Y')`"
 output: pdf_document
+params:
+  include_solution: true
 ---
 
 ```{r setup, include=FALSE}
@@ -12,24 +14,25 @@ knitr::opts_chunk$set(echo = FALSE)
 source("R/helper.R")
 source("R/anova-1f.R")
 
-include_solution <- TRUE
+include_solution <- params$include_solution
 
 empty_str <- "\\ "
+
 ```
 
 
 # Aufgabe 1
 ```{r}
 set.seed(23509)
-aov1 <- generate_anova(factor_level_names = c("Eigene Texte","Fremde Texte", "Fotos","Videos"), within = 1, between=c(4,3,9.2,5.5), obs_round = 1, num.facs = 4, num.obs.per.fac = 5)
+aov1 <- generate_anova(factor_level_names = c("Eigene Texte","Fremde Texte", "Fotos","Videos"), within = 3, between=c(4,3,9.2,5.5), obs_round = 1, num.facs = 4, num.obs.per.fac = 5)
 ```
-In einer Studie wurde untersucht, inwiefern die unterschiedliche Bereitstellungsformen von Social-Media-Inhalten die Beliebtheit von Content-Ersteller\*innen auf einer Fotografieplatform beeinflusst. Konkret wurden Proband\*innen randomisiert in verschiedene Gruppen aufgeteilt, die Social-Media-Inhalte nur über eine der vier Formen verbreiten sollten (Eigene Texte, Übernahme fremder Texte, eigene Fotos, eigene Videos). Eine einfaktorielle Varianzanalyse zeigte signifikante Unterschiede zwischen den vier Bedingungen. Dabei waren folgende Faktorstufenmittelwerte gefunden worden:
+In einer Studie wurde untersucht, inwiefern unterschiedliche Bereitstellungsformen von Social-Media-Inhalten die Beliebtheit von Content-Ersteller\*innen auf einer Fotografieplatform beeinflusst. Konkret wurden Proband\*innen randomisiert in verschiedene Gruppen aufgeteilt, die Social-Media-Inhalte nur über eine der vier Formen verbreiten sollten (Eigene Texte, Übernahme fremder Texte, eigene Fotos, eigene Videos). Als abhängige Variable wurde die Anzahl der _likes_ für die Inhalte der Proband\*innen erhoben. Eine einfaktorielle Varianzanalyse zeigte signifikante Unterschiede zwischen den vier Bedingungen. Dabei waren folgende Faktorstufenmittelwerte gefunden worden:
 ```{r}
 knitr::kable( data.frame(aov1$factor_level_names, aov1$factor_means),
               col.names = c("Bedingung","Mittelwert") )
 ```
 
-Außerdem ist die mittlere Innerhalb-Quadratsummer bekannt: $MQS_{inn}=`r aov1$qs_wth`$ mit Freiheitsgraden $df_{inn}=`r aov1$df2`$. In jeder Bedingung wurden `r aov1$nz` Personen beobachtet.
+Außerdem ist die mittlere Innerhalb-Quadratsumme bekannt: $MQS_{inn}=`r aov1$mqs_wth`$ mit Freiheitsgraden $df_{inn}=`r aov1$df2`$. In jeder Bedingung wurden `r aov1$nz` Personen beobachtet.
 
 Die folgenden zwei spezifischen Hypothesen standen bereits vor der Datenerhebung fest und sollen mittels einer Kontrastanalyse untersucht werden:
 
@@ -57,7 +60,7 @@ cat("\n")
 cat(contrast_F(ctr1))
 cat("\n")
 cat(f_crit(ctr1))
-cat("Wir lehnen die Nullhypothese ab. Es gibt Unterschiede zwischen Text- und Nicht-Text-Inhalten.")
+cat("Wir lehnen die Nullhypothese ab. Es gibt signifikante Unterschiede zwischen Text- und Nicht-Text-Inhalten.")
 cat("\n\n")
 cat("Zum zweiten Kontrast: Aufgrund der Fragestellung handelt es sich um eine gerichtete Hypothese. Nur Unterschiede in eine Richtung können zu einem Ablehnen der Nullhypothese führen.")
 cat(contrast_hypotheses(ctr2,1))
@@ -67,7 +70,7 @@ cat("\n")
 cat(contrast_F(ctr2))
 cat("\n")
 cat(f_crit(ctr2))
-cat("Wir lehnen die Nullhypothese aber *nicht* ab, da der Kontrast in die falsch Richtung zeigt! Achtung: die Richtung der gerichteten Hypothese kann auch schon vom Kontrast $L$ abgelesen werden. Es ist also hier gar nicht nötig, die QS und Prüfgröße zu berechnen.")
+cat("Wir lehnen die Nullhypothese aber *nicht* ab, da der Kontrast in die falsche Richtung zeigt! Achtung: die Richtung der gerichteten Hypothese kann direkt vom Kontrast $L$ abgelesen werden. Es ist also hier gar nicht nötig, die QS und Prüfgröße zu berechnen.")
 cat("\n\n\n")
 cat(orthogonal(ctr1, ctr2))
 ```
@@ -83,6 +86,17 @@ aov1 <- generate_anova(factor_level_names = c("Abhängigkeitssyndrom","Angststö
                        obs_max=20,
                        alpha=0.01
                        )
+
+#aov1 <- generate_anova(factor_level_names = #c("Abhängigkeitssyndrom","Angststörung","Depressive #Episode","Persönlichkeitsstörung"),num.facs = 4, num.obs.per.fac = 7,obs_round = 0, 
+#                       between=4,within=2, overallmean = 10,
+#                       obs_min=1,
+#                       obs_max=20,
+#                       alpha=0.01,
+#                       rawdata <- matrix(c(17,20,19,15,18,16,
+ #                                          20,17,16,10,13,17,
+ #                                          10,9,11,13,17,9,
+#                                           13,8,12,15,14,10), nrow=4,byrow = FALSE)
+#                       )
 ```
 
 Dabei waren folgende Faktorstufenmittelwerte gefunden worden:
@@ -90,9 +104,9 @@ Dabei waren folgende Faktorstufenmittelwerte gefunden worden:
 knitr::kable( data.frame(aov1$factor_level_names, aov1$factor_means),col.names = c("Störung","Mittelwert") )
 ```
 
-Außerdem ist die mittlere Innerhalb-Quadratsummer bekannt: $MQS_{inn}=`r aov1$qs_wth`$.
+Außerdem ist die mittlere Innerhalb-Quadratsummer bekannt: $MQS_{inn}=`r aov1$mqs_wth`$  mit Freiheitsgraden $df_{inn}=`r aov1$df2`$. In jeder Bedingung wurden `r aov1$nz` Personen beobachtet.
 
-Im Vorfeld gab es die Vermutung, dass die _working alliance_ von Personen mit einer emotional instabilen Persönlichkeitsstörung oder einer Abhängigkeitsstörung niederiger ist als bei den anderen untersuchten Störungen. Formulieren Sie das passende Hypothesenpaar und testen Sie dies in einem Kontrast. Formulieren Sie zusätzlich noch einen Kontrast, der orthogonal zu dem ersten ist.
+Im Vorfeld gab es die Vermutung, dass die _working alliance_ von Personen mit einer emotional instabilen Persönlichkeitsstörung oder einer Angststörung höher ist als bei den anderen untersuchten Störungen. Formulieren Sie das passende Hypothesenpaar und testen Sie dies in einem Kontrast. Formulieren Sie zusätzlich noch einen Kontrast, der orthogonal zu dem ersten ist.
  
 ```{r results="asis", eval=include_solution}
 ctr_coeff1 <- c(-1,1,-1,+1)
@@ -106,7 +120,7 @@ cat("\n")
 cat(contrast_F(ctr1))
 cat("\n")
 cat(f_crit(ctr1))
-cat("Wir können die Nullhypothese nicht ablehnen.")
+cat("Wir können die Nullhypothese ablehnen.")
 cat("\n\n")
-cat("Es gibt verschiedene Möglichkeiten für weitere, orthogonale Kontraste. Ein Beispiel wäre (-1,0,0,+1) oder (0,-1,+1,0). Diese beiden sind so konstruiert, dass Sie Unterschiede innerhalb der Gruppen testen, die im ersten Kontrast definiert sind. Dies führt immer zu einem Kontrast, der zu dem ersten orthogonal ist.")
+cat("Es gibt verschiedene Möglichkeiten für weitere, orthogonale Kontraste. Ein Beispiel wäre (-1,0,+1,0) oder (0,-1,0,+1). Diese beiden sind so konstruiert, dass Sie Unterschiede innerhalb der Gruppen testen, die im ersten Kontrast definiert sind. Dies führt immer zu einem Kontrast, der zu dem ersten orthogonal ist.")
 ```

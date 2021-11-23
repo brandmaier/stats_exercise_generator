@@ -9,31 +9,43 @@ generate_anova <- function(av.name = "",
                            alpha = 0.05,
                            obs_round = 2,
                            obs_min = 0,
-                           obs_max = 20
+                           obs_max = 20,
+                           rawdata = NULL
 ) {
   
   if (!is.null(factor_level_names)) {
     stopifnot(length(factor_level_names)==num.facs)
   }
   
-  n <- num.facs*num.obs.per.fac
+
   
   if (any(is.null(factor_level_names))) {
     factor_level_names <- paste0("a",1:num.facs)
   }
   
   
-  if (length(between)==1) {
-    grp_means <- rnorm(n = num.facs,overallmean,between)
+
+  if (!is.null(rawdata)) {
+    wdat <- data.frame(rawdata)
+    num.facs <- ncol(wdat)
+    num.obs.per.fac <- nrow(wdat)
+    n <- prod(dim(wdat))
+    #dat <- pivot_longer(wdat) # TODO - unfinished code!
+    stop("Not implemented")
   } else {
-    grp_means <- between
+    n <- num.facs*num.obs.per.fac
+    if (length(between)==1) {
+      grp_means <- rnorm(n = num.facs,overallmean,between)
+    } else {
+      grp_means <- between
+    }
+    dat <- round( rnorm(n=n, rep(grp_means, each=num.obs.per.fac), within), obs_round)
+    dat <- pmax(dat, obs_min)
+    dat <- pmin(dat, obs_max)
+    dat <- data.frame(av=dat, grps=rep(1:num.facs,each=num.obs.per.fac),pids=rep(1:num.obs.per.fac,num.facs))
+    
+    grp_means <- colMeans(dat)
   }
-  dat <- round( rnorm(n=n, rep(grp_means, each=num.obs.per.fac), within), obs_round)
-  dat <- pmax(dat, obs_min)
-  dat <- pmin(dat, obs_max)
-  dat <- data.frame(av=dat, grps=rep(1:num.facs,each=num.obs.per.fac),pids=rep(1:num.obs.per.fac,num.facs))
-  
-  
   
   wdat<-pivot_wider(dat,names_from = 2, values_from=1)  
   cmns <- round(colMeans(wdat[,-1]), 2)
@@ -226,7 +238,7 @@ generate_contrast <- function(x, ctr, alpha=0.05, directed=FALSE) {
   
   qs_kontrast <- round(L2/ksum,2)
   
-  Fest <- round(qs_kontrast/x$qs_wth, 2)
+  Fest <- round(qs_kontrast/x$mqs_wth, 2)
 
   df1 <- 1
   df2 <- x$df2
@@ -238,5 +250,5 @@ generate_contrast <- function(x, ctr, alpha=0.05, directed=FALSE) {
 
 contrast_F <- function(x) {
   #
-  paste0("$$F=\\frac{MQS_{Kontrast}}{MQS_{inn}}=\\frac{",x$qs_kontrast,"}{",x$aov$qs_wth,"}=",x$Fest,"$$")
+  paste0("$$F=\\frac{MQS_{Kontrast}}{MQS_{inn}}=\\frac{",x$qs_kontrast,"}{",x$aov$mqs_wth,"}=",x$Fest,"$$")
 }
