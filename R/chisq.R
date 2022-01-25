@@ -64,9 +64,11 @@ chisq_data_table <- function(x, type="",caption="") {
     print(knitr::kable( x$data_raw, caption=caption, col.names = x$labels.b ))
   } else if (type=="indep") {
     if (caption=="") caption="Kontingenztabelle unter Unabhängigkeitsannahme"
+    names(x$data_indep)[ncol(x$data_indep)]<-""
     print(knitr::kable(x$data_indep, caption=caption)   )
   } else if (type=="sums") {
     if (caption=="") caption="Kontingenztabelle mit Randsummen"
+    names(x$data_sums)[ncol(x$data_sums)]<-""
     print(knitr::kable( x$data_sums, caption=caption ))
   } else {
     print(paste0("Unknown type :",type))
@@ -109,9 +111,9 @@ chisq_solution <- function(x) {
   chisq <- x$chisq
   
   paste0("\\chi^2=",
-         paste0(
+         paste0g(
            
-           "\\frac{(",nij,"-",eij,")^2}{",eij,"}", collapse="+"
+           "\\frac{(",nij,"-",eij,")^2}{",eij,"}"
            
          ),"=",chisq
   )
@@ -120,14 +122,16 @@ chisq_solution <- function(x) {
 
 chisq_crit <- function(x, undirected=TRUE) {
   df <- x$df
-  if (!undirected) alpha <- x$alpha*2
+  twos<-""
+  if (!undirected) { alpha <- x$alpha*2; twos<- ""}
   else alpha = x$alpha
   chisqcrt <- round(qchisq(1-alpha, df),2)
   cmp <- x$chisq >= chisqcrt
   
-  paste0("Der kritische Wert einer $\\chi^2$-Verteilung mit ",df," Freiheitsgrad(en) ist ",
+  paste0("Der kritische Wert einer $\\chi^2$-Verteilung mit ",df,
+         " Freiheitsgraden und $\\alpha=$ ",alpha*100,"% ",twos," ist ",
  # ifelse(undirected,"",paste0("(gerichtet) $\\chi^2_krit(",1-alpha,";",df,")$")), chisqcrt,".")
-  ifelse(undirected,"","(gerichtet) "), chisqcrt,".")
+  ifelse(undirected,"","(gerichtete Hypothese!) "), chisqcrt,".")
 
 }
 
@@ -156,8 +160,12 @@ generate_chisq_uni <- function(obs, exp_relative, labels, alpha=0.05) {
   
  
   
-  list(obs=obs, exp=exp, terms=terms, df=df,n=n, 
+  ret <- list(obs=obs, exp=exp, terms=terms, df=df,n=n, 
        labels=labels,exp_relative=exp_relative, chisq=chisq, alpha=alpha)
+  
+  class(ret) <- "chisq_uni"
+  
+  return(ret)
 }
 
 solution_chisq_uni <- function(x, part=1)
@@ -192,4 +200,34 @@ chisq_effectsize <- function(x) {
 chisq_uni_data_table <- function(x)
 {
   knitr::kable(t(x$obs),col.names = x$labels)
+}
+
+chisq_to_data <- function(x) {
+  
+  if (inherits(x,"chisq_uni")) {
+    
+    column_x <- c()
+    for (i in 1:length(x$obs)) {
+      column_x <- c(column_x, rep(x$labels, x$obs[i]))
+    }
+    
+    df <- data.frame(column_x)
+    
+    return(df)
+  }
+  
+  column_x <- c()
+  column_y <- c()
+  
+  for (i in 1:x$nrows) {
+    for (j in 1:x$ncols) {
+      n <- x$data_raw[i,j]
+      column_x <- c(column_x, rep(x$labels.a[i],n))
+      column_y <- c(column_y, rep(x$labels.b[j],n))
+    }
+  }
+  
+  df <- data.frame(column_x, column_y)
+  
+  return(df)
 }

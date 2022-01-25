@@ -1,11 +1,13 @@
 ---
-title: "Arbeitsblatt 2 - Chi Quadrat Tests"
+title: "Arbeitsblatt 3 - Chi-Quadrat-Tests"
 author: "Statistik II - Andreas M. Brandmaier"
-date: "11/11/2021"
+date: "`r format(Sys.time(), '%d. %B %Y')`"
 output:
   pdf_document: 
-    extra_dependencies: ["float","breqn"]
+    extra_dependencies: ["float","breqn","amsmath"]
   html_document: default
+params:
+  include_solution: true
 ---
 
 ```{r setup, include=FALSE}
@@ -17,7 +19,7 @@ source("R/helper.R")
 source("R/mcnemar.R")
 source("R/chisq.R")
 
-include_solution <- TRUE
+include_solution <- params$include_solution
 
 empty_str <- "\\ "
 
@@ -30,10 +32,12 @@ empty_str <- "\\ "
 ```{r}
 # generate data for exercise 1
 set.seed(3249)
-csq <- generate_chisq()
+csq <- generate_chisq(labels.a=c("Neues Medikament","Altes Medikament"),
+                           )
+write.csv(file = "data/ab3-symptoms.csv", x=chisq_to_data(csq), row.names = FALSE)
 ```
 
-In einer randomisierten Studie haben 40 Patienten ein neuartiges Antidepressivum erhalten und 40 Patienten ein Placebo. Nach vier Wochen wurde erhoben, ob sich eine Verbesserung der Symptomatik eingestellt hat. Dies wurde als dichotomes Merkmal _Verbesserung_ (ja/nein) erhoben. Ein Forscherteam hat die Hypothese, dass das neuartige Antidepressivum wirksamer als eine Placebo-Behandlung ist.
+In einer randomisierten Studie haben 40 Patienten ein neuartiges Antidepressivum erhalten und 40 Patienten ein bereits erprobtes. Nach vier Wochen wurde erhoben, ob sich eine Verbesserung der Symptomatik eingestellt hat. Dies wurde als dichotomes Merkmal _Verbesserung_ (ja/nein) erhoben. Ein Forscherteam hat die Hypothese, dass das neuartige Antidepressivum anders wirkt als die etablierte Behandlung (ungerichtete Hypothese).
 
 Folgende Daten wurden beobachtet:
 
@@ -42,33 +46,27 @@ chisq_data_table(csq)
 ```
 
 
-Berechnen Sie zunächst die Spalten- und Randsummen für diese Häufigkeits-Tabelle. Erstellen Sie dann eine Tabelle von Häufigkeiten, die man erwarten würde, wenn es keinen Zusammenhang gäbe. Berechnen Sie dann die Prüfgröße für den Unabhängigkeits-Test und treffen Sie eine statistische Entscheidung.
+Berechnen Sie zunächst die Spalten- und Randsummen für diese Häufigkeits-Tabelle. Erstellen Sie dann eine Tabelle von Häufigkeiten, die man erwarten würde, wenn es keinen Zusammenhang gäbe. Berechnen Sie dann die Prüfgröße für den $\chi^2$-Unabhängigkeits-Test und treffen Sie eine statistische Entscheidung. Wir gehen von einem Signifikanzniveau von 5% aus.
 
 
 ```{r, results="asis", eval=include_solution}
-cat("_Lösung:_\n\n")
+solution_header()
+
+cat("Dies ist die Kontigenztabelle mit Zeilensummen und Spaltensummen:")
 
 chisq_data_table(csq, type="sums")
 
+cat("Dies ist die Tabelle der erwarteten Häufigkeiten unter der Unabhängigkeitsannahme:")
+
 chisq_data_table(csq, type="indep")
 
+wrap_math_block(chisq_solution(csq))
+
+cat(chisq_crit(csq,undirected = TRUE))
+
+cat("Der empirische _F_-Wert ist größer als der kritische Wert. Wir lehnen daher die Nullhypothese ab. Es gibt Unterschiede in der Wirksamkeit zwischen den Medikamenten.")
 
 ```
-
-`r if (isTRUE(include_solution)){ "_Lösung:_"} `
-
-Dies ist die Kontigenztabelle mit Zeilensummen und Spaltensummen:
-`r chisq_data_table(csq, TRUE, FALSE)`
-
-Dies ist die Tabelle der erwarteten Häufigkeiten unter der Unabhängigkeitsannahme:
-`r chisq_data_table(csq, TRUE, TRUE)`
-
-$`r chisq_solution(csq)`$
-
-`r chisq_crit(csq)`
-
-Der empirische _F_-Wert ist größer als der kritische Wert. Wir lehnen daher die Nullhypothese ab. Es gibt Unterschiede in der Wirksamkeit zwischen Antidepressivum und Placebo.
-
 
 # Aufgabe 2
 ```{r}
@@ -76,7 +74,7 @@ csq <- generate_chisq(labels.a = c("Ja (vorher)"," Nein (vorher)"),labels.b=c("J
                        tbl = matrix(c(45,13,25,43),ncol=2,byrow = FALSE))
 
 ```
-Ein Forscherteam untersucht die Wirksamkeit einer Anti-Raucher-Kampagne. Dazu wird das Rauchverhalten (ja/nein ) in einer Stichprobe zweimal untersucht: einmal vor der Kampagne und einmal nach der Kampagne. Die Vermutung ist, dass die Rauchkampagne wirksam ist. Untersuchen Sie dies mit einer gerichteten Hypothese.
+Ein Forscherteam untersucht die Wirksamkeit einer Anti-Raucher-Kampagne. Dazu wird das Rauchverhalten (ja/nein ) in derselben Stichprobe zweimal untersucht: einmal vor der Kampagne und einmal nach der Kampagne. Die Vermutung ist, dass die Rauchkampagne wirksam ist. Untersuchen Sie dies mit einer gerichteten Hypothese. Das Signifikanzniveau sei 5%.
 Formulieren Sie die Null-Hypothese und rechnen Sie den richtigen Test. Treffen Sie eine statistisch informierte Entscheidung. Welche Effektstärke kann man hier berichten?
 
 
@@ -88,18 +86,23 @@ chisq_data_table(csq)
 ```{r, results="asis", eval=include_solution}
 cat("_Lösung:_\n\n")
 
+cat("Eine gerichtete Hypothese bedeutet hier: Wir nehmen an, dass es mehr Wechsler von Raucher zu Nicht-Raucher (Populationswahrscheinlichkeit: $\\pi_{12}$) als Nicht-Raucher zu Raucher (Populationswahrscheinlichkeit: $\\pi_{21}$) gibt.\n $$H_0: \\pi_{12}>\\pi_{21}$$")
+
+cat("Der Effekt geht in die 'richtige' Richtung, 25 > 13, also führen wir den einseitigen Test durch, um das Ergebnis abzusichern.")
+
 wrap_math_block(mcnemar_solution(csq))
 cat("\n")
 cat(chisq_crit(csq, undirected=FALSE),"\n")
+cat("Wir lehnen die Nullhypothese ab und glauben an die Wirksamkeit der Intervention zur Reduzierung der Anzahl der Raucher.")
  
 cat("Als Effektstärke können wir das Verhältnis der Wechsler berechnen:\n")
 wrap_math_block(mcnemar_effectsize(csq,1))
 
-cat("oder als Prozent der Wechsler von Raucher zu Nichtraucher:\n")
+cat("oder als Prozentualen Anteil der Wechsler von Raucher zu Nichtraucher im Verhältnis zu allen Wechslern:\n")
 wrap_math_block(mcnemar_effectsize(csq,2))
 ```
 
-
+\pagebreak
 
 # Aufgabe 3
 
@@ -119,8 +122,11 @@ n <- sum(obs)
 labels <- c("Katzen","Hunde","Andere","Keine")
 expected <- c(15.7,10.7,13,60.6)/100
 csq <- generate_chisq_uni( obs=obs,exp=expected,labels=labels )
+write.csv(file = "data/ab3-cats_and_dogs.csv", chisq_to_data(csq), row.names = FALSE)
 chisq_uni_data_table(csq) 
 ```
+
+Prüfen Sie, ob sich die Vorlieben der Psychologiestudierenden von der Normalbevölkerung unterscheiden. Gehen Sie von einem Signifikanzniveau von 5% aus.
 
 ```{r, results="asis", eval=include_solution}
 cat("_Lösung:_\n\n")
@@ -129,12 +135,13 @@ wrap_math_align(solution_chisq_uni(csq,1))
 wrap_math_block(solution_chisq_uni(csq,2))
 cat("\n")
 cat(chisq_crit(csq))
+cat("Wir lehnen die Nullhypothese ab und schließen daraus, dass sich die Vorlieben der Psychologiestudierenden von denen der Normalbevölkerung unterscheiden.")
 ```
 
 
 # Aufgabe 4
 
-In einer Studie wurde untersucht, ob sich die Fehlzeiten von Studierenden über die Jahrgänge hinweg unterscheiden. Die Stichproben sind unabhängig, d.h. es wurden in einem Kalenderjahr Studierende aus verschiedenen Anfangssemestern befragt. Folgende Daten der Jahrgänge wurden erhoben:
+In einer Studie wurde untersucht, ob sich das Interesse an einem A&O-Masterstudiengang über die Jahrgänge von Studierenden hinweg unterscheidet. Die Stichproben sind unabhängig, d.h. es wurden in einem Kalenderjahr Studierende aus verschiedenen Anfangssemestern befragt. Erhoben wurde, ob potentiell ein Interesse an dem Besuch des Masterstudiengangs besteht (codiert als ja/nein).  Folgende Kreuztabelle entstand aus den Daten der Jahrgänge:
 
 ```{r}
 csq <- generate_chisq(labels.b = c("SS19","WS19/20","SS20","SS20/21"), labels.a=c("ja","nein"),tbl = matrix(c(88,12,95,5, 93,7,95,5), ncol=4))
@@ -144,20 +151,22 @@ csq <- generate_chisq(labels.b = c("SS19","WS19/20","SS20","SS20/21"), labels.a=
 chisq_data_table(csq) 
 ```
 
-Testen Sie, ob sich die Fehlzeiten über die Semester hinweg unterscheiden.
+Prüfen Sie mit Unabhängigkeitstest, ob sich die Interessenlage über die Anfangssemester hinweg unterscheidet. Das Signifikanzniveau sei 5%.
 
 ```{r, results="asis", eval=include_solution}
 cat("_Lösung:_\n\n")
 
 chisq_data_table(csq, "indep")
 cat("\n")
-wrap_math_block(chisq_solution(csq))
+wrap_math_align(chisq_solution(csq))
+#wrap_test(chisq_solution(csq))
 cat("\n")
 cat(chisq_crit(csq))
+cat("Wir können die Nullhypothese nicht ablehnen.")
 ```
 
 # Aufgabe 5
-Wie müsste die Kontingenztabelle der beobachteten Häufigkeiten lauten, wenn man testen möchte, ob sich die Anwesenheit in den Sommer- und Wintersemestern unterscheidet? Führen Sie den entsprechenden Test durch.
+Wir bleiben bei den Daten aus Aufgabe 4. Wie müsste die Kontingenztabelle der beobachteten Häufigkeiten lauten, wenn man testen möchte, ob sich die Interessenlage in den Sommer- und Wintersemestern unterscheidet? Führen Sie den entsprechenden Unabhängigkeitstest durch.
 
 ```{r} 
 # code to generate data of exercise 5
@@ -180,5 +189,6 @@ chisq_data_table(csq, type="indep", caption="Tabelle unter Unabhängigkeitsannah
 wrap_math_block(chisq_solution(csq))
 cat("\n")
 cat(chisq_crit(csq))
+cat("Wir können die Nullhypothese nicht ablehnen.")
 ```
 

@@ -2,14 +2,18 @@
 title: "Arbeitsblatt 2 - Kontrastanalyse"
 author: "Statistik II - Andreas M. Brandmaier"
 date: "`r format(Sys.time(), '%d. %B %Y')`"
-output: pdf_document
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
 params:
-  include_solution: true
+  include_solution: yes
 ---
 
 ```{r setup, include=FALSE}
 library(tidyverse)
 knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(fig.pos = "!H", out.extra = "") # prevent LaTeX tables from floating
 
 source("R/helper.R")
 source("R/anova-1f.R")
@@ -32,7 +36,7 @@ knitr::kable( data.frame(aov1$factor_level_names, aov1$factor_means),
               col.names = c("Bedingung","Mittelwert") )
 ```
 
-Außerdem ist die mittlere Innerhalb-Quadratsumme bekannt: $MQS_{inn}=`r aov1$mqs_wth`$ mit Freiheitsgraden $df_{inn}=`r aov1$df2`$. In jeder Bedingung wurden `r aov1$nz` Personen beobachtet.
+Außerdem ist die mittlere Innerhalb-Quadratsumme bekannt: $MQS_{inn}=`r aov1$mqs_wth`$ mit Freiheitsgraden $df_{inn}=`r aov1$df2`$. In jeder Bedingung wurden `r aov1$nz` Personen beobachtet. Das Signifikanzniveau sei 5%.
 
 Die folgenden zwei spezifischen Hypothesen standen bereits vor der Datenerhebung fest und sollen mittels einer Kontrastanalyse untersucht werden:
 
@@ -104,7 +108,7 @@ Dabei waren folgende Faktorstufenmittelwerte gefunden worden:
 knitr::kable( data.frame(aov1$factor_level_names, aov1$factor_means),col.names = c("Störung","Mittelwert") )
 ```
 
-Außerdem ist die mittlere Innerhalb-Quadratsummer bekannt: $MQS_{inn}=`r aov1$mqs_wth`$  mit Freiheitsgraden $df_{inn}=`r aov1$df2`$. In jeder Bedingung wurden `r aov1$nz` Personen beobachtet.
+Außerdem ist die mittlere Innerhalb-Quadratsumme bekannt: $MQS_{inn}=`r aov1$mqs_wth`$  mit Freiheitsgraden $df_{inn}=`r aov1$df2`$. In jeder Bedingung wurden `r aov1$nz` Personen beobachtet. Als Signifikanzniveau wurde $\alpha=1\%$ festgelegt.
 
 Im Vorfeld gab es die Vermutung, dass die _working alliance_ von Personen mit einer emotional instabilen Persönlichkeitsstörung oder einer Angststörung höher ist als bei den anderen untersuchten Störungen. Formulieren Sie das passende Hypothesenpaar und testen Sie dies in einem Kontrast. Formulieren Sie zusätzlich noch einen Kontrast, der orthogonal zu dem ersten ist.
  
@@ -123,4 +127,45 @@ cat(f_crit(ctr1))
 cat("Wir können die Nullhypothese ablehnen.")
 cat("\n\n")
 cat("Es gibt verschiedene Möglichkeiten für weitere, orthogonale Kontraste. Ein Beispiel wäre (-1,0,+1,0) oder (0,-1,0,+1). Diese beiden sind so konstruiert, dass Sie Unterschiede innerhalb der Gruppen testen, die im ersten Kontrast definiert sind. Dies führt immer zu einem Kontrast, der zu dem ersten orthogonal ist.")
+```
+
+## Aufgabe 3
+```{r}
+set.seed(3413059)
+aov1 <- generate_anova(factor_level_names = paste0("Kurs ",1:6),num.facs = 6, num.obs.per.fac = 35,obs_round = 0, 
+                       between=2,within=4, overallmean = 40,
+                       obs_min=0,
+                       obs_max=100,
+                       alpha=0.05)
+
+```
+
+Im Rahmen der Statistik-Vorlesung wurde die Zufriedenheit mit der Vorlesung erhoben. Die Zufriedenheit sei auf einer Skala zwischen 0 und 100 erhoben worden, die wir als intervallskaliert annehmen. Die Teilnehmenden kamen aus sechs Kursen. Im Rahmen einer Varianzanalyse wurde die Nullhypothese "Es gibt keine Mittelwertsunterschiede zwischen den sechs Gruppen" abgelehnt (auf einem Signifikanzniveau von 5%). Folgende Gruppenmittelwerte sind bekannt:
+
+```{r}
+knitr::kable( data.frame(aov1$factor_level_names, aov1$factor_means),col.names = c("Zufriedenheit","Mittelwert") )
+```
+
+Außerdem ist die mittlere Innerhalb-Quadratsumme aus der Varianzanalyse bekannt: $MQS_{inn}=`r aov1$mqs_wth`$  mit Freiheitsgraden $df_{inn}=`r aov1$df2`$. In jeder Bedingung wurden `r aov1$nz` Personen beobachtet. Als Signifikanzniveau wurde 1% festgelegt.
+
+Die Gruppen mit geraden Kursnummern fanden immer Montags statt und die ungeraden immer Freitags. Es soll nun (einseitig!) geprüft werden, ob die "geraden" Kurse zufriedener waren als die "ungeraden" Kurse. Führen sie die entsprechende Kontrastanalyse durch.
+
+
+
+```{r results="asis", eval=include_solution}
+cat(solution_header())
+
+ctr_coeff1 <- c(-1,1,-1,1,-1,1)
+ctr1 <- generate_contrast(aov1,ctr_coeff1, directed=TRUE)
+
+cat(contrast_hypotheses(ctr1,1))
+cat("\n")
+cat(contrast_qs(ctr1))
+
+cat("\n")
+cat(contrast_F(ctr1))
+cat("\n")
+cat(f_crit(ctr1))
+cat("Wir können die Nullhypothese ablehnen.")
+cat("\n\n")
 ```

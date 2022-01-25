@@ -1,5 +1,5 @@
 ---
-title: "AB3-Regression"
+title: "AB4-Multiple Regression"
 author: "Andreas M. Brandmaier"
 date: "11/14/2021"
 output: html_document
@@ -8,13 +8,21 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 
+source("R/helper.R")
 source("R/regression.R")
 ```
 
 # Aufgabe 1
 
+Mittels eines multiplen Regressionsmodells soll ein Vorhersagemodell erstellt werden. Vorhergesagt werden soll das Ausmaß beruflichen Erfolgs (Y) anhand zweier Persönlichkeitsmerkmale Extraversion (X1) und Offenheit (X2). Bekannt sind die bivariaten Korrelationen der drei Merkmale:
+
 ```{r}
-rg <- generate_regression(n=100, .5, .2, .4, 0, 0, 1, 1, 1)
+rg <- generate_regression(n=100, ryx1 = .5, ryx2=.2, rx12=.4, 
+                          0, 0, 1, 1, 1, varnames=c("a","b","c"))
 ```
 
 $`r solution_coeff(rg)`$
+
+```{r}
+knitr::kable(bivariate_table(rg))
+```

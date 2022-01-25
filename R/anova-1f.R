@@ -22,16 +22,17 @@ generate_anova <- function(av.name = "",
   if (any(is.null(factor_level_names))) {
     factor_level_names <- paste0("a",1:num.facs)
   }
-  
-  
+
 
   if (!is.null(rawdata)) {
-    wdat <- data.frame(rawdata)
-    num.facs <- ncol(wdat)
+    wdat <- data.frame(pids=1:nrow(rawdata),rawdata)
+    names(wdat)[2:(ncol(wdat))]<-factor_level_names
+    num.facs <- ncol(wdat)-1
     num.obs.per.fac <- nrow(wdat)
     n <- prod(dim(wdat))
-    #dat <- pivot_longer(wdat) # TODO - unfinished code!
-    stop("Not implemented")
+    dat <- pivot_longer(wdat,-pids)
+    names(dat) <- c("pids","grps","av")
+  
   } else {
     n <- num.facs*num.obs.per.fac
     if (length(between)==1) {
@@ -42,13 +43,18 @@ generate_anova <- function(av.name = "",
     dat <- round( rnorm(n=n, rep(grp_means, each=num.obs.per.fac), within), obs_round)
     dat <- pmax(dat, obs_min)
     dat <- pmin(dat, obs_max)
-    dat <- data.frame(av=dat, grps=rep(1:num.facs,each=num.obs.per.fac),pids=rep(1:num.obs.per.fac,num.facs))
+    dat <- data.frame(av=dat, 
+                      grps=rep(1:num.facs,each=num.obs.per.fac),
+                      pids=rep(1:num.obs.per.fac,num.facs))
     
     grp_means <- colMeans(dat)
+    
+    wdat<-pivot_wider(dat,names_from = 2, values_from=1)  
+
   }
   
-  wdat<-pivot_wider(dat,names_from = 2, values_from=1)  
   cmns <- round(colMeans(wdat[,-1]), 2)
+
   xm <- round(mean(dat$av),2)
   
   qs_tot <- round(
@@ -97,13 +103,14 @@ generate_anova <- function(av.name = "",
 
 qs_solution <- function(x, id) {
 
-  strsol = paste0( "QS_{tot} = ",paste0("(",x$dat$av,"-",x$grand_mean,")^2",collapse=" + \\\\"),"=\\\\",
-                   paste( round((x$dat$av-x$grand_mean)^2,2),collapse=" + " ),"= \\\\",
+  strsol = paste0( "QS_{tot} = ",paste0g("(",x$dat$av,"-",x$grand_mean,")^2")
+                                      ,"=\\\\",
+                   "",paste0g( round((x$dat$av-x$grand_mean)^2,2) ),"= \\\\",
                    x$qs_tot
   )
   
   strsol2 = paste0("QS_{zw} = ",x$nz,"\\cdot[", paste0("(",x$factor_means,"-",x$grand_mean, ")^2",collapse=" + \\\\" ), "]=",
-                   paste( round((x$factor_means-x$grand_mean)^2,2),collapse="+" ),"= \\\\",
+                   x$nz,"\\cdot[", paste( round((x$factor_means-x$grand_mean)^2,2),collapse="+" ),"]= \\\\",
                    x$qs_btw
   )
   #cat(strsol)
@@ -174,7 +181,7 @@ effect_solution <- function(x) {
 
 group_means_solution <- function(x) {
 
-  wdat<-pivot_wider(x$dat,names_from = 2, values_from=1)  
+  wdat<-pivot_wider(x$dat,names_from = grps, values_from=av)  
   strlist <- ""
   for (j in 1:x$J) {
     strlist <-paste0(strlist, paste0("\\bar{x}_",j,"=\\frac{", paste0(simplify2array(wdat[,j+1]),collapse="+") ,"}{",x$nz,"}=", x$factor_means[j]  ),"\\\\")

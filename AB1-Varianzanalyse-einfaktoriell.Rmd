@@ -5,17 +5,19 @@ date: "`r format(Sys.time(), '%d. %B %Y')`"
 output:
   pdf_document: default
   html_document: default
+params:
+  include_solution: true
 ---
 
 ```{r setup, include=FALSE}
 library(tidyverse)
 knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(fig.pos = "!H", out.extra = "") # prevent LaTeX tables from floating
 
 source("R/anova-1f.R")
 source("R/helper.R")
 
-include_solution <- TRUE
-
+include_solution <- params$include_solution
 
 empty_str <- "\\ "
 ```
@@ -39,15 +41,15 @@ Formulieren Sie die Nullhypothese und führen Sie den geeigneten statistischen T
 
 
 ```{r, results="asis", eval=include_solution}
-cat("_Lösung:_")
+solution_header()
 
 wrap_math_block(hypothesis_solution(aov1))
-wrap_math_align(group_means_solution(aov1))
+wrap_math_flalign(group_means_solution(aov1))
 
-wrap_math_block(qs_solution(aov1,1))
+wrap_math_flalign(qs_solution(aov1,1))
 wrap_math_block(qs_solution(aov1,2))
 wrap_math_block(qs_solution(aov1,3))
-wrap_math_block( mqs_solution(aov1) )
+wrap_math_block( mqs_solution(aov1) ) 
 wrap_math_block( f_solution(aov1) )
 
 f_crit(aov1)
@@ -89,16 +91,16 @@ cat("_Lösung:_")
 wrap_math_block(hypothesis_solution(aov1))
 wrap_math_align(group_means_solution(aov1))
 
-wrap_math_block(qs_solution(aov1,1))
+wrap_math_flalign(qs_solution(aov1,1))
 cat("\n")
-wrap_math_block(qs_solution(aov1,2))
+wrap_math_flalign(qs_solution(aov1,2))
 cat("\n")
-wrap_math_block(qs_solution(aov1,3))
+wrap_math_flalign(qs_solution(aov1,3))
 cat("\n")
 wrap_math_block( mqs_solution(aov1) )
 wrap_math_block( f_solution(aov1) )
 
-f_crit(aov1)
+cat(f_crit(aov1))
 
 
 wrap_math_block(effect_solution(aov1))
