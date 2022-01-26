@@ -1,5 +1,6 @@
 generate_chisq <- function(labels.a=c("Antidepressivum","Placebo"), labels.b=c("ja","nein"),
-                           tbl = matrix(c(25,33,15,7),ncol=2), alpha=0.05 ) {
+                           tbl = matrix(c(25,33,15,7),ncol=2), alpha=0.05,
+                           short.labels.a=NULL, short.labels.b=NULL) {
   
   df <- data.frame(tbl)
   rownames(df) <- labels.a
@@ -41,7 +42,8 @@ generate_chisq <- function(labels.a=c("Antidepressivum","Placebo"), labels.b=c("
   
   list(labels.a=labels.a, labels.b=labels.b,tbl=tbl,data_raw=data_raw, 
        data_sums=data_sums, data_indep=data_indep, nrows=nrows, ncols=ncols,alpha=alpha,
-       n12=n12,n21=n21, nij=nij, eij=eij, chisq=chisq, df=df)
+       n12=n12,n21=n21, nij=nij, eij=eij, chisq=chisq, df=df,
+       short.labels.a=short.labels.a, short.labels.b=short.labels.b)
 }
 
 chisq_data_table <- function(x, type="",caption="") {
@@ -208,11 +210,11 @@ chisq_to_data <- function(x) {
     
     column_x <- c()
     for (i in 1:length(x$obs)) {
-      column_x <- c(column_x, rep(x$labels, x$obs[i]))
+      column_x <- c(column_x, rep(x$labels[i], x$obs[i]))
     }
     
     df <- data.frame(column_x)
-    
+    names(df) <- "Kategorie"
     return(df)
   }
   
@@ -222,8 +224,12 @@ chisq_to_data <- function(x) {
   for (i in 1:x$nrows) {
     for (j in 1:x$ncols) {
       n <- x$data_raw[i,j]
-      column_x <- c(column_x, rep(x$labels.a[i],n))
-      column_y <- c(column_y, rep(x$labels.b[j],n))
+      laba <- x$labels.a[i]
+      labb <- x$labels.b[j]
+      if (!is.null(x$short.labels.a)) laba <-  x$short.labels.a[i]
+      if (!is.null(x$short.labels.b)) labb <-  x$short.labels.b[j]
+      column_x <- c(column_x, rep(laba,n))
+      column_y <- c(column_y, rep(labb,n))
     }
   }
   

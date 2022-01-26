@@ -70,9 +70,12 @@ cat("Der empirische _F_-Wert ist größer als der kritische Wert. Wir lehnen dah
 
 # Aufgabe 2
 ```{r}
-csq <- generate_chisq(labels.a = c("Ja (vorher)"," Nein (vorher)"),labels.b=c("Ja (Nachher)","Nein (Nachher)"),
+csq <- generate_chisq(labels.a = c("Ja (vorher)"," Nein (vorher)"),
+                      labels.b=c("Ja (Nachher)","Nein (Nachher)"), 
+                                 short.labels.a=c("Ja","Nein"), 
+                                 short.labels.b=c("Ja","Nein"),
                        tbl = matrix(c(45,13,25,43),ncol=2,byrow = FALSE))
-
+write.csv("data/ab3-smoker.csv", x=chisq_to_data(csq),row.names = FALSE)
 ```
 Ein Forscherteam untersucht die Wirksamkeit einer Anti-Raucher-Kampagne. Dazu wird das Rauchverhalten (ja/nein ) in derselben Stichprobe zweimal untersucht: einmal vor der Kampagne und einmal nach der Kampagne. Die Vermutung ist, dass die Rauchkampagne wirksam ist. Untersuchen Sie dies mit einer gerichteten Hypothese. Das Signifikanzniveau sei 5%.
 Formulieren Sie die Null-Hypothese und rechnen Sie den richtigen Test. Treffen Sie eine statistisch informierte Entscheidung. Welche Effektstärke kann man hier berichten?

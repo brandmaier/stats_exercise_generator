@@ -1,0 +1,83 @@
+---
+title: "Arbeitsblatt 4 - Hauptkomponentenanalyse"
+author: "Statistik II - Andreas M. Brandmaier"
+date: "`r format(Sys.time(), '%d. %B %Y')`"
+output:
+  pdf_document: 
+    extra_dependencies: ["float","breqn","amsmath"]
+  html_document: default
+params:
+  include_solution: true
+---
+
+```{r setup, include=FALSE, message=FALSE}
+library(tidyverse)
+library(psych)
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(fig.pos = "!H", out.extra = "") # prevent LaTeX tables from floating around
+
+source("R/helper.R")
+source("R/mcnemar.R")
+source("R/chisq.R")
+
+include_solution <- params$include_solution
+
+empty_str <- "\\ "
+
+
+```
+
+## Aufgabe 1
+
+Ein Fragebogen mit fünf Likert-Items wurde in einer Stichprobe der Größe 2800 erhoben. Die Ergebnisse der Befragung wurden mit einer Hauptkomponentenanalyse untersucht. Die folgende Tabelle enthält die unrotierte Lösung:
+
+```{r aufgabe1, message=FALSE}
+
+item_names <- c("Ich weiß, wie ich andere trösten kann",
+                "Ich mag Kinder",
+                "Ich höre erst auf, wenn etwas perfekt ist",
+                "Ich plane Dinge",
+                "Ich mache Dinge nur halbwegs fertig",
+                "Es fällt mir leicht Freunde zu finden")
+
+subs <- psych::bfi[,c(3,4,5+2,5+3,5+4, 14)]
+
+rownames(subs) <- item_names
+#psych::fa.parallel(subs)
+sol<-psych::fa(subs, nfactors=2,fm="pa")
+#print( round(loadings(sol),2) )
+
+df <- round(sol$loadings[],2)
+
+communality <- round( rowSums(df^2), 2)
+ev <- round( colSums(df^2), 2)
+
+nvar <- ncol(subs)
+r2 <- round( ev/nvar*100,2)
+
+knitr::kable(df,caption = "Faktorladungsmatrix" )
+```
+
+a) Berechnen Sie die Kommunalitäten und die Eigenwerte.
+
+b) Wieviel Varianz wird durch die erste Hauptkomponente erklärt? Und wieviel wird durch die ersten beiden gemeinsam erklärt?
+
+```{r results="asis", eval=include_solution}
+cat(solution_header())
+
+dfx <- rbind(df, Eigenwerte=ev)
+dfx <- cbind(dfx, Kommunalitäten=c(communality,""))
+
+knitr::kable(dfx, caption="Ladungsmatrix mit Kommunalitäten und Eigenwerten")
+
+cat("Erklärte Varianz durch die erste Komponente: ", ev[1],"/",nvar,"=", r2[1],"%.\n")
+cat("Erklärte Varianz durch die ersten beiden Komponenten: (", ev[1],"+",ev[2],")/",nvar,"=", sum(r2),"%.\n")
+
+```
+
+
+## Aufgabe 2
+
+a) Was ist die wesentliche Kritik an der Verwendung des Scree-Tests zur Bestimmung der Anzahl der Hauptkomponenten?
+
+b) Nennen Sie ein weiteres Kriterium zur Bestimmung der Anzahl der Hauptkomponenten.
