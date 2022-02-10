@@ -154,7 +154,7 @@ csq <- generate_chisq(labels.b = c("SS19","WS19/20","SS20","SS20/21"), labels.a=
 chisq_data_table(csq) 
 ```
 
-Prüfen Sie mit Unabhängigkeitstest, ob sich die Interessenlage über die Anfangssemester hinweg unterscheidet. Das Signifikanzniveau sei 5%.
+Prüfen Sie mit dem Unabhängigkeitstest, ob sich die Interessenlage über die Anfangssemester hinweg unterscheidet. Das Signifikanzniveau sei 5%.
 
 ```{r, results="asis", eval=include_solution}
 cat("_Lösung:_\n\n")

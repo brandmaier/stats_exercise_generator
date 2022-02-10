@@ -42,7 +42,7 @@ item_names <- c("Ich weiß, wie ich andere trösten kann",
 
 subs <- psych::bfi[,c(3,4,5+2,5+3,5+4, 14)]
 
-rownames(subs) <- item_names
+
 #psych::fa.parallel(subs)
 sol<-psych::fa(subs, nfactors=2,fm="pa")
 #print( round(loadings(sol),2) )
@@ -55,12 +55,17 @@ ev <- round( colSums(df^2), 2)
 nvar <- ncol(subs)
 r2 <- round( ev/nvar*100,2)
 
+rownames(df) <- item_names
+colnames(df) <- paste0("HK",1:2)
+
 knitr::kable(df,caption = "Faktorladungsmatrix" )
 ```
 
 a) Berechnen Sie die Kommunalitäten und die Eigenwerte.
 
 b) Wieviel Varianz wird durch die erste Hauptkomponente erklärt? Und wieviel wird durch die ersten beiden gemeinsam erklärt?
+
+c) Wie könnte man die Hauptkomponenten benennen?
 
 ```{r results="asis", eval=include_solution}
 cat(solution_header())
@@ -73,6 +78,7 @@ knitr::kable(dfx, caption="Ladungsmatrix mit Kommunalitäten und Eigenwerten")
 cat("Erklärte Varianz durch die erste Komponente: ", ev[1],"/",nvar,"=", r2[1],"%.\n")
 cat("Erklärte Varianz durch die ersten beiden Komponenten: (", ev[1],"+",ev[2],")/",nvar,"=", sum(r2),"%.\n")
 
+cat("Die erste Hauptkomponente könnte man mit 'Verträglichkeit' und die zweite Hauptkomponente mit 'Gewissenhaftigkeit' bezeichnen, wenn man im Fünf-Faktor-Modell der Persönlichkeit bleibt (tatsächlich wird das letzte Item eigentlich der Dimension 'Extraversion' zugerechnet). Andere Bezeichnungen sind natürlich möglich.")
 ```
 
 
@@ -80,4 +86,14 @@ cat("Erklärte Varianz durch die ersten beiden Komponenten: (", ev[1],"+",ev[2],
 
 a) Was ist die wesentliche Kritik an der Verwendung des Scree-Tests zur Bestimmung der Anzahl der Hauptkomponenten?
 
+```{r results="asis", eval=include_solution}
+cat(solution_header())
+cat("Das Kriterium ist unscharf definiert.")
+```
+
 b) Nennen Sie ein weiteres Kriterium zur Bestimmung der Anzahl der Hauptkomponenten.
+
+```{r results="asis", eval=include_solution}
+cat(solution_header())
+cat("Kaiser-Gutmann-Kriterium oder Parallelanalyse.")
+```
