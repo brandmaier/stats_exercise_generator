@@ -23,7 +23,7 @@ include_solution <- params$include_solution
 empty_str <- "\\ "
 
 
-rport <- function(x) {pval=signif(x$p.value); if (pval<0.001)pval="<0.001"; paste0("r=",round(x$estimate,2)," (p=",pval,")")}
+rport <- function(x) {pval=round(x$p.value,3); if (pval<0.001)pval="<0.001"; paste0("r=",round(x$estimate,3)," (p=",pval,")")}
 
 ```
 
@@ -35,11 +35,15 @@ Mit Hilfe des Datensatzes "bfi" aus dem R-Paket `psych` wurde untersucht, inwiew
 es eine Korrelation zwischen Gewissenhaftigkeit und Alter gibt. Dazu wurde
 das Lebensalter in Jahren mit einer Summe von fünf Likert-Skalen, die das Persönlichkeitsmerkmal
 Gewissenhaftigkeit erfragen (Bsp: "Ich höre nicht auf bevor ich etwas beendet habe") korreliert.
+Die beobachteten Datenpunkte und eine Linie, die den linearen Zusammenhang verdeutlicht sind in folgender Abbildung dargestellt:
 
 ```{r}
-cnt <- bfi[,6]+bfi[,7]+bfi[,8]-bfi[,9]-bfi[,10]
+cnt <- bfi[,6]+bfi[,7]+bfi[,8]+7-bfi[,9]+7-bfi[,10]
 ctest = cor.test(cnt, bfi$age)
 df = data.frame(conscientousness=cnt,age=bfi$age)
+```
+
+```{r plot, warning=FALSE, message=FALSE, fig.width=6, fig.height=3}
 ggplot2::ggplot(df,aes(y=conscientousness,x=age))+geom_point()+theme_minimal()+
   geom_smooth(method = "lm")+ylab("Gewissenhaftigkeit")+xlab("Alter")
 ```
@@ -73,14 +77,17 @@ n2 = 25
 tst1 = cor.test(d1[,1],d1[,2])
 tst2 = cor.test(d2[,1],d2[,2])
 
+sig1 = ifelse(tst1$p.value<0.05,"signifikanter","nicht-signifikanter")
+sig2 = ifelse(tst2$p.value<0.05,"signifikanter","nicht-signifikanter")
+
 ```
 
 Im Rahmen einer empirischen Studie  wurde untersucht, inwieweit sich Persönlichkeitsmerkmale
 auf den erlebten Stress im Studium auswirken. Dabei wurden zwei Kohorten von 
 Erstsemestern untersucht, die in verschiedenen Jahren mit dem Studium begonnen haben. In
 jeder Kohorte wurden 25 Studierende befragt.
-In der Kohorte "A" wurde ein signifikanter Zusammenhang von `r rport(tst1)` gefunden. In der
-Kohorte "B" wurde ein nicht-signifikanter Zusammenhang von `r rport(tst2)`gefunden.
+In der Kohorte "A" wurde ein `r sig1` Zusammenhang von `r rport(tst1)` gefunden. In der
+Kohorte "B" wurde ein `sig 2` Zusammenhang von `r rport(tst2)`gefunden.
 
 Wie können wir untersuchen, ob sich der Zusammenhang zwischen den Kohorten unterscheidet? Führen
 Sie alle notwendigen Schritte durch.
@@ -94,18 +101,21 @@ cat("Wir benutzen die Fisher's z-Transformation und führen dann den Test auf Ve
 z1 = round(psych::fisherz(tst1$estimate), 2 )
 z2 = round(psych::fisherz(tst2$estimate), 2)
 
-cat("Zunächst Berechnung der Fisher's Z-Werte:")
+cat("Zunächst Berechnung der Fisher's Z-Werte:\n")
 cat("r=",tst1$estimate, " entspricht ", z1,"\n")
 cat("r=",tst2$estimate, " entspricht ", z2,"\n")
 
 cat("Einsetzen in Formel:\n")
-cat("$$Z=\\frac{",z1,"-",z2,"}{\\sqrt{","\\frac{1}{",n1,"-3}+\\frac{1}{",n2,"-3}","}}$$")
+cat("$$Z=\\frac{",z1,"-",z2,"}{\\sqrt{","\\frac{1}{",n1,"-3}+\\frac{1}{",n2,"-3}","}}$$\n")
 zdiff = (z1-z2) / sqrt(1/(n1-3)+1/(n2-3))
+
+zdiff = round( zdiff, 2)
 
 zkrit = round(qnorm(0.975),2)
 
 cat("Der empirische z-Wert ist ",zdiff,"\n")
-cat("Der kritische z-Wert (5%; zweiseitig) ist 1.96")
+cat("Der kritische z-Wert (5%; zweiseitig) ist 1.96\n")
+cat("Da wir zweiseitig testen, prüfen wir ob der Betrag des empirischen z-Werts größer als der kritische Wert ist. Dies ist nicht der Fall. Die Nullhypothese wird beibehalten. Es gibt keinen signifikanten Unterschied zwischen den beiden Kohorten.\n")
 
 ```
 
@@ -113,7 +123,7 @@ cat("Der kritische z-Wert (5%; zweiseitig) ist 1.96")
 ## Aufgabe 3
 
 ```{r}
-knitr::include_graphics("https://imgs.xkcd.com/comics/correlation.png")
+knitr::include_graphics("img/correlation.png")
 
 ```
 
@@ -121,8 +131,10 @@ knitr::include_graphics("https://imgs.xkcd.com/comics/correlation.png")
 
 (Quelle: xkcd.com; R. Munroe; verfügbar unter folgender Lizenz Attribution-NonCommercial 2.5 Generic (CC BY-NC 2.5))
 
-Erklären Sie den Witz.
+Was ist hier so lustig? Falls Sie das nicht lustig finden, senden Sie mir bitte witzigere Comics, Memes, o.ä. zu diesem Thema per E-Mail an [andreas.brandmaier@medicalschool-berlin.de](andreas.brandmaier@medicalschool-berlin.de).
 
 ```{r results="asis", eval=include_solution}
-cat("Eine Person erzählt der anderen, dass sie bisher immer dachte, dass eine Korrelation zwischen zwei Variablen bedeute, dass die eine Variable die andere kausal, also ursächlich, beinflusse. Im zweiten Panel erzählt sie weiter, dass sie in ihrer Statistik-Vorlesung gelernt habe, dass diese Implikation aber gar nicht stimme. Daraufhin entgegnet die linke Person, dass der Besuch der Statistik-Vorlesung also etwas gebracht hätte (im Sinne eines Lernerfolgs). Darauhin meint die erste Person: 'Nunja, vielleicht'. Der Witz besteht also darin, dass die erzählende Person in der Tat einen Lernerfolg hatte und nun so stark verinnerlicht hat, dass eine beobachtete Korrelation nicht gleich einem ursächlichen Zusammenhang ist, dass sie in Frage stellt, ob wirklich der Besuch der Vorlesung ursächlich für diese Erkenntnis war (da Erkenntnisgewinn und Vorlesungsbesuch von außen betrachtet zunächst lediglich korrelieren")
+cat(solution_header())
+
+cat("Eine Person erzählt der anderen, dass sie bisher immer dachte, dass eine Korrelation zwischen zwei Variablen bedeute, dass die eine Variable die andere kausal, also ursächlich, beinflusse. Im zweiten Panel erzählt sie weiter, dass sie in ihrer Statistik-Vorlesung gelernt habe, dass diese Implikation im Allgemeinen aber gar nicht stimme. Daraufhin entgegnet die linke Person, dass der Besuch der Statistik-Vorlesung also etwas gebracht hätte (im Sinne eines Lernerfolgs). Darauhin meint die erste Person: 'Nunja, vielleicht'. Der Witz besteht also darin, dass die erzählende Person in der Tat einen Lernerfolg hatte und nun so stark verinnerlicht hat, dass eine beobachtete Korrelation nicht gleich einem ursächlichen Zusammenhang ist, dass sie in Frage stellt, ob wirklich der Besuch der Vorlesung ursächlich für diese Erkenntnis war (da Erkenntnisgewinn und Vorlesungsbesuch von außen betrachtet zunächst lediglich korrelieren")
 ```

@@ -31,3 +31,10 @@ rmarkdown::render(input="AB4-Hauptkomponentenanalyse.Rmd",
                   output_file="AB4-Hauptkomponentenanalyse-mit-Lösung.pdf", 
                   params=list(include_solution=TRUE))
 
+rmarkdown::render(input="AB6-Korrelation.Rmd", 
+                  output_file="AB6-Korrelation.pdf", 
+                  params=list(include_solution=FALSE))
+rmarkdown::render(input="AB6-Korrelation.Rmd", 
+                  output_file="AB6-Korrelation-mit-Lösung.pdf", 
+                  params=list(include_solution=TRUE))
+
