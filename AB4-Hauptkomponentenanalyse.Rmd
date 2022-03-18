@@ -13,6 +13,7 @@ params:
 ```{r setup, include=FALSE, message=FALSE}
 library(tidyverse)
 library(psych)
+library(GPArotation)
 knitr::opts_chunk$set(echo = FALSE)
 knitr::opts_chunk$set(fig.pos = "!H", out.extra = "") # prevent LaTeX tables from floating around
 
@@ -78,7 +79,7 @@ knitr::kable(dfx, caption="Ladungsmatrix mit Kommunalitäten und Eigenwerten")
 cat("Erklärte Varianz durch die erste Komponente: ", ev[1],"/",nvar,"=", r2[1],"%.\n")
 cat("Erklärte Varianz durch die ersten beiden Komponenten: (", ev[1],"+",ev[2],")/",nvar,"=", sum(r2),"%.\n")
 
-cat("Die erste Hauptkomponente könnte man mit 'Verträglichkeit' und die zweite Hauptkomponente mit 'Gewissenhaftigkeit' bezeichnen, wenn man im Fünf-Faktor-Modell der Persönlichkeit bleibt (tatsächlich wird das letzte Item eigentlich der Dimension 'Extraversion' zugerechnet). Andere Bezeichnungen sind natürlich möglich.")
+cat("Die erste Hauptkomponente könnte man mit 'Gewissenhaftigkeit' und die zweite Hauptkomponente mit 'Verträglichkeit'  bezeichnen, wenn man im Fünf-Faktor-Modell der Persönlichkeit bleibt (tatsächlich wird das letzte Item eigentlich der Dimension 'Extraversion' zugerechnet). Andere Bezeichnungen sind natürlich möglich.")
 ```
 
 
