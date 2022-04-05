@@ -17,6 +17,8 @@ library(GPArotation)
 knitr::opts_chunk$set(echo = FALSE)
 knitr::opts_chunk$set(fig.pos = "!H", out.extra = "") # prevent LaTeX tables from floating around
 
+options(encoding = 'UTF-8')
+
 source("R/helper.R")
 source("R/mcnemar.R")
 source("R/chisq.R")
