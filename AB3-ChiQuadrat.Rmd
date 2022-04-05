@@ -147,7 +147,7 @@ cat("Wir lehnen die Nullhypothese ab und schließen daraus, dass sich die Vorlie
 In einer Studie wurde untersucht, ob sich das Interesse an einem A&O-Masterstudiengang über die Jahrgänge von Studierenden hinweg unterscheidet. Die Stichproben sind unabhängig, d.h. es wurden in einem Kalenderjahr Studierende aus verschiedenen Anfangssemestern befragt. Erhoben wurde, ob potentiell ein Interesse an dem Besuch des Masterstudiengangs besteht (codiert als ja/nein).  Folgende Kreuztabelle entstand aus den Daten der Jahrgänge:
 
 ```{r}
-csq <- generate_chisq(labels.b = c("SS19","WS19/20","SS20","SS20/21"), labels.a=c("ja","nein"),tbl = matrix(c(88,12,95,5, 93,7,95,5), ncol=4))
+csq <- generate_chisq(labels.b = c("SS19","WS19/20","SS20","WS20/21"), labels.a=c("ja","nein"),tbl = matrix(c(88,12,95,5, 93,7,95,5), ncol=4))
 ```
 
 ```{r results="asis"}

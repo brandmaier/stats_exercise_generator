@@ -9,9 +9,10 @@ output:
 params:
   include_solution: true
 ---
-```{r setup, include=FALSE, message=FALSE}
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(psych)
+library(patchwork)
 knitr::opts_chunk$set(echo = FALSE)
 knitr::opts_chunk$set(fig.pos = "!H", out.extra = "") # prevent LaTeX tables from floating around
 
@@ -137,4 +138,46 @@ Was ist hier so lustig? Falls Sie das nicht lustig finden, senden Sie mir bitte 
 cat(solution_header())
 
 cat("Eine Person erzählt der anderen, dass sie bisher immer dachte, dass eine Korrelation zwischen zwei Variablen bedeute, dass die eine Variable die andere kausal, also ursächlich, beinflusse. Im zweiten Panel erzählt sie weiter, dass sie in ihrer Statistik-Vorlesung gelernt habe, dass diese Implikation im Allgemeinen aber gar nicht stimme. Daraufhin entgegnet die linke Person, dass der Besuch der Statistik-Vorlesung also etwas gebracht hätte (im Sinne eines Lernerfolgs). Darauhin meint die erste Person: 'Nunja, vielleicht'. Der Witz besteht also darin, dass die erzählende Person in der Tat einen Lernerfolg hatte und nun so stark verinnerlicht hat, dass eine beobachtete Korrelation nicht gleich einem ursächlichen Zusammenhang ist, dass sie in Frage stellt, ob wirklich der Besuch der Vorlesung ursächlich für diese Erkenntnis war (da Erkenntnisgewinn und Vorlesungsbesuch von außen betrachtet zunächst lediglich korrelieren")
+```
+
+## Aufgabe 4
+
+Gegeben sei der sogenannte Anscombe-Datensatz von Francis Anscombe (1973):
+
+```{r}
+dat <- datasets::anscombe
+
+knitr::kable(dat)
+```
+Berechnen Sie die Korrelationen jeweils von
+x1 und y1, von x2 und y2, von x3 und y3 und von x4 und y4. Wenn Sie dazu SPSS nutzen möchten, laden Sie den Datensatz "AB6-Korrelation-Anscombe.csv". Was schließen Sie daraus? 
+
+```{r}
+write.csv("AB6-Korrelation-Anscombe.csv",x = dat, quote=FALSE, row.names = FALSE)
+```
+
+Erstellen Sie einen Scatterplot der vier Variablenpaare. Inwiefern revidieren Sie Ihre Beurteilung?
+
+```{r results="asis", eval=include_solution, message=FALSE, warning=FALSE}
+cat(solution_header())
+ct1 = cor.test(dat$x1, dat$y1)
+ct2 = cor.test(dat$x2, dat$y2)
+ct3 = cor.test(dat$x3, dat$y3)
+ct4 = cor.test(dat$x4, dat$y4)
+                                             
+report_corr <- function(x,i) { cat(paste0("Wir finden für das Paar X",i," und Y",i," einen Zusammenhang von ",rport(x),".\n")) }
+
+q1 <- qplot(dat$x1,dat$y1)+geom_point(size=3)+xlab("X1")+ylab("Y1") + geom_smooth(method="lm")
+q2 <- qplot(dat$x2,dat$y2)+geom_point(size=3)+xlab("X2")+ylab("Y2") + geom_smooth(method="lm")
+q3 <- qplot(dat$x3,dat$y3)+geom_point(size=3)+xlab("X3")+ylab("Y3") + geom_smooth(method="lm")
+q4 <- qplot(dat$x4,dat$y4)+geom_point(size=3)+xlab("X4")+ylab("Y4") + geom_smooth(method="lm")
+
+(q1 + q2) / (q3 + q4)
+
+report_corr(ct1,1)
+report_corr(ct2,2)
+report_corr(ct3,3)
+report_corr(ct4,4)
+
+cat("Es fällt auf, dass die Korrelationskoeffizienten nahezu exakt gleich sind, obwohl die Daten offenbar aus sehr unterschiedlichen Modellen stammen. Die Daten in den Scatterplots legen nahe, dass eine einfache Extrapolation aus den gegebenen Daten auf neue Daten nicht ohne Weiteres möglich ist. Es zeigt sich insbesondere, dass kleine p-Werte kein Beweis für die Korrektheit des Modells sind (siehe z.B. das quadratische Modell oben rechts oder das Modell mit dem Ausreißer unten rechts).")
 ```

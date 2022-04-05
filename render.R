@@ -1,3 +1,5 @@
+options(encoding = 'UTF-8')
+
 #
 # render all work sheets
 #
