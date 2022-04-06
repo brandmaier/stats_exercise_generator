@@ -28,7 +28,7 @@ generate_anova_2f <- function(av.name = "",
   xm = mean(av)
  
   
-  dat <- data.frame(av, a = rep(factor.a.levels, each=nz), b=factor.b.levels)
+  dat <- data.frame(av, a = rep(factor.a.levels, each=nz*q), b=factor.b.levels)
   
   factor_a_means <- (dat %>% group_by(a) %>% summarise(avm=mean(av)))$avm
   factor_b_means <- (dat %>% group_by(b) %>% summarise(bvm=mean(av)))$bvm
@@ -42,19 +42,25 @@ generate_anova_2f <- function(av.name = "",
       round((dat$av-xm)^2,2)
     )
     ,2)
-  qs_A <- p* nz * round(
+  qs_A <- q* nz * round(
     sum(
       round((factor_a_means-xm)^2,2)
     )
     ,2)
-  qs_B <- q* nz * round(
+  qs_B <- p* nz * round(
     sum(
       round((factor_b_means-xm)^2,2)
     )
     ,2)
   
-  qs_AxB <- 0
-  qs_inn <- round( (rep(cellmeans_by_row,each=nz)-av)^2 , 2)
+  cms <- rep(cellmeans_by_row,each=nz)
+  ams <- rep(factor_a_means, each=nz*q)
+  bms <- rep(factor_b_means, nz*p)
+  
+  qs_AxB <- round(sum( (cms+xm-ams-bms   )^2 ), 2)
+  qs_inn <-  round( 
+    sum((rep(cellmeans_by_row,each=nz)-av)^2) 
+    , 2)
   
   df_tot <- p*q*nz - 1
   df_A <- p-1
@@ -66,7 +72,7 @@ generate_anova_2f <- function(av.name = "",
   mqs_A <- round( qs_A / df_A, 2)
   mqs_B <- round( qs_B / df_B, 2)
   mqs_inn <- round( qs_inn / df_inn, 2)
-  mqs_AxB = 0
+  mqs_AxB = round( qs_AxB / df_AxB, 2)
   Fval_A <- round( mqs_A / mqs_inn, 2)
   Fval_B <- round( mqs_B / mqs_inn, 2)
   Fval_AxB <- round( mqs_AxB / mqs_inn, 2)
@@ -74,7 +80,7 @@ generate_anova_2f <- function(av.name = "",
 #  Fcrit <- round(qf(1-alpha, df_btw, df_wth),2)
   
   return(list(qs_tot=qs_tot, dat=dat, df_tot=df_tot, df_A=df_A, 
-              df_B=df_B, df_AxB=df_AxB, 
+              df_B=df_B, df_AxB=df_AxB, df_inn = df_inn,
               qs_A = qs_A,
               qs_B = qs_B,
               qs_AxB = qs_AxB,
@@ -87,14 +93,16 @@ generate_anova_2f <- function(av.name = "",
               mqs_inn = mqs_inn,
               mqs_AxB=mqs_AxB,
               grand_mean=xm,
+              p=p,
+              q=q,
               Fval_A = Fval_A,
               Fval_B = Fval_B,
               Fval_AxB = Fval_AxB,
               av=av))
 }
 
-interaction_diagram <- function(x) {
-  
+anova_in_R <- function(x) {
+  anova(lm(av~a+b+a:b, x$dat))
 }
 
 data_plot <- function(x) {
@@ -147,7 +155,7 @@ long_data_table <- function(x) {
 
 
 table_of_means <- function(x) {
-xxx<-x$dat %>% group_by(a,b) %>% summarise(m=mean(av)) %>% add_column(id=1:4)
+xxx<-x$dat %>% group_by(a,b) %>% summarise(m=mean(av)) %>% add_column(id=1:(x$p*x$q))
 xxx<-xxx %>% pivot_wider(names_from=a, values_from=m,id_cols=b)
 
 xxx<-xxx %>% mutate(rowMeans=rowMeans(select(.,2:3)))
@@ -155,7 +163,37 @@ xxx<-xxx %>% mutate(rowMeans=rowMeans(select(.,2:3)))
 rbind(xxx, 
       c(b=NA,xxx %>% select(where(is.numeric)) %>% colMeans()))
 
-return(xxx)
+xxx
+}
+
+show_table_of_means <- function(x) {
+  knitr::kable(table_of_means(x))
+}
+
+solution_df <- function(x) {
+  paste0("df_A=",x$p,"-1=",x$df_A,"\\\\",
+  "df_B=",x$q,"-1=",x$df_B,"\\\\",
+  "df_{AxB}=(",x$p,"-1)\\cdot(",x$q,"-1)=",x$df_AxB,
+  "df_{inn}=",x$n,"-(",x$p,"\\cdot",x$q,")=",x$df_inn)
+}
+
+solution_mqs <- function(x) {
+  
+  paste( "\\\\",
+         paste0("MQS_{A} = \\frac{ ", x$qs_A, "}{",x$df_A,"}=",x$mqs_A),"\\\\",
+         paste0("MQS_{B} = \\frac{ ", x$qs_B, "}{",x$df_B,"}=",x$mqs_B),"\\\\",
+         paste0("MQS_{AxB} = \\frac{ ", x$qs_AxB, "}{",x$df_AxB,"}=",x$mqs_AxB)
+  )
+}
+
+solution_f <- function(x) {
+  paste0(
+    
+  paste0("F_A=\\frac{",x$mqs_A,"}{",x$mqs_inn,"}=",x$Fval_A),"\\\\",
+  paste0("F_B=\\frac{",x$mqs_B,"}{",x$mqs_inn,"}=",x$Fval_B),"\\\\",
+  paste0("F_{AxB}=\\frac{",x$mqs_AxB,"}{",x$mqs_inn,"}=",x$Fval_AxB),"\\\\"
+  
+  )
 }
 
 result_table <- function(x) {
@@ -176,4 +214,4 @@ aov <- generate_anova_2f(av.name="Symptome",
                   factor.b.levels = c("Depression","Angststörung"),
                   obs_min = 0, obs_max = 20, nz = 5, cellmeans_by_row = c(10,8,8,10))
 
-solution_anova2(aov)
+
