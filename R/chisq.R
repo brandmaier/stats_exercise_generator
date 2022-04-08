@@ -73,7 +73,7 @@ chisq_data_table <- function(x, type="",caption="") {
     names(x$data_sums)[ncol(x$data_sums)]<-""
     print(knitr::kable( x$data_sums, caption=caption ))
   } else {
-    print(paste0("Unknown type :",type))
+    print(paste0("Unknown type :",type,". Try *indep* or *sums*"))
   }
   
 }

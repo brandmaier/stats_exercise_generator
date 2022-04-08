@@ -1,3 +1,6 @@
+# specify cellmeans by row means, pick factor level a1, then list all 
+# factor levels of b
+
 generate_anova_2f <- function(av.name = "",
                            factor.a.name = "",
                            factor.b.name = "",
@@ -28,7 +31,8 @@ generate_anova_2f <- function(av.name = "",
   xm = mean(av)
  
   
-  dat <- data.frame(av, a = rep(factor.a.levels, each=nz*q), b=factor.b.levels)
+  dat <- data.frame(av, a = rep(factor.a.levels, each=nz*q), b=rep(factor.b.levels,each=nz))
+ 
   
   factor_a_means <- (dat %>% group_by(a) %>% summarise(avm=mean(av)))$avm
   factor_b_means <- (dat %>% group_by(b) %>% summarise(bvm=mean(av)))$bvm
@@ -98,7 +102,11 @@ generate_anova_2f <- function(av.name = "",
               Fval_A = Fval_A,
               Fval_B = Fval_B,
               Fval_AxB = Fval_AxB,
-              av=av))
+              av=av,
+              av.name = av.name,
+              factor.a.name = factor.a.name,
+              factor.b.name = factor.b.name
+              ))
 }
 
 anova_in_R <- function(x) {
@@ -109,6 +117,21 @@ data_plot <- function(x) {
 #  ggplot(dat, aes(x=interaction(a,b),y=av))+geom_violin()+geom_boxplot(width=0.1)+geom_jitter(width=.01)+ggx::gg_("wrap labels on x-axis")
  gp<- ggplot(x$dat, aes(x=1,y=av))+geom_violin()+geom_boxplot(width=0.1)+geom_jitter(width=.01)+facet_wrap(~a+b)
  return(gp)
+}
+
+interaction_plot <- function(x) {
+  
+  g1 <- anov$dat %>% group_by(a,b) %>% summarise(m=mean(av)) %>% ggplot(aes(x=a,group=b,y=m,color=b))+
+    geom_line(lwd=1.5)+ylab(x$av.name)+ theme(legend.position = "bottom")+
+    xlab(x$factor.a.name) +  guides(color = guide_legend(title = ""))
+  
+  g2 <- anov$dat %>% group_by(a,b) %>% summarise(m=mean(av)) %>% ggplot(aes(x=b,group=a,y=m,color=a))+
+    geom_line(lwd=1.5)+ylab(x$av.name)+ theme(legend.position = "bottom")+
+    xlab(x$factor.b.name)+ guides(color = guide_legend(title = ""))
+  
+  library(patchwork)
+  
+  return(g1+g2)
 }
 
 solution_anova2 <- function(x) {
