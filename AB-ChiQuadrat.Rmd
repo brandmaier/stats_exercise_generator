@@ -1,5 +1,5 @@
 ---
-title: "Arbeitsblatt 3 - Chi-Quadrat-Tests"
+title: "Arbeitsblatt - Chi-Quadrat-Tests"
 author: "Statistik II - Andreas M. Brandmaier"
 date: "`r format(Sys.time(), '%d. %B %Y')`"
 output:

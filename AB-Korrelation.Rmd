@@ -1,5 +1,5 @@
 ---
-title: "Arbeitsblatt 6 - Korrelation"
+title: "Arbeitsblatt - Korrelation"
 author: "Statistik II - Andreas M. Brandmaier"
 date: "`r format(Sys.time(), '%d. %B %Y')`"
 output:
