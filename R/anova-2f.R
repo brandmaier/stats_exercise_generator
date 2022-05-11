@@ -83,6 +83,10 @@ generate_anova_2f <- function(av.name = "",
 #  Fp <- round( df(Fval, df_btw, df_wth), 2)
 #  Fcrit <- round(qf(1-alpha, df_btw, df_wth),2)
   
+  p_A <- df(Fval_A, df_A, df_inn)
+  p_B <- df(Fval_B, df_B, df_inn)
+  p_AxB <- df(Fval_AxB, df_AxB, df_inn)
+  
   return(list(qs_tot=qs_tot, dat=dat, df_tot=df_tot, df_A=df_A, 
               df_B=df_B, df_AxB=df_AxB, df_inn = df_inn,
               qs_A = qs_A,
@@ -102,6 +106,9 @@ generate_anova_2f <- function(av.name = "",
               Fval_A = Fval_A,
               Fval_B = Fval_B,
               Fval_AxB = Fval_AxB,
+              p_A = p_A,
+              p_B = p_B,
+              p_AxB = p_AxB,
               av=av,
               av.name = av.name,
               factor.a.name = factor.a.name,
@@ -220,12 +227,13 @@ solution_f <- function(x) {
 }
 
 result_table <- function(x) {
-  report_table <- data.frame(Quelle=c("A","B","AxB"),
+  report_table <- data.frame(Quelle=c(x$factor.a.name , x$factor.b.name, 
+                                      paste0(x$factor.a.name," x ",x$factor.b.name)),
                              QS=c(x$qs_A, x$qs_B, x$qs_AxB), 
                              df=c(x$df_A, x$df_B, x$df_AxB),
-                             MQS=c(x$mqs_A, x$mqs_B, x$mqs_AxB))
-                             #F = c(x$Fval,NA,NA),
-                             #p = c(x$Fp, NA, NA),
+                             MQS=c(x$mqs_A, x$mqs_B, x$mqs_AxB),
+                             F = c(x$Fval_A,x$Fval_B,x$Fval_AxB),
+                             p = c(x$p_A, x$p_B, x$p_AxB))
                              #eta2=c(x$eta2,NA,NA))
   
   knitr::kable(report_table)

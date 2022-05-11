@@ -2,6 +2,9 @@ options(encoding = 'UTF-8')
 
 output_path = "publish/"
 
+if (!dir.exists(output_path))
+  dir.create(output_path)
+
 #
 # render all work sheets
 #
