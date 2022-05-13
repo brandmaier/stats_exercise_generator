@@ -88,7 +88,7 @@ generate_anova <- function(av.name = "",
   
   Fval <- round( mqs_btw / mqs_wth, 2)
   
-  Fp <- round( df(Fval, df1, df2), 2)
+  Fp <- round( 1-pf(Fval, df1, df2), 2)
   Fcrit <- round(qf(1-alpha, df1, df2),2)
   
   eta2 <- round(qs_btw/(qs_tot),2)
