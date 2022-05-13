@@ -13,6 +13,7 @@ params:
 library(tidyverse)
 library(psych)
 library(patchwork)
+library(datasauRus)
 knitr::opts_chunk$set(echo = FALSE)
 knitr::opts_chunk$set(fig.pos = "!H", out.extra = "") # prevent LaTeX tables from floating around
 
@@ -32,10 +33,10 @@ rport <- function(x) {pval=round(x$p.value,3); if (pval<0.001)pval="<0.001"; pas
 
 
 ## Aufgabe 1
-Mit Hilfe des Datensatzes "bfi" aus dem R-Paket `psych` wurde untersucht, inwieweit
+Mit Hilfe des Datensatzes "bfi" aus dem SAPA Projekt (Revelle, Wilt und Rosenthal, 2010) wurde untersucht, inwieweit
 es eine Korrelation zwischen Gewissenhaftigkeit und Alter gibt. Dazu wurde
-das Lebensalter in Jahren mit einer Summe von fünf Likert-Skalen, die das Persönlichkeitsmerkmal
-Gewissenhaftigkeit erfragen (Bsp: "Ich höre nicht auf bevor ich etwas beendet habe") korreliert.
+das Lebensalter in Jahren mit dem Persönlichkeitsmerkmal
+Gewissenhaftigkeit korreliert. Gewissenhaftigkeit wurde als Summe der entsprechenden Fragebogen-Items (Bsp.: "Ich höre nicht auf bevor ich etwas beendet habe") gebildet.
 Die beobachteten Datenpunkte und eine Linie, die den linearen Zusammenhang verdeutlicht sind in folgender Abbildung dargestellt:
 
 ```{r}
@@ -88,7 +89,7 @@ auf den erlebten Stress im Studium auswirken. Dabei wurden zwei Kohorten von
 Erstsemestern untersucht, die in verschiedenen Jahren mit dem Studium begonnen haben. In
 jeder Kohorte wurden 25 Studierende befragt.
 In der Kohorte "A" wurde ein `r sig1` Zusammenhang von `r rport(tst1)` gefunden. In der
-Kohorte "B" wurde ein `sig 2` Zusammenhang von `r rport(tst2)`gefunden.
+Kohorte "B" wurde ein `r sig2` Zusammenhang von `r rport(tst2)`gefunden.
 
 Wie können wir untersuchen, ob sich der Zusammenhang zwischen den Kohorten unterscheidet? Führen
 Sie alle notwendigen Schritte durch.
@@ -99,12 +100,15 @@ cat(solution_header())
 
 cat("Wir benutzen die Fisher's z-Transformation und führen dann den Test auf Verschiedenheit zweier Korrelationen durch")
 
-z1 = round(psych::fisherz(tst1$estimate), 2 )
-z2 = round(psych::fisherz(tst2$estimate), 2)
+t1e <- round(tst1$estimate,2)
+t2e <- round(tst2$estimate, 2)
+
+z1 = round(psych::fisherz(t1e), 2 )
+z2 = round(psych::fisherz(t2e), 2)
 
 cat("Zunächst Berechnung der Fisher's Z-Werte:\n")
-cat("r=",tst1$estimate, " entspricht ", z1,"\n")
-cat("r=",tst2$estimate, " entspricht ", z2,"\n")
+cat("r=",t1e, " entspricht ", z1,"\n")
+cat("r=",t2e, " entspricht ", z2,"\n")
 
 cat("Einsetzen in Formel:\n")
 cat("$$Z=\\frac{",z1,"-",z2,"}{\\sqrt{","\\frac{1}{",n1,"-3}+\\frac{1}{",n2,"-3}","}}$$\n")
@@ -142,42 +146,24 @@ cat("Eine Person erzählt der anderen, dass sie bisher immer dachte, dass eine K
 
 ## Aufgabe 4
 
-Gegeben sei der sogenannte Anscombe-Datensatz von Francis Anscombe (1973):
+Laden Sie die Datensätze "korrelation-beispiel1.csv" und "korrelation-beispiel2.csv". Berechnen Sie eine einfache lineare Regression (oder auch eine bivariate Korrelation) und prüfen Sie, ob es einen Zusammenhang je zwischen den beiden Variablen $X$ und $Y$ gibt. Was folgern Sie? Erstellen Sie auch die Scatterplots. Was kann man daraus erkennen?
 
 ```{r}
-dat <- datasets::anscombe
 
-knitr::kable(dat)
-```
-Berechnen Sie die Korrelationen jeweils von
-x1 und y1, von x2 und y2, von x3 und y3 und von x4 und y4. Wenn Sie dazu SPSS nutzen möchten, laden Sie den Datensatz "AB6-Korrelation-Anscombe.csv". Was schließen Sie daraus? 
+x1 <- datasauRus::datasaurus_dozen %>% filter(dataset=="slant_up") %>% select(-dataset)
+x2 <- datasauRus::datasaurus_dozen %>% filter(dataset=="dino") %>% select(-dataset)
 
-```{r}
-write.csv("AB6-Korrelation-Anscombe.csv",x = dat, quote=FALSE, row.names = FALSE)
+ct1 <- cor.test(x1$x,x1$y)
+ct2 <- cor.test(x2$x,x2$y)
 ```
 
-Erstellen Sie einen Scatterplot der vier Variablenpaare. Inwiefern revidieren Sie Ihre Beurteilung?
 
-```{r results="asis", eval=include_solution, message=FALSE, warning=FALSE}
+```{r results="asis", eval=include_solution}
 cat(solution_header())
-ct1 = cor.test(dat$x1, dat$y1)
-ct2 = cor.test(dat$x2, dat$y2)
-ct3 = cor.test(dat$x3, dat$y3)
-ct4 = cor.test(dat$x4, dat$y4)
-                                             
-report_corr <- function(x,i) { cat(paste0("Wir finden für das Paar X",i," und Y",i," einen Zusammenhang von ",rport(x),".\n")) }
 
-q1 <- qplot(dat$x1,dat$y1)+geom_point(size=3)+xlab("X1")+ylab("Y1") + geom_smooth(method="lm")
-q2 <- qplot(dat$x2,dat$y2)+geom_point(size=3)+xlab("X2")+ylab("Y2") + geom_smooth(method="lm")
-q3 <- qplot(dat$x3,dat$y3)+geom_point(size=3)+xlab("X3")+ylab("Y3") + geom_smooth(method="lm")
-q4 <- qplot(dat$x4,dat$y4)+geom_point(size=3)+xlab("X4")+ylab("Y4") + geom_smooth(method="lm")
+cat("Die Korrelation beträgt ",rport(ct1), "im ersten Beispiel und ", rport(ct2), "im zweiten Beispiel. Wir können die Nullhypothese in beiden Fällen nicht ablehnen und sprechen von einem nicht-signifikanten Zusammenhang.")
 
-(q1 + q2) / (q3 + q4)
+datasauRus::datasaurus_dozen %>% filter(dataset=="dino" | dataset=="slant_up") %>% ggplot(aes(x=x,y=y))+geom_point()+facet_wrap(~dataset)
 
-report_corr(ct1,1)
-report_corr(ct2,2)
-report_corr(ct3,3)
-report_corr(ct4,4)
-
-cat("Es fällt auf, dass die Korrelationskoeffizienten nahezu exakt gleich sind, obwohl die Daten offenbar aus sehr unterschiedlichen Modellen stammen. Die Daten in den Scatterplots legen nahe, dass eine einfache Extrapolation aus den gegebenen Daten auf neue Daten nicht ohne Weiteres möglich ist. Es zeigt sich insbesondere, dass kleine p-Werte kein Beweis für die Korrektheit des Modells sind (siehe z.B. das quadratische Modell oben rechts oder das Modell mit dem Ausreißer unten rechts).")
+cat("Wir wissen, dass wir hier nur lineare Zusammenhänge testen. Aus dem Beispiel lernen wir insbesondere: Wenn man keinen linearen Zusammenhang findet, bedeutet das nicht, dass es dennoch möglicherweise bedeutsame Muster in den Daten gibt.")
 ```
