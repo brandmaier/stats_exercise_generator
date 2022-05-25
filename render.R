@@ -9,18 +9,18 @@ if (!dir.exists(output_path))
 # render all work sheets
 #
 rmarkdown::render(input="AB1-Varianzanalyse-einfaktoriell.Rmd", 
-                  output_file=paste0(output_path,"AB1-Varianzanalyse-einfaktoriell.pdf"), 
+                  output_file=paste0(output_path,"AB-Varianzanalyse-einfaktoriell.pdf"), 
                   params=list(include_solution=FALSE))
 rmarkdown::render(input="AB1-Varianzanalyse-einfaktoriell.Rmd", 
-                  output_file=paste0(output_path,"AB1-Varianzanalyse-einfaktoriell-mit_Lösung.pdf"), 
+                  output_file=paste0(output_path,"AB-Varianzanalyse-einfaktoriell-mit_Lösung.pdf"), 
                   params=list(include_solution=TRUE))
 
 
 rmarkdown::render(input="AB2-Kontraste.Rmd", 
-                  output_file=paste0(output_path,"AB2-Kontraste.pdf"), 
+                  output_file=paste0(output_path,"AB-Kontraste.pdf"), 
                   params=list(include_solution=FALSE))
 rmarkdown::render(input="AB2-Kontraste.Rmd", 
-                  output_file=paste0(output_path,"AB2-Kontraste-mit-Lösung.pdf"), 
+                  output_file=paste0(output_path,"AB-Kontraste-mit-Lösung.pdf"), 
                   params=list(include_solution=TRUE))
 
 rmarkdown::render(input="AB-ChiQuadrat.Rmd", 

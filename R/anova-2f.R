@@ -13,7 +13,8 @@ generate_anova_2f <- function(av.name = "",
                            obs_min=0,
                            obs_max=20,
                            obs_round=2,
-                           av = NULL)
+                           av = NULL,
+                           alpha = 0.05)
 {
   
   
@@ -44,7 +45,7 @@ generate_anova_2f <- function(av.name = "",
     cellmeans_by_row <- dat %>% group_by(a,b) %>% summarise(mean(av))
     cellmeans_by_row <- round( cellmeans_by_row[,3,drop=TRUE], 2)
   }
-  xm = mean(av)
+  xm = round(mean(av), 2)
  
   
  
@@ -71,6 +72,7 @@ generate_anova_2f <- function(av.name = "",
       round((factor_b_means-xm)^2,2)
     )
     ,2)
+  
   
   cms <- rep(cellmeans_by_row,each=nz)
   ams <- rep(factor_a_means, each=nz*q)
@@ -113,6 +115,7 @@ generate_anova_2f <- function(av.name = "",
               qs_B = qs_B,
               qs_AxB = qs_AxB,
               qs_tot = qs_tot,
+              qs_inn = qs_inn,
               factor_a_means = factor_a_means,
               factor_b_means = factor_b_means,
               mqs_tot = mqs_tot,
@@ -132,7 +135,8 @@ generate_anova_2f <- function(av.name = "",
               av=av,
               av.name = av.name,
               factor.a.name = factor.a.name,
-              factor.b.name = factor.b.name
+              factor.b.name = factor.b.name,
+              alpha = alpha
               ))
 }
 
@@ -142,18 +146,21 @@ anova_in_R <- function(x) {
 
 data_plot <- function(x) {
 #  ggplot(dat, aes(x=interaction(a,b),y=av))+geom_violin()+geom_boxplot(width=0.1)+geom_jitter(width=.01)+ggx::gg_("wrap labels on x-axis")
- gp<- ggplot(x$dat, aes(x=1,y=av))+geom_violin()+geom_boxplot(width=0.1)+geom_jitter(width=.01)+facet_wrap(~a+b)
+ gp<- ggplot(x$dat, aes(x=1,y=av))+geom_boxplot(width=0.1)+geom_jitter(width=.01)+facet_wrap(~a+b)+
+   ylab(x$av)
  return(gp)
 }
 
-interaction_plot <- function(x) {
+interaction_plot <- function(x, empty=FALSE) {
   
-  g1 <- anov$dat %>% group_by(a,b) %>% summarise(m=mean(av)) %>% ggplot(aes(x=a,group=b,y=m,color=b))+
-    geom_line(lwd=1.5)+ylab(x$av.name)+ theme(legend.position = "bottom")+
+  alpha <- ifelse(empty,0,1)
+  
+  g1 <- x$dat %>% group_by(a,b) %>% summarise(m=mean(av)) %>% ggplot(aes(x=a,group=b,y=m,color=b))+
+    geom_line(lwd=1.5, alpha=alpha)+ylab(x$av.name)+ theme(legend.position = "bottom")+
     xlab(x$factor.a.name) +  guides(color = guide_legend(title = ""))
   
-  g2 <- anov$dat %>% group_by(a,b) %>% summarise(m=mean(av)) %>% ggplot(aes(x=b,group=a,y=m,color=a))+
-    geom_line(lwd=1.5)+ylab(x$av.name)+ theme(legend.position = "bottom")+
+  g2 <- x$dat %>% group_by(a,b) %>% summarise(m=mean(av)) %>% ggplot(aes(x=b,group=a,y=m,color=a))+
+    geom_line(lwd=1.5, alpha=alpha)+ylab(x$av.name)+ theme(legend.position = "bottom")+
     xlab(x$factor.b.name)+ guides(color = guide_legend(title = ""))
   
   library(patchwork)
@@ -188,14 +195,26 @@ solution_anova2 <- function(x) {
 
 f_crit <- function(x, type="A") {
   
+  alpha <- x$alpha
+  
   if (type=="A") {
+    df1 = x$df_A
+    df2 = x$df_inn
     
+  } else if (type=="B") {
+      df1 = x$df_A
+      df2 = x$df_inn
+  } else if (type=="AxB") {
+    df1 = x$df_AxB
+    df2 = x$df_inn
   } else {
     df1 = NA
     df2 = NA
   }
   
-  paste0("Der kritische Wert einer *F*-Verteilung mit ",df1, " Zählerfreiheitsgraden und ", df2, " Nennerfreiheitsgraden und einem Signifikanzniveau von ",x$alpha*100,"% ist ", x$Fcrit,".")
+  fc =  round(qf(1-alpha, df1, df2),2)
+  
+  paste0("Der kritische Wert einer *F*-Verteilung mit ",df1, " Zählerfreiheitsgraden und ", df2, " Nennerfreiheitsgraden und einem Signifikanzniveau von ",x$alpha*100,"% ist ", fc,".")
   
 }
 
@@ -208,10 +227,13 @@ table_of_means <- function(x) {
 xxx<-x$dat %>% group_by(a,b) %>% summarise(m=mean(av)) %>% add_column(id=1:(x$p*x$q))
 xxx<-xxx %>% pivot_wider(names_from=a, values_from=m,id_cols=b)
 
-xxx<-xxx %>% mutate(rowMeans=rowMeans(select(.,2:3)))
+xxx<-xxx %>% mutate(rowMeans=round(rowMeans(select(.,2:3)),2) )
 
-rbind(xxx, 
-      c(b=NA,xxx %>% select(where(is.numeric)) %>% colMeans()))
+xxx <-rbind(xxx, 
+      c(b=NA,round(xxx %>% select(where(is.numeric)) %>% colMeans()),2))
+
+colnames(xxx)[1]<-""
+colnames(xxx)[ncol(xxx)]<-""
 
 xxx
 }
@@ -248,15 +270,25 @@ solution_f <- function(x) {
 
 result_table <- function(x) {
   report_table <- data.frame(Quelle=c(x$factor.a.name , x$factor.b.name, 
-                                      paste0(x$factor.a.name," x ",x$factor.b.name)),
-                             QS=c(x$qs_A, x$qs_B, x$qs_AxB), 
-                             df=c(x$df_A, x$df_B, x$df_AxB),
-                             MQS=c(x$mqs_A, x$mqs_B, x$mqs_AxB),
-                             F = c(x$Fval_A,x$Fval_B,x$Fval_AxB),
-                             p = c(x$p_A, x$p_B, x$p_AxB))
+                                      paste0(x$factor.a.name," x ",x$factor.b.name),
+                                      "Fehler"),
+                             QS=c(x$qs_A, x$qs_B, x$qs_AxB, x$qs_inn), 
+                             df=c(x$df_A, x$df_B, x$df_AxB, x$df_inn),
+                             MQS=c(x$mqs_A, x$mqs_B, x$mqs_AxB, x$mqs_inn),
+                             F = c(x$Fval_A,x$Fval_B,x$Fval_AxB, ""),
+                             p = c(x$p_A, x$p_B, x$p_AxB, ""))
                              #eta2=c(x$eta2,NA,NA))
   
   knitr::kable(report_table)
+}
+
+pie_plot <- function(x) {
+  qs_data <- data.frame( QS=c("QS_A","QS_B","QS_AxB" ,"QS_inn"), value=c(x$qs_A, x$qs_B,x$qs_AxB,x$qs_inn) )
+  qs_data %>% ggplot(aes(y=value,x="",fill=QS)) + geom_col(color="black") + coord_polar(theta="y")+
+    scale_fill_discrete() + theme_void()+
+   # geom_text(aes(label = QS),
+  #            position = position_stack(vjust = 0.5))
+    NULL
 }
 
 #aov <- generate_anova_2f(av.name="Symptome",
