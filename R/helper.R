@@ -24,3 +24,7 @@ paste0g <- function(...) {
   temp <- sapply(grps, function(x){paste0(x,collapse=collapse_within)})
   paste0(temp, collapse=collapse)
 }
+
+wrap_p <- function(p) {
+  if (p<0.001){ return ("$<0.001$") }else{ return(round(p,3))}
+}

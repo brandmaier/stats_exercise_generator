@@ -18,9 +18,10 @@ library(tidyverse)
 knitr::opts_chunk$set(echo = FALSE)
 knitr::opts_chunk$set(fig.pos = "!H", out.extra = "") # prevent LaTeX tables from floating
 
+source("R/helper.R")
 source("R/anova-1f.R")
 source("R/anova-2f.R")
-source("R/helper.R")
+
 
 include_solution <- params$include_solution
 
@@ -47,66 +48,77 @@ aov <- generate_anova_2f(av.name="Symptomschwere",
 
 In einer Studie wurde untersucht, inweit sich die Symptomschwere bei Personen mit verschiedenen Diagnosen verbessert abhängig davon, ob eine Psychotherapie durchgeführt wurde oder ob lediglich Psychopharmaka verschrieben wurden (Es handelt sich hier um fikitive Daten). Die beiden Faktoren Behandlung (2 Stufen) und Diagnose (3 Stufen) wurden zwischen Personen variiert, daher wurde eine zweifaktorielle Varianzanalyse (ohne Messwiederholung) für die Analyse der Beobachtungen eingesetzt. Gegeben sind folgende Quadratsummen:
 
-```{r}
-cat("$QS_A=",aov$qs_A,"$, $QS_B=$",aov$qs_b,"$, $QS_{AxB}=",aov$qs_AxB,"$,QS_{inn}=$",aov$qs_inn,"$\n")
+```{r results="asis"}
+cat(paste0("$QS_A=",aov$qs_A,"$, $QS_B=",aov$qs_B,"$, $QS_{AxB}=",aov$qs_AxB,"$,QS_{inn}=$",aov$qs_inn,"$\n"))
 ```
 
+In folgender Tabelle finden sich die Mittelwerte aller Faktorstufenkombinationen sowie die Randmittelwerte. In der rechten unteren Zelle befindet sich der Gesamtmittelwert.
 
 ```{r message=FALSE, warning=FALSE}
 
 show_table_of_means(aov)
+```
+
+Folgende Grafik dient rein der Anschauung und zeigt die Verteilung der Beobachtungen für jede Faktorstufenkombination:
+
+```{r message=FALSE, warning=FALSE}
 
 data_plot(aov)
 ```
 
 # Aufgabe 1
 
-Führen Sie eine zweifaktorielle Varianzanalyse vollständig durch (beachten Sie, dass die Quadratsummen schon gegeben sind). Formulieren Sie die Nullypothesen (in Worten) und testen Sie die Haupteffekte und Interaktion auf Signifikanz. Formulieren Sie Antwortsätze für Ihre statistische Entscheidung.
+Führen Sie eine zweifaktorielle Varianzanalyse vollständig durch (beachten Sie, dass die Quadratsummen schon gegeben sind). Formulieren Sie die Nullypothesen (in Worten) und testen Sie die Haupteffekte und Interaktion auf Signifikanz, indem Sie die entsprechenden F-Werte berechnen und gegen ihre jeweiligen kritischen Werte testen. Formulieren Sie Antwortsätze für Ihre statistische Entscheidung.
 
 
 ```{r results="asis", message=FALSE, warning=FALSE}
-cat("Wir testen drei Hypothesenpaare: $H0_a$: Es gibt keinen Haupteffekt von  Therapieform\nH0_b: Es gibt keinen Haupteffekt von Diagnose.\n$H0_c: Es gibt keine Wechselwirkung von Therapieform und Diagnose.\n\n")
 
-wrap_math_block(solution_df(aov))
+cat("_Lösung:_")
 cat("\n")
-wrap_math_block(solution_mqs(aov))
+cat("Wir testen drei Hypothesenpaare: $H0_a$: Es gibt keinen Haupteffekt von  Therapieform\n$H0_b$: Es gibt keinen Haupteffekt von Diagnose.\n$H0_c$: Es gibt keine Wechselwirkung von Therapieform und Diagnose.\n\n")
+
+wrap_math_align(solution_df(aov))
 cat("\n")
-wrap_math_block(solution_f(aov))
+wrap_math_flalign(solution_mqs(aov))
+cat("\n")
+wrap_math_flalign(solution_f(aov))
 cat("\n")
 
-cat("Der kritische Wert für den Test des Haupteffekts des Faktors A lautet:\n")
-wrap_math_block(f_crit(aov,type="A"))
-cat("Der kritische Wert für den Test des Haupteffekts des Faktors B lautet:\n")
-wrap_math_block(f_crit(aov,type="B"))
-cat("Der kritische Wert für den Test der Wechselwirkung:\n")
-wrap_math_block(f_crit(aov,type="AxB"))
+cat("Kritischer Wert für Haupteffekt des Faktors A:\n")
+cat(f_crit(aov,type="A"))
+cat("Kritischer Wert für Haupteffekt des Faktors B:\n")
+cat(f_crit(aov,type="B"))
+cat("Kritischer Wert für Wechselwirkung:\n")
+cat(f_crit(aov,type="AxB"))
 
 cat("Es entsteht folgende Ergebnistabelle (hier auch mit p-Werten, die Sie anhand der Tabellen nicht ausrechnen können. Das überlassen wir dem Computer):\n")
 
 result_table(aov)
 
+cat("Der Haupteffekt von Diagnose und die Wechselwirkung sind signfikant. Der Haupteffekt von Therapieform ist nicht signifikant.")
+
 #knitr::kable(anova_in_R(aov))
 ```
+
 # Aufgabe 2
 
-Wir bleiben bei dem Beispiel aus Aufgabe 1
-```{r}
+Wir bleiben bei dem Beispiel aus Aufgabe 1. Benutzen Sie die Angaben aus der Mittelwertstabelle in Aufgabe 1, um ein Interaktionsdiagramm zu zeichnen.  Wie nennt man die Interaktionsart und was bedeutet sie für die globale Interpretierbarkeit der Haupteffekte? Welche Aussage über die Haupteffekte können wir treffen?
 
-
+```{r message=FALSE, warning=FALSE}
 interaction_plot(aov, empty=TRUE)
 ```
 
-## Aufgabe 1a
 
-Im folgenden sehen Sie das Interaktionsdiagramm, das aus den eben vorgestellten Daten erzeugt wurde. Wie nennt man die Interaktionsart und was bedeutet Sie für die globale Interpretierbarkeit der Haupteffekte?
-
-```{r}
+```{r results="asis", message=FALSE, warning=FALSE}
+cat("_Lösung:_")
 interaction_plot(aov)
+
+cat("Es handelt sich hierbei um eine semidisordinale Interaktion. Beide Haupteffekte sind nicht global interpretierbar. Es gibt einen signifikanten Haupteffekt von Diagnose. Wenn man also die Therapieform außer acht lässt (genaugenommen über die möglichen Therapien mittelt), stellt man fest, dass in dieser Stichprobe die Personen mit Angststörung die niedrigsten Symptome zeigen und die Personen mit  Depression die höchsten. Der signifikante Haupteffekt sagt uns, dass wir die H0 abgelehnt haben, die besagt, dass Patienten mit diesen drei Diagnosen dieselbe Symptomschwere haben. Da es aber die signifikante disordinale Interaktion gibt, wissen wir, dass diese Aussage aber nicht innerhalb jeder Stufe des anderen Faktors (Therapieform) gilt. ")
 ```
 
-## Aufgabe 2a
+# Aufgabe 3
 
-Welcher der folgenden Tortendiagramme passt zu der durchgeführten Varianzanalyse?
+Welcher der folgenden Tortendiagramme passt zu der in Aufgabe 1 durchgeführten Varianzanalyse?
 
 ```{r}
 aov_fake <- aov
@@ -118,37 +130,29 @@ aov_fake2$qs_B <- aov$qs_B*3
 aov_fake2$qs_inn <- aov$qs_inn*3
 
 aov_fake3 <- aov
-aov_fake3$qs_A <- 4*aov$qs_A
+aov_fake3$qs_A<- aov$qs_B
 
-p1<-pie_plot(aov)+ggtitle("Torte A")
-p2<-pie_plot(aov_fake)+ggtitle("Torte B")
-p3<-pie_plot(aov_fake2)+ggtitle("Torte C")
-p4<-pie_plot(aov_fake3)+ggtitle("Torte C")
+style <- theme(panel.background = element_rect(fill = 'lightblue', color = 'white'))
+
+p1<-pie_plot(aov_fake2)+ggtitle("Torte A")+style
+p2<-pie_plot(aov_fake)+ggtitle("Torte B")+style
+p3<-pie_plot(aov)+ggtitle("Torte C")+style
+p4<-pie_plot(aov_fake3)+ggtitle("Torte D")+style
 
 library(patchwork)
-(p1 + p2)  / (p3 + p4)
-```
-## Aufgabe 2
-
-Im Rahmen einer Untersuchung zu der Wirksamkeit verschiedener Präsentationsformen von Lehrinhalten wird untersucht, ob Studierende Inhalte besser durch eine Vorlesung oder durch das Schauen von Youtube-Videos erlernen (Faktor A: Lehrform). Dabei werden weiterhin zwei verschiedene Lerninhalte unterschieden (Faktor B): Statistik oder Schminktipps. Am Ende wird im Rahmen eines standardisierten Verfahrens der Lernerfolg (abhängige Variable) erfasst, der hier als intervallskalierte Variable angenommen werden kann. 
-Führen Sie eine zweifaktorielle Varianzanalyse durch, um die Frage zu beantworten, ob es Haupteffekte der Lehrform, der Lerninhalte und eine Wechselwirkung der beiden gibt.
-
-```{r}
-set.seed(985)
-aov <- generate_anova_2f(av.name="Lernerfolg",
-                  factor.a.levels = c("Vorlesung","Youtube-Video"),
-                  factor.a.name = "Lehrform", factor.b.name = "Lerninhalt",
-                  factor.b.levels = c("Statistik","Schminktipps"),
-                  obs_min = 0, obs_max = 100, nz = 15, cellmeans_by_row = c(70, 50,
-                                                                          15, 80))
-
-show_table_of_means(aov)
-
-result_table(aov)
+(p1 + p2)  / (p3 + p4) + style
 ```
 
-```{r}
-interaction_plot(aov)
+```{r results="asis", message=FALSE, warning=FALSE}
+cat("_Lösung:_")
+
+cat("Richtig ist Torte C. Die Innerhalb-QS ist ungefähr so groß wie die Interaktion. QS_A ist verschwindend klein im Vergleich zum Rest,")
 
 
-``` 
+```
+
+# Aufgabe 4
+
+Überlegen Sie sich eine Forschungsfrage, die Sie mit einer zweifaktoriellen Varianzanalyse beantworten können. Was bedeutet eine signifikante Interaktion?
+
+

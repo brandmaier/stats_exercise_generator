@@ -29,6 +29,8 @@ generate_anova_2f <- function(av.name = "",
   p <- factor_a_num_levels <- length(factor.a.levels)
   q <- factor_b_num_levels <- length(factor.b.levels)
   
+  n <- nz*p*q
+  
   if (!raw_data_given) {
     av<-rep(cellmeans_by_row,each=nz)+rnorm(nz*length(cellmeans_by_row),0,noise_sd)
     av <- round(av, obs_round)
@@ -136,7 +138,8 @@ generate_anova_2f <- function(av.name = "",
               av.name = av.name,
               factor.a.name = factor.a.name,
               factor.b.name = factor.b.name,
-              alpha = alpha
+              alpha = alpha,
+              n=n
               ))
 }
 
@@ -146,8 +149,13 @@ anova_in_R <- function(x) {
 
 data_plot <- function(x) {
 #  ggplot(dat, aes(x=interaction(a,b),y=av))+geom_violin()+geom_boxplot(width=0.1)+geom_jitter(width=.01)+ggx::gg_("wrap labels on x-axis")
- gp<- ggplot(x$dat, aes(x=1,y=av))+geom_boxplot(width=0.1)+geom_jitter(width=.01)+facet_wrap(~a+b)+
-   ylab(x$av)
+ gp<- ggplot(x$dat, aes(x=1,y=av))+
+   geom_boxplot(width=0.1)+geom_jitter(width=.01)+
+   facet_wrap(~a+b)+
+   ylab(x$av.name)+xlab("")+
+   theme(axis.title.x=element_blank(), 
+    axis.text.x=element_blank(), 
+    axis.ticks.x=element_blank()) 
  return(gp)
 }
 
@@ -230,7 +238,7 @@ xxx<-xxx %>% pivot_wider(names_from=a, values_from=m,id_cols=b)
 xxx<-xxx %>% mutate(rowMeans=round(rowMeans(select(.,2:3)),2) )
 
 xxx <-rbind(xxx, 
-      c(b=NA,round(xxx %>% select(where(is.numeric)) %>% colMeans()),2))
+      c(b="",round(xxx %>% select(where(is.numeric)) %>% colMeans()),2))
 
 colnames(xxx)[1]<-""
 colnames(xxx)[ncol(xxx)]<-""
@@ -245,7 +253,7 @@ show_table_of_means <- function(x) {
 solution_df <- function(x) {
   paste0("df_A=",x$p,"-1=",x$df_A,"\\\\",
   "df_B=",x$q,"-1=",x$df_B,"\\\\",
-  "df_{AxB}=(",x$p,"-1)\\cdot(",x$q,"-1)=",x$df_AxB,
+  "df_{AxB}=(",x$p,"-1)\\cdot(",x$q,"-1)=",x$df_AxB, "\\\\",
   "df_{inn}=",x$n,"-(",x$p,"\\cdot",x$q,")=",x$df_inn)
 }
 
@@ -276,7 +284,7 @@ result_table <- function(x) {
                              df=c(x$df_A, x$df_B, x$df_AxB, x$df_inn),
                              MQS=c(x$mqs_A, x$mqs_B, x$mqs_AxB, x$mqs_inn),
                              F = c(x$Fval_A,x$Fval_B,x$Fval_AxB, ""),
-                             p = c(x$p_A, x$p_B, x$p_AxB, ""))
+                             p = c(wrap_p(x$p_A), wrap_p(x$p_B), wrap_p(x$p_AxB), ""))
                              #eta2=c(x$eta2,NA,NA))
   
   knitr::kable(report_table)
