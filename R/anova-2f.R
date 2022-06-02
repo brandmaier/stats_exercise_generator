@@ -210,7 +210,7 @@ f_crit <- function(x, type="A") {
     df2 = x$df_inn
     
   } else if (type=="B") {
-      df1 = x$df_A
+      df1 = x$df_B
       df2 = x$df_inn
   } else if (type=="AxB") {
     df1 = x$df_AxB
@@ -238,7 +238,7 @@ xxx<-xxx %>% pivot_wider(names_from=a, values_from=m,id_cols=b)
 xxx<-xxx %>% mutate(rowMeans=round(rowMeans(select(.,2:3)),2) )
 
 xxx <-rbind(xxx, 
-      c(b="",round(xxx %>% select(where(is.numeric)) %>% colMeans()),2))
+      c(b="",round(xxx %>% select(where(is.numeric)) %>% colMeans(),2)))
 
 colnames(xxx)[1]<-""
 colnames(xxx)[ncol(xxx)]<-""
@@ -297,6 +297,24 @@ pie_plot <- function(x) {
    # geom_text(aes(label = QS),
   #            position = position_stack(vjust = 0.5))
     NULL
+}
+
+solution_partial_eta2 <- function(x) {
+  
+  eta2p_A <- round(x$qs_A / (x$qs_A+x$qs_inn),2)
+  eta2p_B <- round(x$qs_B / (x$qs_B+x$qs_inn),2)
+  eta2p_AxB <- round(x$qs_AxB / (x$qs_AxB+x$qs_inn),2)
+  
+  ret <- paste0(
+    paste0("\\hat{\\eta}^2_{p,A}=\\frac{",x$qs_A,"}{",x$qs_A,"+",x$qs_inn,"}=",eta2p_A,""),
+    "\\\\ \n",
+    paste0("\\hat{\\eta}^2_{p,B}=\\frac{",x$qs_B,"}{",x$qs_B,"+",x$qs_inn,"}=",eta2p_B,""),
+    "\\\\ \n",
+    paste0("\\hat{\\eta}^2_{p,AxB}=\\frac{",x$qs_AxB,"}{",x$qs_AxB,"+",x$qs_inn,"}=",eta2p_AxB,""),
+    sep="",collapse=""
+  )
+  
+  return(ret)
 }
 
 #aov <- generate_anova_2f(av.name="Symptome",

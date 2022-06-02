@@ -32,7 +32,7 @@ empty_str <- "\\ "
 
 
 
-Im Folgenden finden Sie Übungsaufgaben zur zweifaktoriellen Varianzanalyse. Dabei sind im Allgemeinen die Quadratsummen, mittlere Quadratsummen und F-Werte zu berechnen. Ferner sind kritische Werte zu bestimmen, um eine statistische Entscheidung zu treffen. Runden Sie auf zwei Nachkommastellen (auch Zwischenergebnisse). Wenn die Aufgabenstellung nicht davon abweicht, gilt ein Signifikanzniveau von $5\%$.
+Im Folgenden finden Sie Übungsaufgaben zur zweifaktoriellen Varianzanalyse. Runden Sie auf zwei Nachkommastellen (auch Zwischenergebnisse). Wenn die Aufgabenstellung nicht davon abweicht, gilt ein Signifikanzniveau von $5\%$.
 
 # Aufgabe 1
 ```{r}
@@ -46,10 +46,10 @@ aov <- generate_anova_2f(av.name="Symptomschwere",
                                    10, 7, 12))
 ```
 
-In einer Studie wurde untersucht, inweit sich die Symptomschwere bei Personen mit verschiedenen Diagnosen verbessert abhängig davon, ob eine Psychotherapie durchgeführt wurde oder ob lediglich Psychopharmaka verschrieben wurden (Es handelt sich hier um fikitive Daten). Die beiden Faktoren Behandlung (2 Stufen) und Diagnose (3 Stufen) wurden zwischen Personen variiert, daher wurde eine zweifaktorielle Varianzanalyse (ohne Messwiederholung) für die Analyse der Beobachtungen eingesetzt. Gegeben sind folgende Quadratsummen:
+In einer Studie wurde untersucht, inweit sich die Symptomschwere bei Personen mit verschiedenen Diagnosen (Angststörung, PTSD, Depression) verbessert in Abhängigkeit davon, ob eine Psychotherapie durchgeführt wurde oder ob lediglich Psychopharmaka verschrieben wurden (Es handelt sich hier um fikitive Daten). Die beiden Faktoren *A: Therapieform* (2 Stufen) und *B: Diagnose* (3 Stufen) wurden zwischen Personen variiert, daher wurde eine zweifaktorielle Varianzanalyse (ohne Messwiederholung) für die Analyse der Beobachtungen eingesetzt. Insgesamt wurden hier $n=`r aov$n`$ Personen untersucht. Gegeben sind folgende Quadratsummen:
 
 ```{r results="asis"}
-cat(paste0("$QS_A=",aov$qs_A,"$, $QS_B=",aov$qs_B,"$, $QS_{AxB}=",aov$qs_AxB,"$,QS_{inn}=$",aov$qs_inn,"$\n"))
+cat(paste0("$QS_A=",aov$qs_A,"$, $QS_B=",aov$qs_B,"$,  $QS_{AxB}=",aov$qs_AxB,"$, $QS_{inn}=",aov$qs_inn,"$\n"))
 ```
 
 In folgender Tabelle finden sich die Mittelwerte aller Faktorstufenkombinationen sowie die Randmittelwerte. In der rechten unteren Zelle befindet sich der Gesamtmittelwert.
@@ -84,9 +84,9 @@ cat("\n")
 wrap_math_flalign(solution_f(aov))
 cat("\n")
 
-cat("Kritischer Wert für Haupteffekt des Faktors A:\n")
+cat("Kritischer Wert für Haupteffekt des Faktors A - Therapieform:\n")
 cat(f_crit(aov,type="A"))
-cat("Kritischer Wert für Haupteffekt des Faktors B:\n")
+cat("Kritischer Wert für Haupteffekt des Faktors B - Diagnose:\n")
 cat(f_crit(aov,type="B"))
 cat("Kritischer Wert für Wechselwirkung:\n")
 cat(f_crit(aov,type="AxB"))
@@ -113,7 +113,7 @@ interaction_plot(aov, empty=TRUE)
 cat("_Lösung:_")
 interaction_plot(aov)
 
-cat("Es handelt sich hierbei um eine semidisordinale Interaktion. Beide Haupteffekte sind nicht global interpretierbar. Es gibt einen signifikanten Haupteffekt von Diagnose. Wenn man also die Therapieform außer acht lässt (genaugenommen über die möglichen Therapien mittelt), stellt man fest, dass in dieser Stichprobe die Personen mit Angststörung die niedrigsten Symptome zeigen und die Personen mit  Depression die höchsten. Der signifikante Haupteffekt sagt uns, dass wir die H0 abgelehnt haben, die besagt, dass Patienten mit diesen drei Diagnosen dieselbe Symptomschwere haben. Da es aber die signifikante disordinale Interaktion gibt, wissen wir, dass diese Aussage aber nicht innerhalb jeder Stufe des anderen Faktors (Therapieform) gilt. ")
+cat("Es handelt sich hierbei um eine disordinale Interaktion. Beide Haupteffekte sind nicht global interpretierbar. Es gibt einen signifikanten Haupteffekt von Diagnose. Wenn man also die Therapieform außer acht lässt (genaugenommen über die möglichen Therapien mittelt), stellt man fest, dass in dieser Stichprobe die Personen mit Angststörung die niedrigsten Symptome zeigen und die Personen mit  Depression die höchsten. Der signifikante Haupteffekt sagt uns, dass wir die H0 abgelehnt haben, die besagt, dass Patienten mit diesen drei Diagnosen dieselbe Symptomschwere haben. Da es aber die signifikante disordinale Interaktion gibt, wissen wir, dass diese Aussage aber nicht innerhalb jeder Stufe des anderen Faktors (Therapieform) gilt. ")
 ```
 
 # Aufgabe 3

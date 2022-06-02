@@ -15,6 +15,13 @@ rmarkdown::render(input="AB1-Varianzanalyse-einfaktoriell.Rmd",
                   output_file=paste0(output_path,"AB-Varianzanalyse-einfaktoriell-mit_Lösung.pdf"), 
                   params=list(include_solution=TRUE))
 
+rmarkdown::render(input="AB7-Varianzanalyse-zweifaktoriell.Rmd", 
+                  output_file=paste0(output_path,"AB-Varianzanalyse-zweifaktoriell.pdf"), 
+                  params=list(include_solution=FALSE))
+rmarkdown::render(input="AB7-Varianzanalyse-zweifaktoriell.Rmd", 
+                  output_file=paste0(output_path,"AB-Varianzanalyse-zweifaktoriell-mit_Lösung.pdf"), 
+                  params=list(include_solution=TRUE))
+
 
 rmarkdown::render(input="AB2-Kontraste.Rmd", 
                   output_file=paste0(output_path,"AB-Kontraste.pdf"), 
