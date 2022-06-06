@@ -1,5 +1,5 @@
 ---
-title: "Arbeitsblatt 7 - Zweifaktorielle Varianzanalyse"
+title: "Arbeitsblatt - Zweifaktorielle Varianzanalyse"
 author: "Statistik II - Andreas M. Brandmaier"
 date: "`r format(Sys.time(), '%d. %B %Y')`"
 output:
@@ -46,7 +46,7 @@ aov <- generate_anova_2f(av.name="Symptomschwere",
                                    10, 7, 12))
 ```
 
-In einer Studie wurde untersucht, inweit sich die Symptomschwere bei Personen mit verschiedenen Diagnosen (Angststörung, PTSD, Depression) verbessert in Abhängigkeit davon, ob eine Psychotherapie durchgeführt wurde oder ob lediglich Psychopharmaka verschrieben wurden (Es handelt sich hier um fikitive Daten). Die beiden Faktoren *A: Therapieform* (2 Stufen) und *B: Diagnose* (3 Stufen) wurden zwischen Personen variiert, daher wurde eine zweifaktorielle Varianzanalyse (ohne Messwiederholung) für die Analyse der Beobachtungen eingesetzt. Insgesamt wurden hier $n=`r aov$n`$ Personen untersucht. Gegeben sind folgende Quadratsummen:
+In einer Studie wurde untersucht, inweit sich die Symptomschwere bei Personen mit verschiedenen Diagnosen (Angststörung, PTSD, Depression) verbessert in Abhängigkeit davon, ob eine Psychotherapie durchgeführt wurde oder ob lediglich Psychopharmaka verschrieben wurden (Es handelt sich hier um fikitive Daten). Die beiden Faktoren *A: Therapieform* (2 Stufen) und *Faktor B: Diagnose* (3 Stufen) wurden zwischen Personen variiert, daher wurde eine zweifaktorielle Varianzanalyse (ohne Messwiederholung) für die Analyse der Beobachtungen eingesetzt. Insgesamt wurden hier $n=`r aov$n`$ Personen mit einem balancierten Design untersucht. Gegeben sind folgende Quadratsummen:
 
 ```{r results="asis"}
 cat(paste0("$QS_A=",aov$qs_A,"$, $QS_B=",aov$qs_B,"$,  $QS_{AxB}=",aov$qs_AxB,"$, $QS_{inn}=",aov$qs_inn,"$\n"))
@@ -59,7 +59,7 @@ In folgender Tabelle finden sich die Mittelwerte aller Faktorstufenkombinationen
 show_table_of_means(aov)
 ```
 
-Folgende Grafik dient rein der Anschauung und zeigt die Verteilung der Beobachtungen für jede Faktorstufenkombination:
+Folgende Grafik dient rein der Anschauung und zeigt die Verteilung der Beobachtungen für jede Faktorstufenkombination. Die Punkte entsprechen den einzelnen Werten der Symptomschwere der Personen. Die Verteilung innerhalb jeder Faktorstufenkombination ist als Boxplot dargestellt.
 
 ```{r message=FALSE, warning=FALSE}
 
@@ -70,12 +70,16 @@ data_plot(aov)
 
 Führen Sie eine zweifaktorielle Varianzanalyse vollständig durch (beachten Sie, dass die Quadratsummen schon gegeben sind). Formulieren Sie die Nullypothesen (in Worten) und testen Sie die Haupteffekte und Interaktion auf Signifikanz, indem Sie die entsprechenden F-Werte berechnen und gegen ihre jeweiligen kritischen Werte testen. Formulieren Sie Antwortsätze für Ihre statistische Entscheidung.
 
+```{r results="asis"}
+cat(f_crit(aov, type="A"))
+cat(f_crit(aov, type="AxB"))
+```
 
-```{r results="asis", message=FALSE, warning=FALSE}
+```{r results="asis", message=FALSE, warning=FALSE, eval=include_solution}
 
-cat("_Lösung:_")
+cat("_Lösung:_\n\n")
 cat("\n")
-cat("Wir testen drei Hypothesenpaare: $H0_a$: Es gibt keinen Haupteffekt von  Therapieform\n$H0_b$: Es gibt keinen Haupteffekt von Diagnose.\n$H0_c$: Es gibt keine Wechselwirkung von Therapieform und Diagnose.\n\n")
+cat("Wir testen drei Nullhypothesen  :\n\n $H0_A$: Es gibt keinen Haupteffekt von  Therapieform\n\n $H0_B$: Es gibt keinen Haupteffekt von Diagnose.\n\n $H0_{AxB}$: Es gibt keine Wechselwirkung von Therapieform und Diagnose.\n\n")
 
 wrap_math_align(solution_df(aov))
 cat("\n")
@@ -95,7 +99,7 @@ cat("Es entsteht folgende Ergebnistabelle (hier auch mit p-Werten, die Sie anhan
 
 result_table(aov)
 
-cat("Der Haupteffekt von Diagnose und die Wechselwirkung sind signfikant. Der Haupteffekt von Therapieform ist nicht signifikant.")
+cat("Der Haupteffekt von Diagnose und die Wechselwirkung sind signfikant auf einem 5%-Niveau. Der Haupteffekt von Therapieform ist nicht signifikant auf einem 5%-Niveau.")
 
 #knitr::kable(anova_in_R(aov))
 ```
@@ -109,14 +113,27 @@ interaction_plot(aov, empty=TRUE)
 ```
 
 
-```{r results="asis", message=FALSE, warning=FALSE}
-cat("_Lösung:_")
+```{r results="asis", message=FALSE, warning=FALSE, eval=include_solution}
+cat("_Lösung:_\n")
 interaction_plot(aov)
 
-cat("Es handelt sich hierbei um eine disordinale Interaktion. Beide Haupteffekte sind nicht global interpretierbar. Es gibt einen signifikanten Haupteffekt von Diagnose. Wenn man also die Therapieform außer acht lässt (genaugenommen über die möglichen Therapien mittelt), stellt man fest, dass in dieser Stichprobe die Personen mit Angststörung die niedrigsten Symptome zeigen und die Personen mit  Depression die höchsten. Der signifikante Haupteffekt sagt uns, dass wir die H0 abgelehnt haben, die besagt, dass Patienten mit diesen drei Diagnosen dieselbe Symptomschwere haben. Da es aber die signifikante disordinale Interaktion gibt, wissen wir, dass diese Aussage aber nicht innerhalb jeder Stufe des anderen Faktors (Therapieform) gilt. ")
+cat("Es handelt sich hierbei um eine disordinale Interaktion. Beide Haupteffekte sind nicht global interpretierbar. Es gibt einen signifikanten Haupteffekt von Diagnose. Wenn man also die Therapieform außer acht lässt (genaugenommen über die möglichen Therapien mittelt), können wir sagen, dass sich Personen mit verschiedenen Diagnosen in der Symptomschwere unterscheiden. Da es aber die signifikante disordinale Interaktion gibt, wissen wir, dass diese Aussage nicht innerhalb jeder Stufe des anderen Faktors (Therapieform) gilt. Wenn man bspw. PTSD und die Angststörung vergleicht, sieht man das die beste Therapieform jeweils eine andere für die Diagnosen ist (vgl. die rechts Abbildung im Interaktionsdiagram) ")
 ```
 
+
 # Aufgabe 3
+
+Berechnen Sie die Effektstärke partielles Eta-Quadrat $\hat{\eta}^2_p$ für jeweils
+die beiden Haupteffekte und die Interaktion.
+
+```{r results="asis", message=FALSE, warning=FALSE, eval=include_solution}
+cat("_Lösung:_")
+
+wrap_math_align(solution_partial_eta2(aov))
+
+```
+
+# Aufgabe 4
 
 Welcher der folgenden Tortendiagramme passt zu der in Aufgabe 1 durchgeführten Varianzanalyse?
 
@@ -132,7 +149,7 @@ aov_fake2$qs_inn <- aov$qs_inn*3
 aov_fake3 <- aov
 aov_fake3$qs_A<- aov$qs_B
 
-style <- theme(panel.background = element_rect(fill = 'lightblue', color = 'white'))
+style <- NULL#theme(panel.background = element_rect(fill = 'lightblue', color = 'white'))
 
 p1<-pie_plot(aov_fake2)+ggtitle("Torte A")+style
 p2<-pie_plot(aov_fake)+ggtitle("Torte B")+style
@@ -143,16 +160,24 @@ library(patchwork)
 (p1 + p2)  / (p3 + p4) + style
 ```
 
-```{r results="asis", message=FALSE, warning=FALSE}
-cat("_Lösung:_")
+```{r results="asis", message=FALSE, warning=FALSE, eval=include_solution}
+cat("_Lösung:_\n\n")
 
-cat("Richtig ist Torte C. Die Innerhalb-QS ist ungefähr so groß wie die Interaktion. QS_A ist verschwindend klein im Vergleich zum Rest,")
+cat("Richtig ist Torte C. Die Innerhalb-QS ist ungefähr so groß wie die Interaktion. $QS_A$ ist verschwindend klein im Vergleich zum Rest.")
 
 
 ```
 
-# Aufgabe 4
+
+
+# Aufgabe 5
 
 Überlegen Sie sich eine Forschungsfrage, die Sie mit einer zweifaktoriellen Varianzanalyse beantworten können. Was bedeutet eine signifikante Interaktion?
 
+```{r results="asis", message=FALSE, warning=FALSE, eval=include_solution}
+cat("_Lösung:_")
+
+cat("\nHier sind viele Antworten möglich. Zum Beispiel könnten wir uns dafür interessieren, ob sich Personen unterschiedlicher Berufsfelder (Faktor A) in ihrer Wahrnehmung des beruflichen Stress (AV) unterscheiden. Dabei interessiert weiterhin, ob es Unterschiede in Bezug darauf gibt, ob jemand ein Studium abgeschloßen hat oder nicht (Faktor B). Eine vorstellbare Interaktion könnte sein, dass in Berufsfeld #A Studierte und Nicht-Studierte dieselbe mittlere Stresswahrnehmung haben während in Berufsfeld #B Nicht-Studierte eine wesentlich höhere Stresswahrnehmung als Studierte haben.")
+
+```
 
