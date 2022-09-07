@@ -39,3 +39,4 @@ names(mat) <- x$varnames
 rownames(mat) <- x$varnames
 return(mat)
 }
+

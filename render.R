@@ -39,10 +39,10 @@ rmarkdown::render(input="AB-ChiQuadrat.Rmd",
 
 
 rmarkdown::render(input="AB4-Hauptkomponentenanalyse.Rmd", 
-                  output_file=paste0(output_path,"AB4-Hauptkomponentenanalyse.pdf"), 
+                  output_file=paste0(output_path,"AB-Hauptkomponentenanalyse.pdf"), 
                   params=list(include_solution=FALSE))
 rmarkdown::render(input="AB4-Hauptkomponentenanalyse.Rmd", 
-                  output_file=paste0(output_path,"AB4-Hauptkomponentenanalyse-mit-Lösung.pdf"), 
+                  output_file=paste0(output_path,"AB-Hauptkomponentenanalyse-mit-Lösung.pdf"), 
                   params=list(include_solution=TRUE))
 
 rmarkdown::render(input="AB-Korrelation.Rmd", 

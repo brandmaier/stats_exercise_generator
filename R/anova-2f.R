@@ -231,19 +231,26 @@ long_data_table <- function(x) {
 }
 
 
+
 table_of_means <- function(x) {
-xxx<-x$dat %>% group_by(a,b) %>% summarise(m=mean(av)) %>% add_column(id=1:(x$p*x$q))
-xxx<-xxx %>% pivot_wider(names_from=a, values_from=m,id_cols=b)
-
-xxx<-xxx %>% mutate(rowMeans=round(rowMeans(select(.,2:3)),2) )
-
-xxx <-rbind(xxx, 
-      c(b="",round(xxx %>% select(where(is.numeric)) %>% colMeans(),2)))
-
-colnames(xxx)[1]<-""
-colnames(xxx)[ncol(xxx)]<-""
-
-xxx
+  temporary_data <-
+    x$dat %>% group_by(a, b) %>% summarise(m = mean(av)) %>% add_column(id =
+                                                                          1:(x$p * x$q))
+  temporary_data <- temporary_data %>% pivot_wider(names_from = a,
+                             values_from = m,
+                             id_cols = b)
+  
+  temporary_data <- temporary_data %>% mutate(rowMeans = round(rowMeans(select(., 2:3)), 2))
+  
+  temporary_data <- rbind(temporary_data,
+               c(b = "", round(temporary_data %>% select(
+                 where(is.numeric)
+               ) %>% colMeans(), 2)))
+  
+  colnames(temporary_data)[1] <- ""
+  colnames(temporary_data)[ncol(temporary_data)] <- ""
+  
+  temporary_data
 }
 
 show_table_of_means <- function(x) {
@@ -276,16 +283,23 @@ solution_f <- function(x) {
   )
 }
 
+
 result_table <- function(x) {
-  report_table <- data.frame(Quelle=c(x$factor.a.name , x$factor.b.name, 
-                                      paste0(x$factor.a.name," x ",x$factor.b.name),
-                                      "Fehler"),
-                             QS=c(x$qs_A, x$qs_B, x$qs_AxB, x$qs_inn), 
-                             df=c(x$df_A, x$df_B, x$df_AxB, x$df_inn),
-                             MQS=c(x$mqs_A, x$mqs_B, x$mqs_AxB, x$mqs_inn),
-                             F = c(x$Fval_A,x$Fval_B,x$Fval_AxB, ""),
-                             p = c(wrap_p(x$p_A), wrap_p(x$p_B), wrap_p(x$p_AxB), ""))
-                             #eta2=c(x$eta2,NA,NA))
+  report_table <-
+    data.frame(
+      Quelle = c(
+        x$factor.a.name ,
+        x$factor.b.name,
+        paste0(x$factor.a.name, " x ", x$factor.b.name),
+        "Fehler"
+      ),
+      QS = c(x$qs_A, x$qs_B, x$qs_AxB, x$qs_inn),
+      df = c(x$df_A, x$df_B, x$df_AxB, x$df_inn),
+      MQS = c(x$mqs_A, x$mqs_B, x$mqs_AxB, x$mqs_inn),
+      F = c(x$Fval_A, x$Fval_B, x$Fval_AxB, ""),
+      p = c(wrap_p(x$p_A), wrap_p(x$p_B), wrap_p(x$p_AxB), "")
+    )
+  #eta2=c(x$eta2,NA,NA))
   
   knitr::kable(report_table)
 }
