@@ -1,0 +1,6 @@
+import(tidyverse)
+importFrom(magrittr,"%>%")
+importFrom(dplyr,"summarise")
+importFrom(dplyr,"group_by")
+
+export(wrap_p)
