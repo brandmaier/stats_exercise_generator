@@ -14,7 +14,8 @@ generate_anova_2f <- function(av.name = "",
                            obs_max=20,
                            obs_round=2,
                            av = NULL,
-                           alpha = 0.05)
+                           alpha = 0.05,
+                           extreme_rounding = FALSE)
 {
   
   
@@ -59,19 +60,25 @@ generate_anova_2f <- function(av.name = "",
   
   cmns = cellmeans_by_row
   
+  if (extreme_rounding) {
+    ex_round <- round
+  } else {
+    ex_round <- function(x,...){x}
+  }
+  
   qs_tot <- round(
     sum(
-      round((dat$av-xm)^2,2)
+      ex_round((dat$av-xm)^2,2)
     )
     ,2)
   qs_A <- q* nz * round(
     sum(
-      round((factor_a_means-xm)^2,2)
+      ex_round((factor_a_means-xm)^2,2)
     )
     ,2)
   qs_B <- p* nz * round(
     sum(
-      round((factor_b_means-xm)^2,2)
+      ex_round((factor_b_means-xm)^2,2)
     )
     ,2)
   
