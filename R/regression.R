@@ -24,7 +24,7 @@ solution_std_from_r2 <- function(x) {
 }
 
 solution_adj_r2 <- function(x) {
-  
+  return(" 1-\\frac{(1-",x$r2,")\\cdot (",x$n,"-1)}{(",x$n,"-",x$k,"-1)}=",x$adjr2," ")
 }
 
 bivariate_table <- function(x) {
@@ -40,3 +40,31 @@ rownames(mat) <- x$varnames
 return(mat)
 }
 
+
+generate_multipleregression <- function(lm) {
+  
+  sm <- summary(lm)
+  result <- list(lm=lm, r2 = sm$r.squared, adjr2 = sm$adj.r.squared,
+                 n=length(sm$residuals), k = nrow(sm$coefficients)-1)
+  #class(result) <- "multreg"
+  return(result)
+}
+
+dat <- data.frame(y=rnorm(20),x1=rnorm(20),x2=rnorm(20))
+sm <- summary(lm(y~x1+x2,dat))
+
+library(kableExtra)
+
+coeff_table <- function(x) {
+  
+  ncoeff <- x$k
+  pres_data <- data.frame(Modell=c(1,rep("",x$k)),
+                          RegressionskoeffizientB= round( coefficients(x$lm), 3),
+                          StdFehler= round( sm$coefficients[,2], 3),
+                          T= round( sm$coefficients[,3], 3),
+                          Sig= round( sm$coefficients[,4],3))
+  
+  knitr::kable( pres_data
+    
+  ) %>%  kable_styling(latex_options = "striped")
+}

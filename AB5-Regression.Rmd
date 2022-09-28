@@ -2,7 +2,9 @@
 title: "AB4-Multiple Regression"
 author: "Andreas M. Brandmaier"
 date: "11/14/2021"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -21,8 +23,30 @@ rg <- generate_regression(n=100, ryx1 = .5, ryx2=.2, rx12=.4,
                           0, 0, 1, 1, 1, varnames=c("a","b","c"))
 ```
 
-$`r solution_coeff(rg)`$
+Stellen Sie die Regressionsgleichung in der Population auf (Tipp: griechische Buchstaben für Populationsparameter) und berechnen Sie die Schätzer für Regressionskonstante und Regressionsgewichte aus den gegebenen Korrelationen.
+
+`r wrap_math_align(solution_coeff(rg))`
 
 ```{r}
 knitr::kable(bivariate_table(rg))
 ```
+
+# Aufgabe 2
+
+```{r}
+set.seed(2459)
+N <- 200
+agree <- rnorm(N)
+open <- rnorm(N)
+happy <- agree*0.1+open*0.3+rnorm(N)
+dat <- data.frame(agree, open, happy)
+model <- generate_multipleregression(lm(happy~.,dat))
+```
+
+In einer wissenschaftlichen Studie wurde untersucht, inwieweit die Lebenszufriedenheit durch Persönlichkeitsmerkmale vorhergesagt werden kann. Dazu wurde als abhängige Variable die Lebenszufriedenheit untersucht (Skala von 1--100). Die unabhängigen Variablen waren Offenheit und Verträglichkeit. Untersucht wurde eine Stichprobe von $N$ Personen.
+
+```{r}
+coeff_table(model)
+```
+
+

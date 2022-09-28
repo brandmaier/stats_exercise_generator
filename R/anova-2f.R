@@ -347,3 +347,7 @@ aov <- generate_anova_2f( av = c(
 anova_in_R(aov)
 result_table(aov)
 
+aov2 <- generate_anova_2f(obs_round = 
+                    1)
+anova_in_R(aov2)
+result_table(aov2)
