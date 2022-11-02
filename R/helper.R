@@ -26,5 +26,6 @@ paste0g <- function(...) {
 }
 
 wrap_p <- function(p) {
+  if (is.na(p))return(NA)
   if (p<0.001){ return ("$<0.001$") }else{ return(round(p,3))}
 }

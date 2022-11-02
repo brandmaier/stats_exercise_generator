@@ -24,6 +24,7 @@ include_solution <- params$include_solution
 empty_str <- "\\ "
 
 
+#\pagebreak
 ```
 
 
@@ -69,45 +70,6 @@ cat("Der empirische _F_-Wert ist größer als der kritische Wert. Wir lehnen dah
 ```
 
 # Aufgabe 2
-```{r}
-csq <- generate_chisq(labels.a = c("Ja (vorher)"," Nein (vorher)"),
-                      labels.b=c("Ja (Nachher)","Nein (Nachher)"), 
-                                 short.labels.a=c("Ja","Nein"), 
-                                 short.labels.b=c("Ja","Nein"),
-                       tbl = matrix(c(45,13,25,43),ncol=2,byrow = FALSE))
-write.csv("data/ab3-smoker.csv", x=chisq_to_data(csq),row.names = FALSE)
-```
-Ein Forscherteam untersucht die Wirksamkeit einer Anti-Raucher-Kampagne. Dazu wird das Rauchverhalten (ja/nein ) in derselben Stichprobe zweimal untersucht: einmal vor der Kampagne und einmal nach der Kampagne. Die Vermutung ist, dass die Rauchkampagne wirksam ist. Untersuchen Sie dies mit einer gerichteten Hypothese. Das Signifikanzniveau sei 5%.
-Formulieren Sie die Null-Hypothese und rechnen Sie den richtigen Test. Treffen Sie eine statistisch informierte Entscheidung. Welche Effektstärke kann man hier berichten?
-
-
-
-```{r, results="asis"}
-chisq_data_table(csq)
-```
-
-```{r, results="asis", eval=include_solution}
-cat("_Lösung:_\n\n")
-
-cat("Eine gerichtete Hypothese bedeutet hier: Wir nehmen an, dass es mehr Wechsler von Raucher zu Nicht-Raucher (Populationswahrscheinlichkeit: $\\pi_{12}$) als Nicht-Raucher zu Raucher (Populationswahrscheinlichkeit: $\\pi_{21}$) gibt.\n $$H_0: \\pi_{12}>\\pi_{21}$$")
-
-cat("Der Effekt geht in die 'richtige' Richtung, 25 > 13, also führen wir den einseitigen Test durch, um das Ergebnis abzusichern.")
-
-wrap_math_block(mcnemar_solution(csq))
-cat("\n")
-cat(chisq_crit(csq, undirected=FALSE),"\n")
-cat("Wir lehnen die Nullhypothese ab und glauben an die Wirksamkeit der Intervention zur Reduzierung der Anzahl der Raucher.")
- 
-cat("Als Effektstärke können wir das Verhältnis der Wechsler berechnen:\n")
-wrap_math_block(mcnemar_effectsize(csq,1))
-
-cat("oder als Prozentualen Anteil der Wechsler von Raucher zu Nichtraucher im Verhältnis zu allen Wechslern:\n")
-wrap_math_block(mcnemar_effectsize(csq,2))
-```
-
-\pagebreak
-
-# Aufgabe 3
 
 Laut einer Statista-Studie (https://de.statista.com/statistik/daten/studie/30157/umfrage/anzahl-der-haustiere-in-deutschen-haushalten-seit-2008/) gehen wir davon aus, dass in der Bevölkerung die Vorliebe für Haustiere folgendermaßen verteilt ist:
 
@@ -116,7 +78,7 @@ Laut einer Statista-Studie (https://de.statista.com/statistik/daten/studie/30157
 - Andere: 13%
 - Keine: 60.6%
 
-Wir gehen weiterhin davon aus, dass keine Mehrfachnennungen möglich sind. In einer Studie wurde untersucht, ob sich die Vorlieben bei Psychologiestudierenden von der Normalbevölkerung unterscheiden. Beobachtet wurden folgende absoluten Häufigkeiten in einer Stichprobe von 120 Studierenden:
+Wir gehen weiterhin davon aus, dass bei dieser Datenerhebung keine Mehrfachnennungen möglich waren. In einer neuen Studie wurde nun untersucht, ob sich die Vorlieben bei Psychologiestudierenden von der Normalbevölkerung (siehe Prozentangaben vorher) unterscheiden. Beobachtet wurden folgende absoluten Häufigkeiten in einer Stichprobe von 120 Studierenden:
 
 
 ```{r}
@@ -142,7 +104,7 @@ cat("Wir lehnen die Nullhypothese ab und schließen daraus, dass sich die Vorlie
 ```
 
 
-# Aufgabe 4
+# Aufgabe 3
 
 In einer Studie wurde untersucht, ob sich das Interesse an einem A&O-Masterstudiengang über die Jahrgänge von Studierenden hinweg unterscheidet. Die Stichproben sind unabhängig, d.h. es wurden in einem Kalenderjahr Studierende aus verschiedenen Anfangssemestern befragt. Erhoben wurde, ob potentiell ein Interesse an dem Besuch des Masterstudiengangs besteht (codiert als ja/nein).  Folgende Kreuztabelle entstand aus den Daten der Jahrgänge:
 
@@ -168,7 +130,7 @@ cat(chisq_crit(csq))
 cat("Wir können die Nullhypothese nicht ablehnen.")
 ```
 
-# Aufgabe 5
+# Aufgabe 4
 Wir bleiben bei den Daten aus Aufgabe 4. Wie müsste die Kontingenztabelle der beobachteten Häufigkeiten lauten, wenn man testen möchte, ob sich die Interessenlage in den Sommer- und Wintersemestern unterscheidet? Führen Sie den entsprechenden Unabhängigkeitstest durch.
 
 ```{r} 
@@ -194,4 +156,78 @@ cat("\n")
 cat(chisq_crit(csq))
 cat("Wir können die Nullhypothese nicht ablehnen.")
 ```
+
+# Aufgabe 5
+```{r}
+csq <- generate_chisq(labels.a = c("Ja (vorher)"," Nein (vorher)"),
+                      labels.b=c("Ja (Nachher)","Nein (Nachher)"), 
+                                 short.labels.a=c("Ja","Nein"), 
+                                 short.labels.b=c("Ja","Nein"),
+                       tbl = matrix(c(45,13,25,43),ncol=2,byrow = FALSE))
+write.csv("data/ab3-smoker.csv", x=chisq_to_data(csq),row.names = FALSE)
+```
+Ein Forscherteam untersucht die Wirksamkeit einer Anti-Raucher-Kampagne. Dazu wird das Rauchverhalten (ja/nein ) in derselben Stichprobe zweimal untersucht: einmal vor der Kampagne und einmal nach der Kampagne. Die Vermutung ist, dass die Rauchkampagne das Rauchverhalten verändert. Dies entspricht einer ungerichteten Forschungshypothese (Veränderung bedeutet entweder, dass mehr Leute als vorher rauchen oder weniger). Untersuchen Sie diese Fragestellung mit einer ungerichteten Hypothese. Das Signifikanzniveau sei 5%.
+Formulieren Sie die Null-Hypothese und rechnen Sie den richtigen Test. Treffen Sie eine statistisch informierte Entscheidung. Welche Effektstärke kann man hier berichten?
+
+
+
+```{r, results="asis"}
+chisq_data_table(csq)
+```
+
+```{r, results="asis", eval=include_solution}
+cat("_Lösung:_\n\n")
+
+cat("Eine ungerichtete Hypothese bedeutet hier: Wir nehmen an, dass die Anzahl (genaugenommen: relative Häufigkeit) der Wechsler von Raucher zu Nicht-Raucher (Populationswahrscheinlichkeit: $\\pi_{12}$) unterschiedlich ist von der Anzahl der Nicht-Raucher zu Raucher (Populationswahrscheinlichkeit: $\\pi_{21}$). Also schreiben wir: \n $$H_1: \\pi_{12} \\ne \\pi_{21}$$ und $$H_0: \\pi_{12}= \\pi_{21}$$")
+
+wrap_math_block(mcnemar_solution(csq))
+cat("\n")
+cat(chisq_crit(csq, undirected=TRUE),"\n")
+cat("Wir behalten die Nullhypothese bei. Es wurde keine signifikante Veränderung festgestellt.")
+ 
+cat("Als Effektstärke können wir das Verhältnis der Wechsler berechnen:\n")
+wrap_math_block(mcnemar_effectsize(csq,1))
+
+cat("oder als Prozentualen Anteil der Wechsler von Raucher zu Nichtraucher im Verhältnis zu allen Wechslern:\n")
+wrap_math_block(mcnemar_effectsize(csq,2))
+```
+
+
+# Aufgabe 6
+```{r}
+csq <- generate_chisq(labels.a = c("Ja (vorher)"," Nein (vorher)"),
+                      labels.b=c("Ja (Nachher)","Nein (Nachher)"), 
+                                 short.labels.a=c("Ja","Nein"), 
+                                 short.labels.b=c("Ja","Nein"),
+                       tbl = matrix(c(45,13,25,43),ncol=2,byrow = FALSE))
+write.csv("data/ab3-smoker.csv", x=chisq_to_data(csq),row.names = FALSE)
+```
+Ein Forscherteam untersucht erneut die Wirksamkeit einer Anti-Raucher-Kampagne. Das Forschungsdesign bleibt gleich. Es wird das Rauchverhalten (ja/nein ) in derselben Stichprobe zweimal untersucht: einmal vor der Kampagne und einmal nach der Kampagne. Der einzige Unterschied ist, dass diesmal eine positive Wirkung der Kampagne vermutet und gezeigt werden soll. Die Vermutung ist, dass die Rauchkampagne wirksam ist. Untersuchen Sie dies mit einer _gerichteten_ Hypothese. Das Signifikanzniveau sei 5%. Denken Sie daran, dass wir bei gerichteten Hypothesen zur Bestimmung des kritischen Werts das Signifikanzniveau verdoppeln, d.h., wir arbeiten mit 10% zur Bestimmung des kritischen Werts.
+Formulieren Sie die Null-Hypothese und rechnen Sie den richtigen Test. Treffen Sie eine statistisch informierte Entscheidung. Welche Effektstärke kann man hier berichten?
+
+
+
+```{r, results="asis"}
+chisq_data_table(csq)
+```
+
+```{r, results="asis", eval=include_solution}
+cat("_Lösung:_\n\n")
+
+cat("Eine gerichtete Hypothese bedeutet hier: Wir nehmen an, dass es mehr Wechsler von Raucher zu Nicht-Raucher (Populationswahrscheinlichkeit: $\\pi_{12}$) als Nicht-Raucher zu Raucher (Populationswahrscheinlichkeit: $\\pi_{21}$) gibt.\n $$H_1: \\pi_{12}>\\pi_{21}$$ und $$H_0: \\pi_{12}\\le \\pi_{21}$$")
+
+cat("Der Effekt geht in die 'richtige' Richtung (d.h., konform mit der H1), 25 > 13, also führen wir den einseitigen Test durch, um das Ergebnis abzusichern.")
+
+wrap_math_block(mcnemar_solution(csq))
+cat("\n")
+cat(chisq_crit(csq, undirected=FALSE),"\n")
+cat("Wir lehnen die Nullhypothese ab und glauben an die Wirksamkeit der Intervention zur Reduzierung der Anzahl der Raucher.")
+ 
+cat("Als Effektstärke können wir das Verhältnis der Wechsler berechnen:\n")
+wrap_math_block(mcnemar_effectsize(csq,1))
+
+cat("oder als Prozentualen Anteil der Wechsler von Raucher zu Nichtraucher im Verhältnis zu allen Wechslern:\n")
+wrap_math_block(mcnemar_effectsize(csq,2))
+```
+
 

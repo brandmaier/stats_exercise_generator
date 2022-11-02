@@ -32,16 +32,17 @@ generate_anova_2f <- function(av.name = "",
   
   n <- nz*p*q
   
+  # if no raw data is given, generate data from given cell means
   if (!raw_data_given) {
-    av<-rep(cellmeans_by_row,each=nz)+rnorm(nz*length(cellmeans_by_row),0,noise_sd)
+    av<-rep(cellmeans_by_row,each=nz)+rnorm(nz*p*q,0,noise_sd)
     av <- round(av, obs_round)
     av <- pmax(av, obs_min)
     av <- pmin(av, obs_max)
-
-  #} else {
-   
   }
   
+  # create a data frame in long format
+  # raw data is expected in this order:
+  # A1/B1, A1/B2, A1/B3, ... A1/Bn, A2/B1, A2/B2, A2/B3, .... A2/Bn, ....., An/B1,...
   dat <- data.frame(av, a = rep(factor.a.levels, each=nz*q), b=rep(factor.b.levels,each=nz))
   
   if (raw_data_given) {
@@ -50,20 +51,19 @@ generate_anova_2f <- function(av.name = "",
   }
   xm = round(mean(av), 2)
  
-  
+  #browser()
  
   
   factor_a_means <- round( (dat %>% group_by(a) %>% summarise(avm=mean(av)))$avm ,2)
   factor_b_means <- round( (dat %>% group_by(b) %>% summarise(bvm=mean(av)))$bvm ,2)
   
   num.obs.per.fac = nz
-  
-  cmns = cellmeans_by_row
+
   
   if (extreme_rounding) {
     ex_round <- round
   } else {
-    ex_round <- function(x,...){x}
+    ex_round <- function(x,...){x} # identity function
   }
   
   qs_tot <- round(
@@ -82,17 +82,24 @@ generate_anova_2f <- function(av.name = "",
     )
     ,2)
   
+
   
   cms <- rep(cellmeans_by_row,each=nz)
   ams <- rep(factor_a_means, each=nz*q)
   bms <- rep(factor_b_means, each=nz, times=p)
   
- # browser()
+#  browser()
   
-  qs_AxB <- round(sum( (cms+xm-ams-bms   )^2 ), 2)
+  # just as sanity check
+  qs_tot <- round( sum((xm-av)^2), 2)
+  
+
+  #qs_AxB <- round(sum( (cms-ams-bms+xm   )^2 ), 2)
+  qs_AxB <- round( nz * sum( (cellmeans_by_row+xm-
+                                rep(factor_a_means,each=q)-rep(factor_b_means,p) )^2 ), 2 )
   
   qs_inn <-  round( 
-    sum((rep(cellmeans_by_row,each=nz)-av)^2) 
+    sum((cms-av)^2) 
     , 2)
   
   
@@ -338,23 +345,3 @@ solution_partial_eta2 <- function(x) {
   return(ret)
 }
 
-#aov <- generate_anova_2f(av.name="Symptome",
-#                  factor.a.levels = c("Psychotherapie","Psychopharmaka"),
-#                  factor.a.name = "Therapie", factor.b.name = "Diagnose",
-#                  factor.b.levels = c("Depression","Angststörung"),
-#                  obs_min = 0, obs_max = 20, nz = 5, cellmeans_by_row = c(10,8,8,10))
-
-# first row is a1, then list as columns all b1, b2,..
-# second row is a2
-aov <- generate_anova_2f( av = c(
-  1,2,38,4, 7,6,7,16,
-  5,6,7,8, 18,18,16,17
-), factor.a.levels = c("a1","a2"), factor.b.levels=c("b1", "b2"), nz=4)
-
-anova_in_R(aov)
-result_table(aov)
-
-aov2 <- generate_anova_2f(obs_round = 
-                    1)
-anova_in_R(aov2)
-result_table(aov2)
