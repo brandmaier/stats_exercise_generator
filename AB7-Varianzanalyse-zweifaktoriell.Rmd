@@ -9,7 +9,7 @@ params:
   include_solution: true
 mainfont: SourceSansPro
 header-includes:
-   - \usepackage[default]{sourcesanspro}
+#   - \usepackage[default]{sourcesanspro}
    - \usepackage[T1]{fontenc}
 ---
 
@@ -65,8 +65,6 @@ Folgende Grafik dient rein der Anschauung und zeigt die Verteilung der Beobachtu
 
 data_plot(aov)
 ```
-
-# Aufgabe 1
 
 Führen Sie eine zweifaktorielle Varianzanalyse vollständig durch (beachten Sie, dass die Quadratsummen schon gegeben sind). Formulieren Sie die Nullypothesen (in Worten) und testen Sie die Haupteffekte und Interaktion auf Signifikanz, indem Sie die entsprechenden F-Werte berechnen und gegen ihre jeweiligen kritischen Werte testen. Formulieren Sie Antwortsätze für Ihre statistische Entscheidung.
 

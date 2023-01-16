@@ -173,7 +173,7 @@ data_plot <- function(x) {
  return(gp)
 }
 
-interaction_plot <- function(x, empty=FALSE) {
+interaction_plot <- function(x, empty=FALSE, gray=FALSE) {
   
   alpha <- ifelse(empty,0,1)
   
@@ -184,6 +184,18 @@ interaction_plot <- function(x, empty=FALSE) {
   g2 <- x$dat %>% group_by(a,b) %>% summarise(m=mean(av)) %>% ggplot(aes(x=b,group=a,y=m,color=a))+
     geom_line(lwd=1.5, alpha=alpha)+ylab(x$av.name)+ theme(legend.position = "bottom")+
     xlab(x$factor.b.name)+ guides(color = guide_legend(title = ""))
+  
+  if (gray) {
+    g1 <- x$dat %>% group_by(a,b) %>% summarise(m=mean(av)) %>% ggplot(aes(x=a,group=b,y=m,color=b))+
+      geom_line(lwd=1.5, alpha=alpha)+ylab(x$av.name)+ theme(legend.position = "bottom")+
+      xlab(x$factor.a.name) +  guides(color = guide_legend(title = ""))+
+      scale_color_grey()
+    
+    g2 <- x$dat %>% group_by(a,b) %>% summarise(m=mean(av)) %>% ggplot(aes(x=b,group=a,y=m,color=a))+
+      geom_line(lwd=1.5, alpha=alpha)+ylab(x$av.name)+ theme(legend.position = "bottom")+
+      xlab(x$factor.b.name)+ guides(color = guide_legend(title = ""))+
+      scale_color_grey()
+  }
   
   library(patchwork)
   

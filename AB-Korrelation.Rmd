@@ -98,7 +98,7 @@ Sie alle notwendigen Schritte durch.
 ```{r results="asis", eval=include_solution}
 cat(solution_header())
 
-cat("Wir benutzen die Fisher's z-Transformation und führen dann den Test auf Verschiedenheit zweier Korrelationen durch")
+cat("Wir benutzen die Fisher's z-Transformation und führen dann den Test auf Verschiedenheit zweier Korrelationen durch.\n")
 
 t1e <- round(tst1$estimate,2)
 t2e <- round(tst2$estimate, 2)
@@ -136,7 +136,7 @@ knitr::include_graphics("img/correlation.png")
 
 (Quelle: xkcd.com; R. Munroe; verfügbar unter folgender Lizenz Attribution-NonCommercial 2.5 Generic (CC BY-NC 2.5))
 
-Was ist hier so lustig? Falls Sie das nicht lustig finden, senden Sie mir bitte witzigere Comics, Memes, o.ä. zu diesem Thema per E-Mail an [andreas.brandmaier@medicalschool-berlin.de](andreas.brandmaier@medicalschool-berlin.de).
+Was ist hier so lustig?
 
 ```{r results="asis", eval=include_solution}
 cat(solution_header())

@@ -1,0 +1,202 @@
+---
+title: "Arbeitsblatt - Allgemeines lineares Modell"
+author: "Statistik II - Andreas M. Brandmaier"
+date: "`r format(Sys.time(), '%d. %B %Y')`"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+params:
+  include_solution: yes
+---
+
+
+```{r setup, include=FALSE}
+library(tidyverse)
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(fig.pos = "!H", out.extra = "") # prevent LaTeX tables from floating
+
+source("R/helper.R")
+source("R/anova-1f.R")
+source("R/regression.R")
+
+include_solution <- params$include_solution
+
+empty_str <- "\\ "
+
+library(fastDummies)
+
+```
+
+# Aufgabe #1 - Codierung
+
+In einer Studie wurde erhoben, mit welchem Verkehrsmittel Studierende zur Uni gelangen. Die vier Antwortmöglichkeiten waren: zu Fuß, Fahrrad, Öffentlich, oder Anders. Damit dieses Merkmal als Prädiktor in einer Regression benutzt werden kann, soll es dummy-codiert werden. Die Referenzkategorie soll "Fahrrad" sein. Erstellen Sie eine Dummy-Codierung und tragen Sie diese in folgende Tabelle ein. In dieser Tabelle finden Sie die Daten, die für das Merkmal "Verkehrsmittel" erhoben wurden, in der ersten Spalte. Nutzen Sie die übrigen Spalten, um die Dummy-Codierung zu erstellen. Tragen Sie aussagekräftige Namen für die übrigen Spalten ein.
+
+```{r, echo=FALSE}
+set.seed(4359)
+N <- 12
+verkehrsmittel <- sample( c("zu Fuß", "Fahrrad","Öffentlich","Anders"), N, TRUE)
+
+id <- 1:N
+
+fdat <- data.frame(Verkehrsmittel=verkehrsmittel)
+
+result <- fastDummies::dummy_cols(fdat)
+result <- result[,-3]
+```
+
+
+```{r results="asis", echo=FALSE}
+
+rdisplay <- result
+
+if (include_solution) {
+
+} else {
+  # wipe solution and leave some space for answers
+  invisible_space <- " "
+  rdisplay[,-1]<-paste0(rep(invisible_space,8),sep="",collapse = "")
+  names(rdisplay)[2:4]<-"___________"
+}
+```
+
+```{r results="asis"}
+if (include_solution)
+  solution_header()
+
+knitr::kable(rdisplay)
+```
+
+
+
+# Aufgabe 2 - Interpretation
+
+Mit Hilfe dieser Dummy-Codierung wird ein multiples Regressionsmodell gerechnet, das nun die drei neuen Indikatorvariablen als Prädiktoren enthält. Die AV in diesem Modell ist die Zufriedenheit mit dem Weg zur Universität. Es ergaben sich folgende Schätzer für Regressionskonstante und -gewichte in einer kleinen Pilotstudie von $N=`r N`$:
+
+```{r}
+zuf <- rnorm(N, 50, 12)
+temperatur <- runif(N, -10,10)
+luft <- runif(N,10,90)
+zuf <- zuf + result$Verkehrsmittel_Öffentlich-20 + (luft-45)*0.1+temperatur*0.2
+datf <- data.frame(zuf, result[,-1])
+datf2 <- data.frame(zuf, result[,-1], temperatur, luft)
+regmod <- lm(zuf~., datf)
+#summary(regmod)
+
+sm <- summary(regmod)
+
+r2 <- round(summary(regmod)$r.squared,2)
+
+cfs <- sm$coefficients
+colnames(cfs)<-c("Schätzer","Standardfehler","t-Wert","p-Wert")
+
+cfs <- round(cfs,2)
+
+knitr::kable(cfs)
+```
+
+Ferner ergab sich $R^2=`r r2 `$ als Modellgütemaß.
+
+a) Wie interpretiert man hier nun Regressionskonstante und -gewichte?
+
+```{r, eval=include_solution, results="asis"}
+ests <- round(coef(regmod),2)
+
+solution_header()
+
+cat("Die Regressionskonstante entspricht dem durchschnittlichen Wert der Referenzkategorie, die hier 'Fahrrad' sein sollte.",
+    "Wir entnehmen der Tabelle also, dass die durchschnittliche Zufriedenheit der Fahrradfahrer ", ests[1], " Skalenpunkte ist.",
+    "Die Regressionsgewichte entsprechen nun den Unterschieden der jeweiligen Kategorien zur Referenzkategorie, d.h., dass",
+    " Fußgänger beispielsweise ", abs(ests[4]), "Punkte ",ifelse(ests[4]>0,"mehr","weniger")," zufrieden sind als Fahrradfahrer.",
+    "Daraus folgt, dass die Zufriedenheit von Fußgängern ",ests[1],"+(",ests[4],")=",(ests[1]+ests[4])," beträgt.")
+```
+b) Welche Prädiktoren haben einen signifikaten Einfluß?
+
+```{r, eval=include_solution, results="asis"}
+solution_header()
+cat("Keiner der Prädiktoren hat einen signifikaten Einfluß, da alle p>0.05.")
+```
+
+
+c) Berechnen Sie das adjustierte $R^2$ aus den gegebenen Informationen.
+
+```{r, eval=include_solution, results="asis"}
+solution_header()
+
+k <-  length(regmod$coefficients)-1
+
+
+solution_adjr2 <- function() {
+  
+  
+adjr2 <- round(1- (1-r2)*(N-1)/(N-k-1),2)
+  
+paste0( " R^2_{adj}=",
+paste0("1-\\frac{(1-",r2,")(",N,"-1)}{(",N,"-",k,"-1)}",sep=""),
+"=",adjr2," ",sep=""
+)
+
+#paste0(" R^2 ")
+
+}
+#print(solution_adjr2)
+
+#wrap_math_block(solution_adjr2())
+wrap_math_flalign(solution_adjr2())
+
+```
+
+# Aufgabe 3 - Modellvergleich
+
+```{r}
+regmod2 <- lm(zuf~., datf2)
+r22 <- round(summary(regmod2)$r.squared,2)
+
+
+ku <- length(regmod2$coefficients)-1
+
+df1 <- 2
+df2 <- N-ku-1
+
+x <- list(df1=df1, df2=df2, alpha=0.05, Fcrit=round(qf(0.95, df1, df2),2))
+
+``` 
+
+Das obengenannte Modell soll verglichen werden mit einem Regressionsmodell, in das noch zwei weitere Prädiktoren aufgenommen werden. Man möchte prüfen, ob die Vorhersagekraft des Modells verbessert werden kann, indem man die Merkmale Außentemperatur und Luftfeuchtigkeit mitaufnimmt. Dieses alternative Modell hat eine geschätzte Modellgüte von $R^2=`r r22`$. Ist das Modell signifikant besser oder sind die Daten plausibel unter der Annahme, dass die Modelle in Wahrheit gleich gut vorhersagen? Führen Sie einen Modellvergleich rechnerisch durch und treffen Sie eine Entscheidungin Bezug auf die Nullhypothese. 
+`r f_crit(x)`
+
+```{r, eval=include_solution, results="asis"}
+solution_header()
+
+modelComparison <- function(m1, m2) {
+  r2u <-  round(summary(m1)$r.squared,2)
+  r2e <-  round(summary(m2)$r.squared,2)
+  ku <- nrow(summary(m1)$coefficients)-1
+  ke <- nrow(summary(m2)$coefficients)-1
+  n <- nrow(m1$model)
+  
+  Femp <- (n-ku-1)/(ku-ke)*(r2u-r2e)/(1-r2u)
+  Femp <- round(Femp, 2)
+  
+  paste0("F=\\frac{n-k_u-1}{k_u-k_e}\\cdot \\frac{R^2_u-R^2_e}{1-R^2_u}=",
+         "\\frac{",n,"-",ku,"-1","}{",ku,"-",ke,"}\\cdot \\frac{",r2u,"-",r2e,"}{1-",r2u,"}=", Femp)
+}
+
+
+wrap_math_flalign(modelComparison(regmod2, regmod))
+
+# in R:
+#  anova(regmod, regmod2)
+
+cat("Da der empirische F-Wert kleiner als der kritische F-Wert ist, behalten wir die Nullhypothese bei. Wir haben keinen signifikanten Unterschied zwischen den beiden Modellen gefunden. Temperatur und Luftfeuchtigkeit haben gemeinsam keinen signifikanten Beitrag. Aufgrund des Parsimonitätsprinzips behalten wir das ursprüngliche Modell bei.")
+
+```
+
+
+<!-- Wir erhalten folgende Schätzer für Regressionskonstante und Regressionsgewichte: -->
+
+<!-- ```{r} -->
+
+<!-- ``` -->
+
+<!-- Welche Vorhersage macht das Modell für eine Person -->

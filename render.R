@@ -52,3 +52,9 @@ rmarkdown::render(input="AB-Korrelation.Rmd",
                   output_file=paste0(output_path,"AB-Korrelation-mit-LÃ¶sung.pdf"), 
                   params=list(include_solution=TRUE))
 
+rmarkdown::render(input="AB9-ALM.Rmd", 
+                  output_file=paste0(output_path,"AB-ALM.pdf"), 
+                  params=list(include_solution=FALSE))
+rmarkdown::render(input="AB9-ALM.Rmd", 
+                  output_file=paste0(output_path,"AB-ALM-mit-Lösung.pdf"), 
+                  params=list(include_solution=TRUE))

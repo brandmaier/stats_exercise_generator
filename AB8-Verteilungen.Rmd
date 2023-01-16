@@ -1,0 +1,77 @@
+---
+title: "Arbeitsblatt 2 - Wahrscheinlichkeitsverteilungen"
+author: "Statistik II - Andreas M. Brandmaier"
+date: "`r format(Sys.time(), '%d. %B %Y')`"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+params:
+  include_solution: yes
+---
+
+
+```{r setup, include=FALSE}
+library(tidyverse)
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(fig.pos = "!H", out.extra = "") # prevent LaTeX tables from floating
+
+source("R/helper.R")
+source("R/anova-1f.R")
+
+include_solution <- params$include_solution
+
+empty_str <- "\\ "
+
+```
+
+
+# Diskrete Wahrscheinlichkeitsverteilungen
+
+Die folgende Abbildung zeigt die Wahrscheinlichkeit eine bestimmte Augenzahl zu würfeln,
+wenn man mit zwei fairen Würfeln würfelt und die Augenzahlen addiert:
+
+```{r}
+library(ggplot2)
+num <- c(1,1,1,1,5,1,5,1,1,1,1)
+denom <- c(36,18,12,9,36,6,36,9,12,18,36)
+events <- num/denom
+labels <- factor(2:12)
+revents <- round(events,2)
+gp2 <- ggplot2::ggplot(data.frame(events,labels),aes(y=events,x=labels))+geom_bar(stat="identity")+xlab("Augenzahl")+ylab("Wahrscheinlichkeit")  +geom_text(aes(label=revents), nudge_y=+.01)
+(gp2)
+```
+Die gewürfelte Augenzahl betrachten wir als Zufallsvariable. Berechnen Sie die Wahrscheinlichkeit, dass diese Zufallsvariable folgende Werte annimmt? Beschreiben Sie, was der berechnete Wert inhaltlich bedeutet.
+
+$$P(X\leq 5)=$$
+$$P(X\gt 5)=$$
+$$P(4\leq X \leq 7)=$$
+
+```{r x, eval=include_solution}
+
+cat("$$P(X\\leq 5)=0.03+0.06+0.08+0.11=0.28=28%$$")
+cat("Die Wahrscheinlichkeit höchstens 5 Augen zu würfeln beträgt 28%.")
+cat("$$P(X\\gt 5)=1-P(X\\leq 5)=1-0.28=0.62=62%$$")
+cat("Die Wahrscheinlichkeit mehr als fünf Augen zu würfeln beträgt 62%.")
+cat("$$P(4\\leq X \\leq 7)=0.08+0.11+0.14+0.17=0.5=50%$$")
+cat("Die Wahrscheinlicheit, eine 4,5,6, oder 7 zu würfeln beträgt 50%.")
+```
+
+# Die Normalverteilung
+
+Intelligenz sei in der Bevölkerung angenommen als normalverteiltes Merkmal mit
+Erwartungswert $\mu=100$ und Standardabweichung $\sigma=15$.
+
+Im folgenden wollen wir uns überlegen, mit welcher Wahrscheinlichkeit Personen in 
+bestimmte IQ-Intervalle fallen, wenn wir diese zufällig aus der Bevölkerung ziehen.
+
+Dazu können Sie die kritischen Werte der Standardnormalverteilung nutzen. Um die
+kritischen Werte auf eine beliebige Normalverteilung zu übertragen, können Sie
+die kritischen Werte $z_{krit}$ mit folgender Formel umrechnen:
+
+$$ n_{krit} = \mu + \sigma \cdot z_{krit} $$
+
+In unserem konkreten Fall also:
+
+$$ n_{krit} = 100 + 15 \cdot z_{krit} $$
+
