@@ -38,7 +38,10 @@ csq <- generate_chisq(labels.a=c("Neues Medikament","Altes Medikament"),
 write.csv(file = "data/ab3-symptoms.csv", x=chisq_to_data(csq), row.names = FALSE)
 ```
 
-In einer randomisierten Studie haben 40 Patienten ein neuartiges Antidepressivum erhalten und 40 Patienten ein bereits erprobtes. Nach vier Wochen wurde erhoben, ob sich eine Verbesserung der Symptomatik eingestellt hat. Dies wurde als dichotomes Merkmal _Verbesserung_ (ja/nein) erhoben. Ein Forscherteam hat die Hypothese, dass das neuartige Antidepressivum anders wirkt als die etablierte Behandlung (ungerichtete Hypothese).
+In einer randomisierten Studie haben 40 Patient:innen ein neuartiges Antidepressivum erhalten und 40 Patient:innen ein bereits erprobtes. Nach vier Wochen wurde erhoben, ob die Patient:innen Nebenwirkungen erfahren haben. Dies wurde als dichotomes Merkmal _Nebenwirkung_ (ja/nein) erhoben. Ein Forscherteam hat die Hypothese, dass das neuartige Antidepressivum anders wirkt als die etablierte Behandlung (ungerichtete Alternativhypothese).
+```{r, results="asis"} 
+cat(chisq_crit(csq,undirected = TRUE))
+```
 
 Folgende Daten wurden beobachtet:
 
@@ -47,7 +50,7 @@ chisq_data_table(csq)
 ```
 
 
-Berechnen Sie zunächst die Spalten- und Randsummen für diese Häufigkeits-Tabelle. Erstellen Sie dann eine Tabelle von Häufigkeiten, die man erwarten würde, wenn es keinen Zusammenhang gäbe. Berechnen Sie dann die Prüfgröße für den $\chi^2$-Unabhängigkeits-Test und treffen Sie eine statistische Entscheidung. Wir gehen von einem Signifikanzniveau von 5% aus.
+Berechnen Sie zunächst die Spalten- und Randsummen für diese Häufigkeits-Tabelle. Erstellen Sie dann eine Tabelle von Häufigkeiten, die man erwarten würde, wenn es keinen Unterschied in den Nebenwirkungen zwischen den Antidepressiva gäbe. Berechnen Sie dann die Prüfgröße für den $\chi^2$-Unabhängigkeits-Test und treffen Sie eine statistische Entscheidung. Wir gehen von einem Signifikanzniveau von 5% aus.
 
 
 ```{r, results="asis", eval=include_solution}
@@ -57,7 +60,7 @@ cat("Dies ist die Kontigenztabelle mit Zeilensummen und Spaltensummen:")
 
 chisq_data_table(csq, type="sums")
 
-cat("Dies ist die Tabelle der erwarteten Häufigkeiten unter der Unabhängigkeitsannahme:")
+cat("Dies ist die Tabelle der erwarteten Häufigkeiten von Nebenwirkungen unter der Unabhängigkeitsannahme:")
 
 chisq_data_table(csq, type="indep")
 
@@ -65,7 +68,10 @@ wrap_math_block(chisq_solution(csq))
 
 cat(chisq_crit(csq,undirected = TRUE))
 
-cat("Der empirische _F_-Wert ist größer als der kritische Wert. Wir lehnen daher die Nullhypothese ab. Es gibt Unterschiede in der Wirksamkeit zwischen den Medikamenten.")
+percent_sideeffects_old <- csq$tbl[2,1]/sum(csq$tbl[2,])*100
+percent_sideeffects_new <- csq$tbl[1,1]/sum(csq$tbl[1,])*100
+
+cat("Der empirische _F_-Wert ist größer als der kritische Wert. Wir lehnen daher die Nullhypothese ab. Es gibt Unterschiede in den Nebenwirkungen zwischen den Medikamenten. Das neue Medikament scheint besser zu sein, da ",percent_sideeffects_old,"% der Proband:innen mit dem alten Medikament Nebenwirkungen verspürten und ",percent_sideeffects_new,"% der Proband:innen mit dem neuen Medikament Nebenwirkungen verspürten.")
 
 ```
 
@@ -92,6 +98,10 @@ chisq_uni_data_table(csq)
 ```
 
 Prüfen Sie, ob sich die Vorlieben der Psychologiestudierenden von der Normalbevölkerung unterscheiden. Gehen Sie von einem Signifikanzniveau von 5% aus.
+```{r, results="asis"} 
+cat(chisq_crit(csq,undirected = TRUE))
+```
+
 
 ```{r, results="asis", eval=include_solution}
 cat("_Lösung:_\n\n")
@@ -117,6 +127,10 @@ chisq_data_table(csq)
 ```
 
 Prüfen Sie mit dem Unabhängigkeitstest, ob sich die Interessenlage über die Anfangssemester hinweg unterscheidet. Das Signifikanzniveau sei 5%.
+```{r, results="asis"} 
+cat(chisq_crit(csq,undirected = TRUE))
+```
+
 
 ```{r, results="asis", eval=include_solution}
 cat("_Lösung:_\n\n")
@@ -167,6 +181,10 @@ csq <- generate_chisq(labels.a = c("Ja (vorher)"," Nein (vorher)"),
 write.csv("data/ab3-smoker.csv", x=chisq_to_data(csq),row.names = FALSE)
 ```
 Ein Forscherteam untersucht die Wirksamkeit einer Anti-Raucher-Kampagne. Dazu wird das Rauchverhalten (ja/nein ) in derselben Stichprobe zweimal untersucht: einmal vor der Kampagne und einmal nach der Kampagne. Die Vermutung ist, dass die Rauchkampagne das Rauchverhalten verändert. Dies entspricht einer ungerichteten Forschungshypothese (Veränderung bedeutet entweder, dass mehr Leute als vorher rauchen oder weniger). Untersuchen Sie diese Fragestellung mit einer ungerichteten Hypothese. Das Signifikanzniveau sei 5%.
+```{r, results="asis"} 
+cat(chisq_crit(csq,undirected = TRUE))
+```
+
 Formulieren Sie die Null-Hypothese und rechnen Sie den richtigen Test. Treffen Sie eine statistisch informierte Entscheidung. Welche Effektstärke kann man hier berichten?
 
 
@@ -203,6 +221,10 @@ csq <- generate_chisq(labels.a = c("Ja (vorher)"," Nein (vorher)"),
 write.csv("data/ab3-smoker.csv", x=chisq_to_data(csq),row.names = FALSE)
 ```
 Ein Forscherteam untersucht erneut die Wirksamkeit einer Anti-Raucher-Kampagne. Das Forschungsdesign bleibt gleich. Es wird das Rauchverhalten (ja/nein ) in derselben Stichprobe zweimal untersucht: einmal vor der Kampagne und einmal nach der Kampagne. Der einzige Unterschied ist, dass diesmal eine positive Wirkung der Kampagne vermutet und gezeigt werden soll. Die Vermutung ist, dass die Rauchkampagne wirksam ist. Untersuchen Sie dies mit einer _gerichteten_ Hypothese. Das Signifikanzniveau sei 5%. Denken Sie daran, dass wir bei gerichteten Hypothesen zur Bestimmung des kritischen Werts das Signifikanzniveau verdoppeln, d.h., wir arbeiten mit 10% zur Bestimmung des kritischen Werts.
+```{r, results="asis"} 
+cat(chisq_crit(csq,undirected = FALSE))
+```
+
 Formulieren Sie die Null-Hypothese und rechnen Sie den richtigen Test. Treffen Sie eine statistisch informierte Entscheidung. Welche Effektstärke kann man hier berichten?
 
 
