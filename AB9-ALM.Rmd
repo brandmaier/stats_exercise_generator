@@ -126,19 +126,6 @@ solution_header()
 k <-  length(regmod$coefficients)-1
 
 
-solution_adjr2 <- function() {
-  
-  
-adjr2 <- round(1- (1-r2)*(N-1)/(N-k-1),2)
-  
-paste0( " R^2_{adj}=",
-paste0("1-\\frac{(1-",r2,")(",N,"-1)}{(",N,"-",k,"-1)}",sep=""),
-"=",adjr2," ",sep=""
-)
-
-#paste0(" R^2 ")
-
-}
 #print(solution_adjr2)
 
 #wrap_math_block(solution_adjr2())

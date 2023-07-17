@@ -31,13 +31,17 @@ set.seed(23509)
 aov1 <- generate_anova(factor_level_names = c("Nähen","Tanzen","Gedichte"), within = 3, between=3, obs_round = 1)
 ```
 
-In einer Studie wurde untersucht, inwiefern sich verschiedene Freizeitbeschäftigungen auf das Wohlbefinden auswirken können. Dazu wurden Proband\*innen, die vorher kein Hobby hatten, zufällig auf gleichgroße Gruppen aufgeteilt, die je ein unterschiedliches Hobby ausüben sollten. Eine Gruppe beschäftigte sich mit Nähen&Stricken, eine Gruppe mit Tanzen, und eine Gruppe lernte Gedichte auswendig. Nach Ablauf von zwei Wochen, gaben die Proband\*innen ihr Wohlbefinden an (höhere Werte = höheres Wohlbefinden). Dies sind die beobachteten Werte:
+In einer Studie wurde untersucht, inwiefern sich verschiedene Freizeitbeschäftigungen auf das Wohlbefinden auswirken können. Dazu wurden 12 Proband\*innen, die vorher kein Hobby hatten, zufällig auf gleichgroße Gruppen aufgeteilt, die je ein unterschiedliches Hobby ausüben sollten. Eine Gruppe beschäftigte sich mit Nähen&Stricken, eine Gruppe mit Tanzen, und eine Gruppe lernte Gedichte auswendig. Nach Ablauf von zwei Wochen, gaben die Proband\*innen ihr Wohlbefinden an (höhere Werte = höheres Wohlbefinden). Dies sind die beobachteten Werte:
 
 ```{r}
 data_table(aov1)
 ```
 
 Formulieren Sie die Nullhypothese und führen Sie den geeigneten statistischen Test zur Auswertung durch. Berechnen Sie auch die Effektgröße. Formulieren Sie einen Antwortsatz.
+
+```{r results="asis"}
+cat(f_crit(aov1))
+```
 
 
 ```{r, results="asis", eval=include_solution}
@@ -52,17 +56,20 @@ wrap_math_block(qs_solution(aov1,3))
 wrap_math_block( mqs_solution(aov1) ) 
 wrap_math_block( f_solution(aov1) )
 
-f_crit(aov1)
+cat(f_crit(aov1))
+cat("Da der empirische F-Wert kleiner als der kritische F-Wert ist, behalten wir die Nullhypothese bei.")
+cat("Wir finden keinen signifikanten Unterschied im Wohlbefinden zwischen den Gruppen.")
 
-
+cat("Die Effektstärke berechnet sich wie folgt:\n")
 wrap_math_block(effect_solution(aov1))
 
-cat("Wir finden keinen signifikanten Unterschied im Wohlbefinden zwischen den Gruppen.")
 ```
 
 ```{r}
 aov1<-NULL
 ```
+
+\newpage
 
 # Aufgabe 2
 
@@ -77,11 +84,10 @@ aov1 <- generate_anova(factor_level_names = c("Abhängigkeitssyndrom","Angststö
 ```
 
 
-In einer Studie wurde die working alliance (also das Vertrauen und die Bereitschaft zur Zusammenarbeit) von Patienten in einer psychiatrischen Klinik untersucht. Die durchführende Psychologin vermutet, dass sich diese unterscheiden und möchte diese Vermutung statistisch absichern. Sie befragt je 6 Personen mit der gleichen Diagnose und bewertet ihre working
-alliance auf einer Skala von 1-20. Dies sind die notierten Werte:
+In einer Studie wurde die _working alliance_ (also das Vertrauen und die Bereitschaft zur Zusammenarbeit) von Patient:innen in einer psychiatrischen Klinik untersucht. Die durchführende Psychologin vermutet, dass sich die Patient:innen abhängig von ihrer Diagnose unterscheiden und möchte diese Vermutung statistisch absichern. Sie befragt je `r aov1$nz` Personen mit der gleichen Diagnose und bewertet ihre working alliance auf einer Skala von $1-20$. Dies sind die notierten Werte:
 
 ```{r}
-data_table(aov1)
+data_table(aov1, longtable=FALSE)
 ```
 
 Die Psychologin hat bereits berechnet: $QS_{tot}=`r aov1$qs_tot`$.Formulieren Sie die Nullhypothese und führen Sie den geeigneten statistischen Test zur Auswertung durch. Formulieren Sie einen Antwortsatz, der auch eine Effektgröße enthält. Das Signifikanzniveau sei 1%.
@@ -105,7 +111,7 @@ cat(f_crit(aov1))
 
 wrap_math_block(effect_solution(aov1))
 
-cat("Die Nullhypothese wird verworfen. Wir finden einen signifikanten Unterschied in der _working alliance_ zwischen den Diagnosen.")
+cat("Die Nullhypothese wird verworfen, da der empirische F-Wert größer als der kritische F-Wert ist. Wir finden einen signifikanten Unterschied in der _working alliance_ zwischen den Diagnosen.")
 ```
 
 
@@ -118,4 +124,16 @@ Warum ist das Berichten von $\hat{\eta}^2$ als Effektstärkemaß problematisch?
 
 # Aufgabe 4
 
-Beschreiben Sie ein Beispiel für eine Studie, die mit einer einfaktoriellen Varianzanalyse ausgewertet wird. 
+Beschreiben Sie ein weiteres Beispiel für eine Studie, die mit einer einfaktoriellen Varianzanalyse ausgewertet wird. 
+
+```{r, results="asis", eval=include_solution}
+cat(solution_header())
+
+cat("Mögliche Lösungen:\\\\")
+
+cat("- Hat die Art der Belohnung (materiell vs. verbal vs. keine Belohnung) einen Einfluss auf die Motivation von Schüler:innen in der Schule?
+
+- Beeinflusst das Vorhandensein von Hintergrundgeräuschen (laut vs. leise vs. keine Geräusche) die Konzentrationsfähigkeit von Schüler:innen bei einer Aufgabe?
+
+- Beeinflusst die Art der Ablenkung (visuell vs. auditiv vs. keine Ablenkung) die Gedächtnisleistung bei einer bestimmten Aufgabe?")
+``` 

@@ -10,21 +10,9 @@ generate_pca <- function(item_names, data=NULL, loadings=NULL, nfactors=2) {
 }
 
 
-
-pca1 <- generate_pca( c("Ich war als Kind oft in Dänemark im Urlaub",
-"Ich mag Knödel/Klöße als Beilage",
-"Eine steife Brise im Gesicht macht mich glücklich",
-"Der Anblick von Bergen verursacht bei mir Heimweh",
-"Ich lese gern"
-), loadings=matrix(c(0.62,	-0.02, 0.21,
-                     -0.62,	-0.04,	0.13,
-                     0.58,	0.11,	-0.13,
-                     -0.66,	0.33,	-0.01,
-                     0.33,	0.41,	0.07),nrow=3,byrow=TRUE))
-
 solution_communality <- function(x) {
   ll <- x$loadings
-  coms <- round(colSums(ll),2)
+  coms <- round(colSums(ll^2),2)
   
   solstr <- ""
   for (i in 1:nrow(ll)) {
@@ -42,7 +30,7 @@ solution_communality <- function(x) {
 
 solution_ev <- function(x) {
   ll <- x$loadings
-  coms <- round(rowSums(ll),2)
+  coms <- round(rowSums(ll^2),2)
   
   solstr <- ""
   for (i in 1:ncol(ll)) {
@@ -58,6 +46,26 @@ solution_ev <- function(x) {
   
 }
 
-solution_communality(pca1)
+#communality <- round( rowSums(df^2), 2)
+#ev <- round( colSums(df^2), 2)
+#
+#nvar <- ncol(subs)
+#r2 <- round( ev/nvar*100,2)
 
-solution_ev(pca1)
+
+communality_with_distractors <- function(x, i) {
+  
+  # correct
+  ll <- x$loadings
+  coms <- round(rowSums(ll^2)[i],2)
+  
+  distractor1 <- round(rowSums(ll)[i],2)
+  distractor2 <- round(colSums(ll^2)[i],2)
+  distractor3 <- round(colSums(ll)[i],2)
+  
+  if (length(unique(coms, distractor1,distractor2,distractor3) != 4)) {
+    stop("Non-unique solutions!")
+  }
+  
+  c(coms, distractor1, distractor2, distractor3)
+}

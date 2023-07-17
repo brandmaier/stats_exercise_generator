@@ -1,34 +1,56 @@
 ---
-title: "AB4-Multiple Regression"
+title: "Lineare Regression"
 author: "Andreas M. Brandmaier"
 date: "11/14/2021"
 output:
   pdf_document: default
   html_document: default
+params:
+  include_solution: yes
 ---
 
 ```{r setup, include=FALSE}
+library(tidyverse)
 knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(fig.pos = "!H", out.extra = "") # prevent LaTeX tables from floating
 
 source("R/helper.R")
+source("R/anova-1f.R")
 source("R/regression.R")
+
+include_solution <- params$include_solution
+
+empty_str <- "\\ "
+
 ```
 
 # Aufgabe 1
 
-Mittels eines multiplen Regressionsmodells soll ein Vorhersagemodell erstellt werden. Vorhergesagt werden soll das Ausmaß beruflichen Erfolgs (Y) anhand zweier Persönlichkeitsmerkmale Extraversion (X1) und Offenheit (X2). Bekannt sind die bivariaten Korrelationen der drei Merkmale:
+Mittels eines multiplen linearen Regressionsmodells soll ein Vorhersagemodell erstellt werden. Vorhergesagt werden soll das Ausmaß beruflichen Erfolgs (Y) anhand zweier Persönlichkeitsmerkmale Extraversion (X1) und Offenheit (X2). Bekannt sind die bivariaten Korrelationen der drei Merkmale:
 
 ```{r}
-rg <- generate_regression(n=100, ryx1 = .5, ryx2=.2, rx12=.4, 
-                          0, 0, 1, 1, 1, varnames=c("a","b","c"))
+set.seed(9584)
+rg <- generate_regression(n=100, ryx1 = .5, ryx2=.2, rx12=.4,x1mu = 0,x2mu = 0,ymu = 0, 
+                          sy = 1, sx1 = 2, sx2=2,
+                         varnames=c("a","b","c"))
 ```
 
 Stellen Sie die Regressionsgleichung in der Population auf (Tipp: griechische Buchstaben für Populationsparameter) und berechnen Sie die Schätzer für Regressionskonstante und Regressionsgewichte aus den gegebenen Korrelationen.
 
-`r wrap_math_align(solution_coeff(rg))`
+```{r}
+cat("$r_{X1,Y} = ",rg$ryx1,"$")
+cat("$r_{X2,Y} = ",rg$ryx2,"$")
+cat("$r_{X1,X2} = ",rg$rx12,"$")
+```
 
 ```{r}
-knitr::kable(bivariate_table(rg))
+#knitr::kable(bivariate_table(rg))
+```
+
+
+```{r, eval=include_solution, results="asis"}
+#wrap_math_align(solution_coeff(rg))
+
 ```
 
 # Aufgabe 2
@@ -36,17 +58,33 @@ knitr::kable(bivariate_table(rg))
 ```{r}
 set.seed(2459)
 N <- 200
-agree <- rnorm(N)
-open <- rnorm(N)
-happy <- agree*0.1+open*0.3+rnorm(N)
-dat <- data.frame(agree, open, happy)
+anz_freunde <- rnorm(N)
+anz_follower <- rnorm(N)
+happy <- anz_freunde*0.1+anz_follower*0.3+rnorm(N)
+dat <- data.frame(anz_freunde, anz_follower, happy)
 model <- generate_multipleregression(lm(happy~.,dat))
 ```
 
-In einer wissenschaftlichen Studie wurde untersucht, inwieweit die Lebenszufriedenheit durch Persönlichkeitsmerkmale vorhergesagt werden kann. Dazu wurde als abhängige Variable die Lebenszufriedenheit untersucht (Skala von 1--100). Die unabhängigen Variablen waren Offenheit und Verträglichkeit. Untersucht wurde eine Stichprobe von $N$ Personen.
+In einer wissenschaftlichen Studie wurde untersucht, inwieweit die Lebenszufriedenheit durch Persönlichkeitsmerkmale vorhergesagt werden kann. Dazu wurde als abhängige Variable die Lebenszufriedenheit untersucht (metrische Skala von 0--100). Die unabhängigen Variablen waren Anzahl der Freunde und Anzahl der Instagram-Follower. Untersucht wurde eine Stichprobe von $N=200$ Personen.
+
+Bei der statistischen Analyse erhielt man folgendes Ergebnis:
 
 ```{r}
 coeff_table(model)
 ```
+# Aufgabe 3
 
+Die Modellgüte im Modell von Aufgabe 2 wurde mit $R^2$ angegeben. Was ist das Problem dieses Maßes. Berechnen Sie eine Variante des Maßes, die dieses Problem korrigiert. Welche Eigenschaft hat das korrigierte Maß?
+
+
+Wie kann man die Modellgüte beurteilen? 
+
+
+```{r, eval=include_solution, results="asis"}
+solution_header()
+
+cat("$R^2$ ist ein Maß der Modellgüte, das überoptimistisch als Schätzer der wahren Modellgüte ist. Daher sollte man besser das adjustierte $R^2$ berichten, das diese Verzerrung korrigiert. Das adjustierte $R^2$ ist höchstens so groß wie das herkömmliche $R^2$.")
+
+wrap_math_flalign(solution_adjr2(model))
+``` 
 

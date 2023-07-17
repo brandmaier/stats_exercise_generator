@@ -56,5 +56,14 @@ rmarkdown::render(input="AB9-ALM.Rmd",
                   output_file=paste0(output_path,"AB-ALM.pdf"), 
                   params=list(include_solution=FALSE))
 rmarkdown::render(input="AB9-ALM.Rmd", 
-                  output_file=paste0(output_path,"AB-ALM-mit-L�sung.pdf"), 
+                  output_file=paste0(output_path,"AB-ALM-mit-Lösung.pdf"), 
+                  params=list(include_solution=TRUE))
+
+
+
+rmarkdown::render(input="AB5-Regression.Rmd", 
+                  output_file=paste0(output_path,"AB-Regression.pdf"), 
+                  params=list(include_solution=FALSE))
+rmarkdown::render(input="AB5-Regression.Rmd", 
+                  output_file=paste0(output_path,"AB-Regression-mit-Lösung.pdf"), 
                   params=list(include_solution=TRUE))

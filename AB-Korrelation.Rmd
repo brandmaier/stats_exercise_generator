@@ -146,7 +146,7 @@ cat("Eine Person erzählt der anderen, dass sie bisher immer dachte, dass eine K
 
 ## Aufgabe 4
 
-Laden Sie die Datensätze "korrelation-beispiel1.csv" und "korrelation-beispiel2.csv". Berechnen Sie eine einfache lineare Regression (oder auch eine bivariate Korrelation) und prüfen Sie, ob es einen Zusammenhang je zwischen den beiden Variablen $X$ und $Y$ gibt. Was folgern Sie? Erstellen Sie auch die Scatterplots. Was kann man daraus erkennen?
+Laden Sie die Datensätze "korrelation-beispiel1.csv" und "korrelation-beispiel2.csv". Berechnen Sie eine einfache lineare Regression (oder auch eine bivariate Korrelation) mit einem Statistikprogramm ihrer Wahl (z.B. JASP). Prüfen Sie, ob es einen linearen Zusammenhang je zwischen den beiden Variablen $X$ und $Y$ gibt. Was folgern Sie? Erstellen Sie auch die Streudiagramme. Was kann man daraus erkennen?
 
 ```{r}
 
@@ -163,7 +163,7 @@ cat(solution_header())
 
 cat("Die Korrelation beträgt ",rport(ct1), "im ersten Beispiel und ", rport(ct2), "im zweiten Beispiel. Wir können die Nullhypothese in beiden Fällen nicht ablehnen und sprechen von einem nicht-signifikanten Zusammenhang.")
 
-datasauRus::datasaurus_dozen %>% filter(dataset=="dino" | dataset=="slant_up") %>% ggplot(aes(x=x,y=y))+geom_point()+facet_wrap(~dataset)
+datasauRus::datasaurus_dozen %>% filter(dataset=="dino" | dataset=="slant_up") %>% ggplot(aes(x=x,y=y))+geom_point()+facet_wrap(~dataset)+jaspGraphs::themeJaspRaw()
 
 cat("Wir wissen, dass wir hier nur lineare Zusammenhänge testen. Aus dem Beispiel lernen wir insbesondere: Wenn man keinen linearen Zusammenhang findet, bedeutet das nicht, dass es dennoch möglicherweise bedeutsame Muster in den Daten gibt.")
 ```

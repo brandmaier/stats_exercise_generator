@@ -16,7 +16,8 @@ Suggests:
     psychTools,
     testthat,
     GPArotation,
-    patchwork
+    patchwork,
+    fastdummies
 Description: This is a generator for exercises for introductory statistics for psychologist. It covers classic, frequentist approaches like t-tests, regression, analysis of variance and principal component analysis. The generator both generates exercises and solutions. It contains a variety of work sheets (currently only in German) for students to practice the foundations of statistics.
 License: MIT
 Encoding: UTF-8
