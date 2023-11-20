@@ -86,14 +86,13 @@ sig2 = ifelse(tst2$p.value<0.05,"signifikanter","nicht-signifikanter")
 
 Im Rahmen einer empirischen Studie  wurde untersucht, inwieweit sich Persönlichkeitsmerkmale
 auf den erlebten Stress im Studium auswirken. Dabei wurden zwei Kohorten von 
-Erstsemestern untersucht, die in verschiedenen Jahren mit dem Studium begonnen haben. In
-jeder Kohorte wurden 25 Studierende befragt.
-In der Kohorte "A" wurde ein `r sig1` Zusammenhang von `r rport(tst1)` gefunden. In der
-Kohorte "B" wurde ein `r sig2` Zusammenhang von `r rport(tst2)`gefunden.
+Erstsemestern untersucht, die in verschiedenen Jahren mit dem Studium begonnen haben. 
+In jeder Kohorte wurden 25 Studierende befragt.
+In der Kohorte "A" wurde ein `r sig1` Zusammenhang von `r rport(tst1)` gefunden. In der Kohorte "B" wurde ein `r sig2` Zusammenhang von `r rport(tst2)`gefunden.
 
-Wie können wir untersuchen, ob sich der Zusammenhang zwischen den Kohorten unterscheidet? Führen
-Sie alle notwendigen Schritte durch.
+Wie können wir untersuchen, ob sich der Zusammenhang zwischen den Kohorten unterscheidet? Führen Sie alle notwendigen Schritte vom Erstellen der Hypothesen bis zu einem statistischen Schluss durch.
 
+Der kritische Wert für die Z-Verteilung liegt bei ±1.96 (zweiseitig, $\alpha$=5%).
 
 ```{r results="asis", eval=include_solution}
 cat(solution_header())
@@ -146,19 +145,23 @@ cat("Eine Person erzählt der anderen, dass sie bisher immer dachte, dass eine K
 
 ## Aufgabe 4
 
-Laden Sie die Datensätze "korrelation-beispiel1.csv" und "korrelation-beispiel2.csv". Berechnen Sie eine einfache lineare Regression (oder auch eine bivariate Korrelation) mit einem Statistikprogramm ihrer Wahl (z.B. JASP). Prüfen Sie, ob es einen linearen Zusammenhang je zwischen den beiden Variablen $X$ und $Y$ gibt. Was folgern Sie? Erstellen Sie auch die Streudiagramme. Was kann man daraus erkennen?
+Laden Sie die Datensätze "korrelation-beispiel1.csv" und "korrelation-beispiel2.csv". Berechnen Sie eine einfache lineare Regression (oder auch eine bivariate Korrelation) mit einem Statistikprogramm ihrer Wahl (z.B. JASP). Prüfen Sie, ob es einen linearen Zusammenhang je zwischen den beiden Variablen $X$ und $Y$ gibt. Was folgern Sie? Erstellen Sie auch die Streudiagramme (z.B. in JASP über die Korrelation^[Beachten Sie ggf. die Reihenfolge der Variablen. Erstellen Sie das Diagramm so, dass X auf der horizontalen Achse und Y auf der vertikalen Achse liegt]). Was kann man daraus erkennen?
 
 ```{r}
 
 x1 <- datasauRus::datasaurus_dozen %>% filter(dataset=="slant_up") %>% select(-dataset)
 x2 <- datasauRus::datasaurus_dozen %>% filter(dataset=="dino") %>% select(-dataset)
 
+# save datasets to drive
+write.csv(x1, file="korrelation-beispiel1.csv", row.names = FALSE)
+write.csv(x2, file="korrelation-beispiel2.csv", row.names = FALSE)
+
 ct1 <- cor.test(x1$x,x1$y)
 ct2 <- cor.test(x2$x,x2$y)
 ```
 
 
-```{r results="asis", eval=include_solution}
+```{r results="asis", eval=include_solution, fig.width=5, fig.height=3}
 cat(solution_header())
 
 cat("Die Korrelation beträgt ",rport(ct1), "im ersten Beispiel und ", rport(ct2), "im zweiten Beispiel. Wir können die Nullhypothese in beiden Fällen nicht ablehnen und sprechen von einem nicht-signifikanten Zusammenhang.")

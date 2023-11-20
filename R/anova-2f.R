@@ -357,3 +357,20 @@ solution_partial_eta2 <- function(x) {
   return(ret)
 }
 
+distractors_FvalA <- function(x) {
+  d1 <- x$mqs_A/x$mqs_AxB
+  d2 <- x$mqs_A/x$mqs_tot
+  d3 <- x$df_AxB/x$mqs_inn
+  return(c(x$Fval_A,d1,d2,d3))
+}
+
+distractors_partial_eta2_A <- function(x) {
+  
+  eta2p_A <- round(x$qs_A / (x$qs_A+x$qs_inn),3)
+  d1<- round(x$qs_A / (x$qs_tot),3) 
+  d2 <- round(x$qs_A / (x$qs_A+x$qs_AxB+x$qs_inn),3)
+  d3 <-  round(x$qs_AxB / (x$qs_AxB+x$qs_inn),3)
+  d4 <-  round(x$qs_A / (x$qs_inn),3)
+  
+  return(c(eta2p_A, d1,d2,d3,d4))
+}
