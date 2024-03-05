@@ -63,6 +63,8 @@ aov2 <- generate_anova_2f(obs_round =
 anova_in_R(aov2)
 result_table(aov2)
 
+rslt_lm <- anova_in_R(aov2)
+testthat::expect_equal(rslt_lm$`Sum Sq`[1], aov2$qs_A)
 
 ## --
 set.seed(234)

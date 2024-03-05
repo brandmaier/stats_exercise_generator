@@ -15,7 +15,8 @@ generate_anova_2f <- function(av.name = "",
                            obs_round=2,
                            av = NULL,
                            alpha = 0.05,
-                           extreme_rounding = FALSE)
+                           extreme_rounding = FALSE,
+                           ssq_round=2)
 {
   
   
@@ -49,7 +50,7 @@ generate_anova_2f <- function(av.name = "",
     cellmeans_by_row <- dat %>% group_by(a,b) %>% summarise(mean(av))
     cellmeans_by_row <- round( cellmeans_by_row[,3,drop=TRUE], 2)
   }
-  xm = round(mean(av), 2)
+  xm = round(mean(av), ssq_round)
  
   #browser()
  
@@ -68,19 +69,19 @@ generate_anova_2f <- function(av.name = "",
   
   qs_tot <- round(
     sum(
-      ex_round((dat$av-xm)^2,2)
+      ex_round((dat$av-xm)^2,ssq_round)
     )
-    ,2)
+    ,ssq_round)
   qs_A <- q* nz * round(
     sum(
-      ex_round((factor_a_means-xm)^2,2)
+      ex_round((factor_a_means-xm)^2,ssq_round)
     )
-    ,2)
+    ,ssq_round)
   qs_B <- p* nz * round(
     sum(
-      ex_round((factor_b_means-xm)^2,2)
+      ex_round((factor_b_means-xm)^2,ssq_round)
     )
-    ,2)
+    ,ssq_round)
   
 
   
@@ -91,16 +92,16 @@ generate_anova_2f <- function(av.name = "",
 #  browser()
   
   # just as sanity check
-  qs_tot <- round( sum((xm-av)^2), 2)
+  qs_tot <- round( sum((xm-av)^2), ssq_round)
   
 
   #qs_AxB <- round(sum( (cms-ams-bms+xm   )^2 ), 2)
   qs_AxB <- round( nz * sum( (cellmeans_by_row+xm-
-                                rep(factor_a_means,each=q)-rep(factor_b_means,p) )^2 ), 2 )
+                                rep(factor_a_means,each=q)-rep(factor_b_means,p) )^2 ), ssq_round )
   
   qs_inn <-  round( 
     sum((cms-av)^2) 
-    , 2)
+    , ssq_round)
   
   
   
