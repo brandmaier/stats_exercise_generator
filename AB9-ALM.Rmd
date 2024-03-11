@@ -28,7 +28,7 @@ library(fastDummies)
 
 ```
 
-# Aufgabe #1 - Codierung
+# Aufgabe 1 - Dummy-Codierung
 
 In einer Studie wurde erhoben, mit welchem Verkehrsmittel Studierende zur Uni gelangen. Die vier Antwortmöglichkeiten waren: zu Fuß, Fahrrad, Öffentlich, oder Anders. Damit dieses Merkmal als Prädiktor in einer Regression benutzt werden kann, soll es dummy-codiert werden. Die Referenzkategorie soll "Fahrrad" sein. Erstellen Sie eine Dummy-Codierung und tragen Sie diese in folgende Tabelle ein. In dieser Tabelle finden Sie die Daten, die für das Merkmal "Verkehrsmittel" erhoben wurden, in der ersten Spalte. Nutzen Sie die übrigen Spalten, um die Dummy-Codierung zu erstellen. Tragen Sie aussagekräftige Namen für die übrigen Spalten ein.
 
@@ -125,11 +125,16 @@ solution_header()
 
 k <-  length(regmod$coefficients)-1
 
+ #r2 <- round(model$r2,2)
+#  N <- model$n
+#  k <
 
+# naive wrapper
+model <- list(r2=summary(regmod)$r.squared, n=N, k=k)    
 #print(solution_adjr2)
 
 #wrap_math_block(solution_adjr2())
-wrap_math_flalign(solution_adjr2())
+wrap_math_flalign(solution_adjr2(model = model))
 
 ```
 
