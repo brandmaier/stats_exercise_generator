@@ -114,7 +114,7 @@ Im Vorfeld gab es die Vermutung, dass die _working alliance_ von Personen mit ei
  
 ```{r results="asis", eval=include_solution}
 ctr_coeff1 <- c(-1,1,-1,+1)
-ctr1 <- generate_contrast(aov1,ctr_coeff1, directed=TRUE)
+ctr1 <- generate_contrast(aov1,ctr_coeff1, directed=TRUE, alpha=0.01)
 
 cat(contrast_hypotheses(ctr1,1))
 cat("\n")
