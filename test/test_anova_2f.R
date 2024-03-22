@@ -53,18 +53,22 @@ anova_in_R(myaov3)
 aov <- generate_anova_2f( av = c(
   1,2,38,4, 7,6,7,16,
   5,6,7,8, 18,18,16,17
-), factor.a.levels = c("a1","a2"), factor.b.levels=c("b1", "b2"), nz=4)
+), factor.a.levels = c("a1","a2"), 
+factor.b.levels=c("b1", "b2"), nz=4)
 
 anova_in_R(aov)
 result_table(aov)
 
 aov2 <- generate_anova_2f(obs_round = 
-                            1)
+                            1, ssq_round = 1000)
 anova_in_R(aov2)
 result_table(aov2)
 
 rslt_lm <- anova_in_R(aov2)
 testthat::expect_equal(rslt_lm$`Sum Sq`[1], aov2$qs_A)
+testthat::expect_equal(rslt_lm$`Sum Sq`[2], aov2$qs_B)
+testthat::expect_equal(rslt_lm$`Sum Sq`[3], aov2$qs_AxB)
+testthat::expect_equal(rslt_lm$`Sum Sq`[4], aov2$qs_inn)
 
 ## --
 set.seed(234)

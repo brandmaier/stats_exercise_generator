@@ -150,7 +150,17 @@ chisq_decision <- function(x) {
 
 # ---- # ----
 
+#'
+#'
+#' @param obs Vector of integer.
+#' @param exp_relative Vector of numeric
+#' @param label Vector of characters. 
+#' @param alpha Numeric. Significance level
+#'
 generate_chisq_uni <- function(obs, exp_relative, labels, alpha=0.05) {
+  
+  stopifnot(length(obs)==length(exp_relative))
+  stopifnot(length(labels)==length(obs))
   
   n <- sum(obs)
   exp <- exp_relative*n
