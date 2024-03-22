@@ -2,9 +2,9 @@ generate_regression <- function(n, ryx1, ryx2, rx12, x1mu, x2mu, ymu, sx1,sx2,sy
                                 round=0, varnames=NULL) {
 #  dat <- MASS::mvrnorm( n = n, mu, Sigma)
   
-#  b1 = round( (ryx1 - ryx2*rx12 ) / (1-rx12^2)* sy/sx1, 2)
-#  b2 = round( (ryx2 - ryx1*rx12) / (1-rx12^2) * sy/sx2, 2)
-  
+  b1 = round( (ryx1 - ryx2*rx12 ) / (1-rx12^2)* sy/sx1, 2)
+  b2 = round( (ryx2 - ryx1*rx12) / (1-rx12^2) * sy/sx2, 2)
+  b0 = round(ymu - b1* x1mu - b2*x2mu,2)
 #  k <- 2
  # browser()
   
@@ -18,7 +18,17 @@ generate_regression <- function(n, ryx1, ryx2, rx12, x1mu, x2mu, ymu, sx1,sx2,sy
   dat <- data.frame(dat)
   names(dat) <- c("x1","x2","y")
   
- generate_multipleregression(lm(y~.,dat)) 
+  reg <- generate_multipleregression(lm(y~.,dat)) 
+  
+  reg$ryx1 <- ryx1
+  reg$ryx2 <- ryx2
+  reg$rx12 <- rx12
+  
+  reg$b0 <- b0
+  reg$b1 <- b1
+  reg$b2 <- b2
+  
+  return(reg)
   
  # list(n=n, xmu=xmu, ymu=ymu, sx1=sx1, sx2=sx2, sy=sy, b1=b1, b2=b2,
 #       ryx1=ryx1, ryx2=ryx2, rx12=rx12, varnames=varnames, k=k) 
