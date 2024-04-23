@@ -1,3 +1,20 @@
+generate_simple_regression <- function(n, rxy, mx, my, sx, sy) {
+  b1 = round(rxy * sy / sx,2)
+  b0 = round(my - b1 * mx, 2)
+
+  result <- list(b0 = b0, b1 = b1, n=n, rxy=rxy, mx = mx, my = my, sx=sx,sy=sy)
+  return(result)
+}
+
+solution_simple_regression <- function(x) {
+paste0(
+  paste0("b_1 = ",x$rxy,"\\cdot \\frac{",x$sy, "}{",x$sx,"}=",x$b1), "\n\\\\",
+  
+  paste0("b_0 = ",x$my,"-",round(x$b1,2),"\\cdot",x$mx,"=",x$b0)
+)
+  
+}
+
 generate_regression <- function(n, ryx1, ryx2, rx12, x1mu, x2mu, ymu, sx1,sx2,sy, 
                                 round=0, varnames=NULL) {
 #  dat <- MASS::mvrnorm( n = n, mu, Sigma)
@@ -100,11 +117,11 @@ library(kableExtra)
 coeff_table <- function(x) {
   
   ncoeff <- x$k
-  pres_data <- data.frame(Modell=c(1,rep("",x$k)),
-                          RegressionskoeffizientB= round( coefficients(x$lm), 3),
-                          StdFehler= round( sm$coefficients[,2], 3),
-                          T= round( sm$coefficients[,3], 3),
-                          Sig= round( sm$coefficients[,4],3))
+  pres_data <- data.frame(#Modell=c(1,rep("",x$k)),
+                          Regressionskoeffizient= round( coefficients(x$lm), 3),
+                          `Std. Fehler`= round( sm$coefficients[,2], 3),
+                          T = round( sm$coefficients[,3], 3),
+                          p = round( sm$coefficients[,4],3))
   
   knitr::kable( pres_data
     

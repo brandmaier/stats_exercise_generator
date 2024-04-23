@@ -26,21 +26,27 @@ empty_str <- "\\ "
 
 # Aufgabe 1
 
-Mittels eines multiplen linearen Regressionsmodells soll ein Vorhersagemodell erstellt werden. Vorhergesagt werden soll das Ausmaß beruflichen Erfolgs (Y) anhand zweier Persönlichkeitsmerkmale Extraversion (X1) und Offenheit (X2). Bekannt sind die bivariaten Korrelationen der drei Merkmale:
+Mittels eines multiplen linearen Regressionsmodells soll ein Vorhersagemodell erstellt werden. Vorhergesagt werden soll das Ausmaß beruflichen Erfolgs (Y) anhand des Persönlichkeitsmerkmals Offenheit (X). Beide Maße sind hier als metrisch angenommen. Bekannt ist die bivariate Korrelation sowie die Mittelwerte und Standardabweichungen der beiden Variablen. 
+
 
 ```{r}
 set.seed(9584)
-rg <- generate_regression(n=100, ryx1 = .5, ryx2=.2, rx12=.4,x1mu = 0,x2mu = 0,ymu = 0, 
-                          sy = 1, sx1 = 2, sx2=2,
-                         varnames=c("a","b","c"))
+#rg <- generate_regression(n=100, ryx1 = .5, ryx2=.2, rx12=.4,x1mu = 0,x2mu = 0,ymu = 0, 
+#                          sy = 1, sx1 = 2, sx2=2,
+#                         varnames=c("a","b","c"))
+rg <- generate_simple_regression(n=100, rxy=.5, mx = 3, my=5, sx=1, sy=3)
 ```
 
-Stellen Sie die Regressionsgleichung in der Population auf (Tipp: griechische Buchstaben für Populationsparameter) und berechnen Sie die Schätzer für Regressionskonstante und Regressionsgewichte aus den gegebenen Korrelationen.
+Berechnen Sie die Schätzer für Regressionskonstante und das Regressionsgewicht aus den Angaben. Was bedeutet das Regressionsgewicht hier inhaltlich?
 
-```{r}
-cat("$r_{X1,Y} = ",rg$ryx1,"$")
-cat("$r_{X2,Y} = ",rg$ryx2,"$")
-cat("$r_{X1,X2} = ",rg$rx12,"$")
+```{r results="asis", echo=FALSE}
+cat("$$r_{X,Y} = ",rg$rxy,"$$")
+cat("Mittelwerte\n")
+cat("$$m_x = ",rg$mx,"$$")
+cat("$$m_y = ",rg$my,"$$")
+cat("Standardabweichungen\n")
+cat("$$s_x = ",rg$sx,"$$")
+cat("$$s_y = ",rg$sy,"$$")
 ```
 
 ```{r}
@@ -49,8 +55,10 @@ cat("$r_{X1,X2} = ",rg$rx12,"$")
 
 
 ```{r, eval=include_solution, results="asis"}
-#wrap_math_align(solution_coeff(rg))
+solution_header()
+wrap_math_align(solution_simple_regression(rg))
 
+cat("Für jeden zusätzlichen Skalenpunkt in der Offenheit sagt das Modell eine um ",rg$b1," Skalenpunkte höheren beruflichen Erfolg vorher.")
 ```
 
 # Aufgabe 2
@@ -60,18 +68,38 @@ set.seed(2459)
 N <- 200
 anz_freunde <- rnorm(N)
 anz_follower <- rnorm(N)
-happy <- anz_freunde*0.1+anz_follower*0.3+rnorm(N)
+happy <- anz_freunde*0.3+anz_follower*0.5+rnorm(N)
 dat <- data.frame(anz_freunde, anz_follower, happy)
 model <- generate_multipleregression(lm(happy~.,dat))
 ```
 
-In einer wissenschaftlichen Studie wurde untersucht, inwieweit die Lebenszufriedenheit durch Persönlichkeitsmerkmale vorhergesagt werden kann. Dazu wurde als abhängige Variable die Lebenszufriedenheit untersucht (metrische Skala von 0--100). Die unabhängigen Variablen waren Anzahl der Freunde und Anzahl der Instagram-Follower. Untersucht wurde eine Stichprobe von $N=200$ Personen.
+In einer empirischen Studie wurde untersucht, inwieweit die Lebenszufriedenheit durch die Anzahl der Follower und Freunde (im echten Leben) vorhergesagt werden kann. Dazu wurde als abhängige Variable die Lebenszufriedenheit untersucht (metrische Skala von 0--100). Die unabhängigen Variablen waren Anzahl der Freunde und Anzahl der Instagram-Follower. Untersucht wurde eine Stichprobe von $N=200$ Personen.
 
 Bei der statistischen Analyse erhielt man folgendes Ergebnis:
 
-```{r}
+```{r cftable, results="asis"}
 coeff_table(model)
+
+beta_estimates <- coef(model$lm)
+
+mr2 <- model$r2
 ```
+
+Die Modellgüte betrug $R^2=`r mr2 `$.
+Was bedeuten Regressionskonstante und Regressionsgewichte hier inhaltlich? Inwieweit sind hier kausale Aussagen möglich?
+
+```{r, eval=include_solution, results="asis"}
+solution_header()
+
+cat("Die Regressionskonstante ist der vom Modell vorhergesagte Wert für eine Person, die die Ausprägung Null auf allen Prädiktoren hat. Im Beispiel sagen wir für eine Person mit 0 Followern und 0 Freunden eine Lebenszufriedenheit von ",round(beta_estimates[1],2)," Skalenpunkten vorher.")
+
+cat("Für jeden zusätzliche Instagram-Follower, erhöht sich die Vorhersage um ",round(beta_estimates[2],2)," Punkte auf der Lebenszufriedenheitsskala.")
+
+cat("Für jeden zusätzlichen Freund, erhöht sich die Vorhersage um ",round(beta_estimates[3],2)," Punkte auf der Lebenszufriedenheitsskala.")
+
+cat("Da es sich um eine korrelative Studie (oder auch Beobachtungsstudie) handelt, sind kausale Aussagen natürlich nicht zulässig. Signifikante Ergebnisse deuten zwar auf einen statistischen Zusammenhang hin, den man für die Vorhersage nutzen kann, allerdings kann keine Ursache-Wirk-Richtung (wie bspw. sich mit mehr Menschen anzufreunden erhöht ursächlich die Lebenszufriedenheit) getroffen werden.")
+```
+
 # Aufgabe 3
 
 Die Modellgüte im Modell von Aufgabe 2 wurde mit $R^2$ angegeben. Was ist das Problem dieses Maßes. Berechnen Sie eine Variante des Maßes, die dieses Problem korrigiert. Welche Eigenschaft hat das korrigierte Maß?
