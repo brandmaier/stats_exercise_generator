@@ -1,4 +1,5 @@
 options(encoding = 'UTF-8')
+options(knitr.table.format = "latex")
 
 output_path = "publish/"
 

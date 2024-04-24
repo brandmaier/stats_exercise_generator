@@ -3,19 +3,18 @@ title: "Arbeitsblatt - Lineare Regression"
 author: "Statistik II - Andreas M. Brandmaier"
 date: "`r format(Sys.time(), '%d. %B %Y')`"
 output:
-#  html_document: default
   pdf_document: default
 params:
   include_solution: yes
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, eval=TRUE, echo=FALSE}
 library(tidyverse)
 knitr::opts_chunk$set(echo = FALSE)
 knitr::opts_chunk$set(fig.pos = "!H", out.extra = "") # prevent LaTeX tables from floating
 
 source("R/helper.R")
-source("R/anova-1f.R")
+#source("R/anova-1f.R")
 source("R/regression.R")
 
 include_solution <- params$include_solution
@@ -26,7 +25,7 @@ empty_str <- "\\ "
 
 # Aufgabe 1
 
-Mittels eines multiplen linearen Regressionsmodells soll ein Vorhersagemodell erstellt werden. Vorhergesagt werden soll das Ausmaß beruflichen Erfolgs (Y) anhand des Persönlichkeitsmerkmals Offenheit (X). Beide Maße sind hier als metrisch angenommen. Bekannt ist die bivariate Korrelation sowie die Mittelwerte und Standardabweichungen der beiden Variablen. 
+Mittels eines einfachen linearen Regressionsmodells soll ein Vorhersagemodell erstellt werden. Vorhergesagt werden soll das Ausmaß beruflichen Erfolgs (Y) anhand des Persönlichkeitsmerkmals Offenheit (X). Beide Maße sind hier als metrisch angenommen. Bekannt ist die bivariate Korrelation sowie die Mittelwerte und Standardabweichungen der beiden Variablen. 
 
 
 ```{r}
@@ -37,7 +36,7 @@ set.seed(9584)
 rg <- generate_simple_regression(n=100, rxy=.5, mx = 3, my=5, sx=1, sy=3)
 ```
 
-Berechnen Sie die Schätzer für Regressionskonstante und das Regressionsgewicht aus den Angaben. Was bedeutet das Regressionsgewicht hier inhaltlich?
+
 
 ```{r results="asis", echo=FALSE}
 cat("$$r_{X,Y} = ",rg$rxy,"$$")
@@ -48,11 +47,8 @@ cat("Standardabweichungen\n")
 cat("$$s_x = ",rg$sx,"$$")
 cat("$$s_y = ",rg$sy,"$$")
 ```
-
-```{r}
-#knitr::kable(bivariate_table(rg))
-```
-
+a) Berechnen Sie die Schätzer für Regressionskonstante und das Regressionsgewicht aus den Angaben. 
+b) Was bedeutet das Regressionsgewicht hier inhaltlich?
 
 ```{r, eval=include_solution, results="asis"}
 solution_header()
@@ -65,15 +61,15 @@ cat("Für jeden zusätzlichen Skalenpunkt in der Offenheit sagt das Modell eine 
 
 ```{r}
 set.seed(2459)
-N <- 200
+N <- 80
 anz_freunde <- rnorm(N)
 anz_follower <- rnorm(N)
-happy <- anz_freunde*0.3+anz_follower*0.5+rnorm(N)
+happy <- anz_freunde*0.5+anz_follower*0.3+rnorm(N,0,0.5)
 dat <- data.frame(anz_freunde, anz_follower, happy)
 model <- generate_multipleregression(lm(happy~.,dat))
 ```
 
-In einer empirischen Studie wurde untersucht, inwieweit die Lebenszufriedenheit durch die Anzahl der Follower und Freunde (im echten Leben) vorhergesagt werden kann. Dazu wurde als abhängige Variable die Lebenszufriedenheit untersucht (metrische Skala von 0--100). Die unabhängigen Variablen waren Anzahl der Freunde und Anzahl der Instagram-Follower. Untersucht wurde eine Stichprobe von $N=200$ Personen.
+In einer empirischen Studie wurde untersucht, inwieweit die Lebenszufriedenheit durch die Anzahl der Follower  und Freunde im echten Leben vorhergesagt werden kann. Dazu wurde als abhängige Variable die Lebenszufriedenheit untersucht (metrische Skala von 0--100). Die unabhängigen Variablen waren Anzahl der Freunde  (anz_freunde) und Anzahl der Instagram-Follower (Variablenname: anz_follower). Untersucht wurde eine Stichprobe von $N=`r N`$ Personen.
 
 Bei der statistischen Analyse erhielt man folgendes Ergebnis:
 
@@ -82,7 +78,7 @@ coeff_table(model)
 
 beta_estimates <- coef(model$lm)
 
-mr2 <- model$r2
+mr2 <- round(model$r2,2 )
 ```
 
 Die Modellgüte betrug $R^2=`r mr2 `$.

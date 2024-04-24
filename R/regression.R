@@ -125,5 +125,5 @@ coeff_table <- function(x) {
   
   knitr::kable( pres_data
     
-  ) %>%  kable_styling(latex_options = "striped")
+  )# %>%  kable_styling(latex_options = "striped")
 }

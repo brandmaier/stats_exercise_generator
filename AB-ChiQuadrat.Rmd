@@ -5,12 +5,11 @@ date: "`r format(Sys.time(), '%d. %B %Y')`"
 output:
   pdf_document: 
     extra_dependencies: ["float","breqn","amsmath"]
-  html_document: default
 params:
-  include_solution: true
+  include_solution: false
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, results = "hide", eval=TRUE}
 library(tidyverse)
 knitr::opts_chunk$set(echo = FALSE)
 knitr::opts_chunk$set(fig.pos = "!H", out.extra = "") # prevent LaTeX tables from floating around
@@ -30,7 +29,8 @@ empty_str <- "\\ "
 
 # Aufgabe 1
 
-```{r}
+```{r a1}
+
 # generate data for exercise 1
 set.seed(3249)
 csq <- generate_chisq(labels.a=c("Neues Medikament","Altes Medikament"),
@@ -39,13 +39,13 @@ write.csv(file = "data/ab3-symptoms.csv", x=chisq_to_data(csq), row.names = FALS
 ```
 
 In einer randomisierten Studie haben 40 Patient:innen ein neuartiges Antidepressivum erhalten und 40 Patient:innen ein bereits erprobtes. Nach vier Wochen wurde erhoben, ob die Patient:innen Nebenwirkungen erfahren haben. Dies wurde als dichotomes Merkmal _Nebenwirkung_ (ja/nein) erhoben. Ein Forscherteam hat die Hypothese, dass das neuartige Antidepressivum anders wirkt als die etablierte Behandlung (ungerichtete Alternativhypothese).
-```{r, results="asis"} 
+```{r a1crtv, results="asis"} 
 cat(chisq_crit(csq,undirected = TRUE))
 ```
 
 Folgende Daten wurden beobachtet:
 
-```{r, results="asis"}
+```{r a1obs, results="asis"}
 chisq_data_table(csq)
 ```
 
@@ -53,7 +53,7 @@ chisq_data_table(csq)
 Berechnen Sie zunächst die Spalten- und Randsummen für diese Häufigkeits-Tabelle. Erstellen Sie dann eine Tabelle von Häufigkeiten, die man erwarten würde, wenn es keinen Unterschied in den Nebenwirkungen zwischen den Antidepressiva gäbe. Berechnen Sie dann die Prüfgröße für den $\chi^2$-Unabhängigkeits-Test und treffen Sie eine statistische Entscheidung. Wir gehen von einem Signifikanzniveau von 5% aus.
 
 
-```{r, results="asis", eval=include_solution}
+```{r a1sol, results="asis", eval=include_solution}
 solution_header()
 
 cat("Dies ist die Kontigenztabelle mit Zeilensummen und Spaltensummen:")
@@ -87,7 +87,7 @@ Laut einer Statista-Studie (https://de.statista.com/statistik/daten/studie/30157
 Wir gehen weiterhin davon aus, dass bei dieser Datenerhebung keine Mehrfachnennungen möglich waren. In einer neuen Studie wurde nun untersucht, ob sich die Vorlieben bei Psychologiestudierenden von der Normalbevölkerung (siehe Prozentangaben vorher) unterscheiden. Beobachtet wurden folgende absoluten Häufigkeiten in einer Stichprobe von 120 Studierenden:
 
 
-```{r}
+```{r a2tab}
 obs <- c(29,16,15,60)
 n <- sum(obs)
 labels <- c("Katzen","Hunde","Andere","Keine")
@@ -98,12 +98,12 @@ chisq_uni_data_table(csq)
 ```
 
 Prüfen Sie, ob sich die Vorlieben der Psychologiestudierenden von der Normalbevölkerung unterscheiden. Gehen Sie von einem Signifikanzniveau von 5% aus.
-```{r, results="asis"} 
+```{r a2crit, results="asis"} 
 cat(chisq_crit(csq,undirected = TRUE))
 ```
 
 
-```{r, results="asis", eval=include_solution}
+```{r a2sol, results="asis", eval=include_solution}
 cat("_Lösung:_\n\n")
 
 wrap_math_align(solution_chisq_uni(csq,1))
@@ -118,21 +118,21 @@ cat("Wir lehnen die Nullhypothese ab und schließen daraus, dass sich die Vorlie
 
 In einer Studie wurde untersucht, ob sich das Interesse an einem A&O-Masterstudiengang über die Jahrgänge von Studierenden hinweg unterscheidet. Die Stichproben sind unabhängig, d.h. es wurden in einem Kalenderjahr Studierende aus verschiedenen Anfangssemestern befragt. Erhoben wurde, ob potentiell ein Interesse an dem Besuch des Masterstudiengangs besteht (codiert als ja/nein).  Folgende Kreuztabelle entstand aus den Daten der Jahrgänge:
 
-```{r}
+```{r a3}
 csq <- generate_chisq(labels.b = c("SS19","WS19/20","SS20","WS20/21"), labels.a=c("ja","nein"),tbl = matrix(c(88,12,95,5, 93,7,95,5), ncol=4))
 ```
 
-```{r results="asis"}
+```{r a3tab, results="asis"}
 chisq_data_table(csq) 
 ```
 
 Prüfen Sie mit dem Unabhängigkeitstest, ob sich die Interessenlage über die Anfangssemester hinweg unterscheidet. Das Signifikanzniveau sei 5%.
-```{r, results="asis"} 
+```{r arcrit, results="asis"} 
 cat(chisq_crit(csq,undirected = TRUE))
 ```
 
 
-```{r, results="asis", eval=include_solution}
+```{r a3sol, results="asis", eval=include_solution}
 cat("_Lösung:_\n\n")
 
 chisq_data_table(csq, "indep")
@@ -147,7 +147,7 @@ cat("Wir können die Nullhypothese nicht ablehnen.")
 # Aufgabe 4
 Wir bleiben bei den Daten aus Aufgabe 4. Wie müsste die Kontingenztabelle der beobachteten Häufigkeiten lauten, wenn man testen möchte, ob sich die Interessenlage in den Sommer- und Wintersemestern unterscheidet? Führen Sie den entsprechenden Unabhängigkeitstest durch.
 
-```{r} 
+```{r a4} 
 # code to generate data of exercise 5
 tbl <- cbind(rowSums(csq$tbl[,c(1,3)]),rowSums(csq$tbl[,c(2,4)]))
 csq <- generate_chisq(labels.b = c("Sommer","Winter"), labels.a=c("ja","nein"),tbl=tbl)
@@ -155,7 +155,7 @@ csq <- generate_chisq(labels.b = c("Sommer","Winter"), labels.a=c("ja","nein"),t
 
 
 
-```{r, results="asis", eval=include_solution}
+```{r a4sol, results="asis", eval=include_solution}
 #
 # solution block - exercise 5
 #
@@ -172,7 +172,7 @@ cat("Wir können die Nullhypothese nicht ablehnen.")
 ```
 
 # Aufgabe 5
-```{r}
+```{r a5}
 csq <- generate_chisq(labels.a = c("Ja (vorher)"," Nein (vorher)"),
                       labels.b=c("Ja (Nachher)","Nein (Nachher)"), 
                                  short.labels.a=c("Ja","Nein"), 
@@ -181,7 +181,7 @@ csq <- generate_chisq(labels.a = c("Ja (vorher)"," Nein (vorher)"),
 write.csv("data/ab3-smoker.csv", x=chisq_to_data(csq),row.names = FALSE)
 ```
 Ein Forscherteam untersucht die Wirksamkeit einer Anti-Raucher-Kampagne. Dazu wird das Rauchverhalten (ja/nein ) in derselben Stichprobe zweimal untersucht: einmal vor der Kampagne und einmal nach der Kampagne. Die Vermutung ist, dass die Rauchkampagne das Rauchverhalten verändert. Dies entspricht einer ungerichteten Forschungshypothese (Veränderung bedeutet entweder, dass mehr Leute als vorher rauchen oder weniger). Untersuchen Sie diese Fragestellung mit einer ungerichteten Hypothese. Das Signifikanzniveau sei 5%.
-```{r, results="asis"} 
+```{r a5crit, results="asis"} 
 cat(chisq_crit(csq,undirected = TRUE))
 ```
 
@@ -189,11 +189,11 @@ Formulieren Sie die Null-Hypothese und rechnen Sie den richtigen Test. Treffen S
 
 
 
-```{r, results="asis"}
+```{r a5tab, results="asis"}
 chisq_data_table(csq)
 ```
 
-```{r, results="asis", eval=include_solution}
+```{r a5sol, results="asis", eval=include_solution}
 cat("_Lösung:_\n\n")
 
 cat("Eine ungerichtete Hypothese bedeutet hier: Wir nehmen an, dass die Anzahl (genaugenommen: relative Häufigkeit) der Wechsler von Raucher zu Nicht-Raucher (Populationswahrscheinlichkeit: $\\pi_{12}$) unterschiedlich ist von der Anzahl der Nicht-Raucher zu Raucher (Populationswahrscheinlichkeit: $\\pi_{21}$). Also schreiben wir: \n $$H_1: \\pi_{12} \\ne \\pi_{21}$$ und $$H_0: \\pi_{12}= \\pi_{21}$$")
