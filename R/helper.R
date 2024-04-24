@@ -25,7 +25,12 @@ paste0g <- function(...) {
   paste0(temp, collapse=collapse)
 }
 
-wrap_p <- function(p) {
+wrap_p <- function(p, tex_math = TRUE) {
   if (is.na(p))return(NA)
-  if (p<0.001){ return ("$<0.001$") }else{ return(round(p,3))}
+  if (p<0.001){
+    if (tex_math)
+      return ("$<0.001$")
+    else
+      return("<0.001")
+    }else{ return(round(p,3))}
 }

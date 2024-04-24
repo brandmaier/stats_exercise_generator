@@ -1,10 +1,10 @@
 ---
-title: "Lineare Regression"
-author: "Andreas M. Brandmaier"
-date: "11/14/2021"
+title: "Arbeitsblatt - Lineare Regression"
+author: "Statistik II - Andreas M. Brandmaier"
+date: "`r format(Sys.time(), '%d. %B %Y')`"
 output:
+#  html_document: default
   pdf_document: default
-  html_document: default
 params:
   include_solution: yes
 ---

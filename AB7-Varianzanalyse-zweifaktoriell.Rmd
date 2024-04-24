@@ -4,12 +4,11 @@ author: "Statistik II - Andreas M. Brandmaier"
 date: "`r format(Sys.time(), '%d. %B %Y')`"
 output:
   pdf_document: default
-  html_document: default
+#  html_document: default
 params:
   include_solution: true
 mainfont: SourceSansPro
 header-includes:
-#   - \usepackage[default]{sourcesanspro}
    - \usepackage[T1]{fontenc}
 ---
 
@@ -115,7 +114,7 @@ interaction_plot(aov, empty=TRUE)
 cat("_Lösung:_\n")
 interaction_plot(aov)
 
-cat("Es handelt sich hierbei um eine disordinale Interaktion. Beide Haupteffekte sind nicht global interpretierbar. Es gibt einen signifikanten Haupteffekt von Diagnose. Wenn man also die Therapieform außer acht lässt (genaugenommen über die möglichen Therapien mittelt), können wir sagen, dass sich Personen mit verschiedenen Diagnosen in der Symptomschwere unterscheiden. Da es aber die signifikante disordinale Interaktion gibt, wissen wir, dass diese Aussage nicht innerhalb jeder Stufe des anderen Faktors (Therapieform) gilt. Wenn man bspw. PTSD und die Angststörung vergleicht, sieht man das die beste Therapieform jeweils eine andere für die Diagnosen ist (vgl. die rechts Abbildung im Interaktionsdiagram) ")
+cat("Es handelt sich hierbei um eine disordinale Interaktion. Beide Haupteffekte sind nicht global interpretierbar. Es gibt einen signifikanten Haupteffekt von Diagnose. Wenn man also die Therapieform außer acht lässt (genaugenommen über die möglichen Therapien mittelt), können wir sagen, dass sich Personen mit verschiedenen Diagnosen in der Symptomschwere unterscheiden. Da es aber die signifikante disordinale Interaktion gibt, wissen wir, dass diese Aussage nicht innerhalb jeder Stufe des anderen Faktors (Therapieform) gilt. Wenn man bspw. PTSD und die Angststörung vergleicht, sieht man das die beste Therapieform jeweils eine andere für die jeweilige Diagnosen ist (vgl. die rechts Abbildung im Interaktionsdiagram). ")
 ```
 
 

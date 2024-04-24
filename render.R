@@ -67,3 +67,10 @@ rmarkdown::render(input="AB5-Regression.Rmd",
 rmarkdown::render(input="AB5-Regression.Rmd", 
                   output_file=paste0(output_path,"AB-Regression-mit-Lösung.pdf"), 
                   params=list(include_solution=TRUE))
+
+rmarkdown::render(input="AB3-Teststaerke.Rmd", 
+                  output_file=paste0(output_path,"AB-Teststärke.pdf"), 
+                  params=list(include_solution=FALSE))
+rmarkdown::render(input="AB3-Teststaerke.Rmd", 
+                  output_file=paste0(output_path,"AB-Teststärke-mit-Lösung.pdf"), 
+                  params=list(include_solution=TRUE))

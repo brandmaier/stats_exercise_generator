@@ -433,7 +433,8 @@ result_table <- function(x) {
       df = c(x$df_A, x$df_B, x$df_AxB, x$df_inn),
       MQS = c(x$mqs_A, x$mqs_B, x$mqs_AxB, x$mqs_inn),
       F = c(x$Fval_A, x$Fval_B, x$Fval_AxB, ""),
-      p = c(wrap_p(x$p_A), wrap_p(x$p_B), wrap_p(x$p_AxB), "")
+      p = c(wrap_p(x$p_A), wrap_p(x$p_B), wrap_p(x$p_AxB,tex_math=FALSE), "")
+     #p = c(x$p_A, x$p_B, x$p_AxB, "")
     )
   #eta2=c(x$eta2,NA,NA))
   
