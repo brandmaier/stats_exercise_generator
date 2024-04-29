@@ -1,14 +1,18 @@
 ---
-title: "Chocolate Spheroids"
+title: "Schokoladenlinsen"
+author: "Statistik II - Andreas M. Brandmaier"
+date: "`r format(Sys.time(), '%d. %B %Y')`"
 output:
   pdf_document: default
-  html_document: default
-date: "2024-03-21"
+#  html_document: default
 params:
   include_solution: true
+mainfont: SourceSansPro
+header-includes:
+   - \usepackage[T1]{fontenc}
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=TRUE, results = "hide", eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 library(tidyverse)
 knitr::opts_chunk$set(echo = FALSE)
 knitr::opts_chunk$set(fig.pos = "!H", out.extra = "") # prevent LaTeX tables from floating around
@@ -51,6 +55,8 @@ cat("_Lösung:_\n\n")
 cat("Zunächst bestimmen wir durch Zählen die absoluten Häufigkeiten und halten diese in einer Tabelle fest:")
 chisq_uni_data_table(csq) 
 
+cat("Wir zählen insgesamt ",csq$n," Schokoladenlinsen.")
+
 cat("Dann berechnen wir die erwarteten Häufigkeiten pro Farbe unter der Annahme einer Gleichverteilung:")
 wrap_math_align(solution_chisq_uni(csq,1))
 
@@ -58,7 +64,7 @@ cat("Nun berechnen wir eine Teststatistik, die die Abweichung der Beobachtungen 
 wrap_math_block(solution_chisq_uni(csq,2))
 cat("\n")
 cat(chisq_crit(csq))
-cat("Wir können die Nullhypothese nicht ablehnen. Es wurde keine signifikante Abweichung von der Gleichverteilung festgestellt.")
+cat("\nWir können die Nullhypothese nicht ablehnen. Es wurde keine signifikante Abweichung von der Gleichverteilung festgestellt.")
 
 cat("Die Wahrscheinlichkeit, eine mindestens so große Abweichung von der Gleichverteilung zu beobachten unter der Annahme, dass die Nullhypothese wahr ist (also eine Gleichverteilung der Farben gegeben ist), liegt bei ", pchisq(csq$chisq,df=csq$df))
 ```

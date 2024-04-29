@@ -46,32 +46,26 @@ generate_chisq <- function(labels.a=c("Antidepressivum","Placebo"), labels.b=c("
        short.labels.a=short.labels.a, short.labels.b=short.labels.b)
 }
 
-chisq_data_table <- function(x, type="",caption="") {
+chisq_data_table <- function(x, type="",caption="",position="!h") {
   
-  # if (with_sums) {
-  #   if (expected) {
-  #     knitr::kable(x$data_indep, caption=caption)   
-  #   } else {
-  #     knitr::kable( x$data_raw, caption=caption )
-  #   }
-  # } else {
-  #   if (expected) {
-  #     knitr::kable(x$data_indep, caption=caption)   
-  #   } else {
-  #     knitr::kable( x$df, caption=caption )
-  #   }
-  # }
   if (type=="") {
     if (caption=="") caption="Kontingenztabelle"
-    print(knitr::kable( x$data_raw, caption=caption, col.names = x$labels.b ))
+    print(knitr::kable( x$data_raw, caption=caption, 
+                        col.names = x$labels.b, 
+                        position = position,
+                        booktabs = FALSE))
   } else if (type=="indep") {
     if (caption=="") caption="Kontingenztabelle unter Unabhängigkeitsannahme"
     names(x$data_indep)[ncol(x$data_indep)]<-""
-    print(knitr::kable(x$data_indep, caption=caption)   )
+    print(knitr::kable(x$data_indep, caption=caption, 
+                       position = position,
+                       booktabs = FALSE)   )
   } else if (type=="sums") {
     if (caption=="") caption="Kontingenztabelle mit Randsummen"
     names(x$data_sums)[ncol(x$data_sums)]<-""
-    print(knitr::kable( x$data_sums, caption=caption ))
+    print(knitr::kable( x$data_sums, caption=caption, 
+                        position = position,
+                        booktabs = FALSE))
   } else {
     print(paste0("Unknown type :",type,". Try *indep* or *sums*"))
   }
@@ -188,7 +182,7 @@ solution_chisq_uni <- function(x, part=1)
   )
   
   part2 <- paste0("\\chi^2=",
-         paste0(
+         paste0g(
            
            "{\\frac{(",x$obs,"-",x$exp,")^2}{",x$exp,"}}", collapse="+"
            
@@ -209,9 +203,9 @@ chisq_effectsize <- function(x) {
   paste0("\\omega=\\sqrt{\\frac{",x$chisq,"}{",x$n,"}}=",omega)
 }
 
-chisq_uni_data_table <- function(x)
+chisq_uni_data_table <- function(x, position="!h")
 {
-  knitr::kable(t(x$obs),col.names = x$labels)
+  knitr::kable(t(x$obs),col.names = x$labels,  position = position,booktabs = FALSE)
 }
 
 chisq_to_data <- function(x) {

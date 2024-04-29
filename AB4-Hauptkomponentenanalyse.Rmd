@@ -10,7 +10,7 @@ params:
   include_solution: true
 ---
 
-```{r setup, include=FALSE, message=FALSE}
+```{r setup, include=TRUE, results = "hide", eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 library(tidyverse)
 library(psych)
 library(GPArotation)

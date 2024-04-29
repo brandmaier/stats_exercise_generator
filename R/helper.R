@@ -19,6 +19,7 @@ solution_header <- function() {
 paste0g <- function(...) {
   x <- paste0(...)
   collapse = "+ \\\\"
+#  collapse = "+ \\\\\\\\"
   collapse_within = "+"
     grps <- split(x, ceiling(seq_along(x)/5))
   temp <- sapply(grps, function(x){paste0(x,collapse=collapse_within)})

@@ -9,7 +9,7 @@ params:
   include_solution: false
 ---
 
-```{r setup, include=FALSE, results = "hide", eval=TRUE}
+```{r setup, include=TRUE, results = "hide", eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 library(tidyverse)
 knitr::opts_chunk$set(echo = FALSE)
 knitr::opts_chunk$set(fig.pos = "!H", out.extra = "") # prevent LaTeX tables from floating around
@@ -45,7 +45,7 @@ cat(chisq_crit(csq,undirected = TRUE))
 
 Folgende Daten wurden beobachtet:
 
-```{r a1obs, results="asis"}
+```{r a1obs, results="asis",fig.pos = "!H"}
 chisq_data_table(csq)
 ```
 
@@ -59,7 +59,9 @@ solution_header()
 cat("Dies ist die Kontigenztabelle mit Zeilensummen und Spaltensummen:")
 
 chisq_data_table(csq, type="sums")
+```
 
+```{r a1sol2, results="asis", eval=include_solution}
 cat("Dies ist die Tabelle der erwarteten Häufigkeiten von Nebenwirkungen unter der Unabhängigkeitsannahme:")
 
 chisq_data_table(csq, type="indep")
@@ -162,9 +164,14 @@ csq <- generate_chisq(labels.b = c("Sommer","Winter"), labels.a=c("ja","nein"),t
 cat("_Lösung:_\n\n")
 
 chisq_data_table(csq,  caption="Zusammengefasste Datentabelle")
+```
+
+```{r a4sol2, results="asis", eval=include_solution}
 cat("\n")
 chisq_data_table(csq, type="indep", caption="Tabelle unter Unabhängigkeitsannahme")
+```
 
+```{r a4sol3, results="asis", eval=include_solution}
 wrap_math_block(chisq_solution(csq))
 cat("\n")
 cat(chisq_crit(csq))

@@ -10,7 +10,7 @@ params:
   include_solution: yes
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=TRUE, results = "hide", eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 library(tidyverse)
 knitr::opts_chunk$set(echo = FALSE)
 knitr::opts_chunk$set(fig.pos = "!H", out.extra = "") # prevent LaTeX tables from floating
