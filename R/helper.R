@@ -16,10 +16,10 @@ solution_header <- function() {
   cat("_Lösung_:\n\n")
 }
 
-paste0g <- function(...) {
+paste0g <- function(..., collapse="+") {
   x <- paste0(...)
+  stopifnot(collapse=="+")
   collapse = "+ \\\\"
-#  collapse = "+ \\\\\\\\"
   collapse_within = "+"
     grps <- split(x, ceiling(seq_along(x)/5))
   temp <- sapply(grps, function(x){paste0(x,collapse=collapse_within)})
