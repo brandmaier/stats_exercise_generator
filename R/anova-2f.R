@@ -11,8 +11,8 @@ generate_anova_2f <- function(av.name = "",
                                                    1, 7),
                               noise_sd = 3,
                               nz = 20,
-                              obs_min = 0,
-                              obs_max = 20,
+                              obs_min = NULL,
+                              obs_max = NULL,
                               obs_round = 2,
                               av = NULL,
                               alpha = 0.05,
@@ -36,8 +36,8 @@ generate_anova_2f <- function(av.name = "",
   if (!raw_data_given) {
     av <- rep(cellmeans_by_row, each = nz) + rnorm(nz * p * q, 0, noise_sd)
     av <- round(av, obs_round)
-    av <- pmax(av, obs_min)
-    av <- pmin(av, obs_max)
+    if (!is.null(obs_min)) av <- pmax(av, obs_min)
+    if (!is.null(obs_max)) av <- pmin(av, obs_max)
   }
   
   # create a data frame in long format
@@ -50,10 +50,14 @@ generate_anova_2f <- function(av.name = "",
       b = rep(factor.b.levels, each = nz)
     )
   
-  if (raw_data_given) {
+  # cellmeans should be computed both if data are given
+  # or simulated (because clipping can occur due to rounding)
+  # so that given cell means actually do not represent empirical
+  # means
+#  if (raw_data_given) {
     cellmeans_by_row <- dat %>% group_by(a, b) %>% summarise(mean(av))
     cellmeans_by_row <- round(cellmeans_by_row[, 3, drop = TRUE], 2)
-  }
+#  }
   xm = round(mean(av), ssq_round)
   
   #browser()
@@ -75,8 +79,7 @@ generate_anova_2f <- function(av.name = "",
     } # identity function
   }
   
-  qs_tot <- round(sum(ex_round((dat$av - xm) ^ 2, ssq_round))
-                  , ssq_round)
+
   qs_A <- q * nz * round(sum(ex_round((
     factor_a_means - xm
   ) ^ 2, ssq_round))
@@ -95,7 +98,9 @@ generate_anova_2f <- function(av.name = "",
   #  browser()
   
   # just as sanity check
-  qs_tot <- round(sum((xm - av) ^ 2), ssq_round)
+  qs_tot <- round(sum(ex_round((dat$av - xm) ^ 2, ssq_round))
+                  , ssq_round)
+#  qs_tot <- round(sum((xm - av) ^ 2), ssq_round)
   
   
   #qs_AxB <- round(sum( (cms-ams-bms+xm   )^2 ), 2)

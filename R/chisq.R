@@ -24,6 +24,8 @@ generate_chisq <- function(labels.a=c("Antidepressivum","Placebo"), labels.b=c("
   n21<-data_raw[2,1] 
   n12<-data_raw[1,2]
   
+  n <- sum(tbl)
+  
   for (i in 1:nrows) {
     for (j in 1:ncols) {
       df[i,j] <- rsums[i]*csums[j]/total
@@ -40,10 +42,13 @@ generate_chisq <- function(labels.a=c("Antidepressivum","Placebo"), labels.b=c("
   
   df <- (ncols-1)*(nrows-1)
   
+  p <- pchisq(q = chisq, df = df)
+  
   list(labels.a=labels.a, labels.b=labels.b,tbl=tbl,data_raw=data_raw, 
        data_sums=data_sums, data_indep=data_indep, nrows=nrows, ncols=ncols,alpha=alpha,
        n12=n12,n21=n21, nij=nij, eij=eij, chisq=chisq, df=df,
-       short.labels.a=short.labels.a, short.labels.b=short.labels.b)
+       short.labels.a=short.labels.a, short.labels.b=short.labels.b,
+       p = p, n = n)
 }
 
 chisq_data_table <- function(x, type="",caption="",position="!h") {
@@ -201,6 +206,15 @@ chisq_effectsize <- function(x) {
   omega <- round( sqrt(x$chisq/x$n) , 2)
   
   paste0("\\omega=\\sqrt{\\frac{",x$chisq,"}{",x$n,"}}=",omega)
+}
+
+chisq_effectsize_with_distractors <- function(x)
+{
+  c(sqrt(x$chisq/x$n),
+    x$chisq/x$n,
+    sqrt(x$chisq),
+    x$p
+  )
 }
 
 chisq_uni_data_table <- function(x, position="!h")
