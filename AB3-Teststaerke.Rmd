@@ -1,0 +1,125 @@
+---
+title: "Arbeitsblatt - Teststärke"
+author: "Statistik II - Andreas M. Brandmaier"
+date: "`r format(Sys.time(), '%d. %B %Y')`"
+output:
+  pdf_document: default
+#  html_document: default
+params:
+  include_solution: true
+mainfont: SourceSansPro
+header-includes:
+   - \usepackage[T1]{fontenc}
+---
+
+```{r setup, include=TRUE, results = "hide", eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+library(tidyverse)
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(fig.pos = "!H", out.extra = "") # prevent LaTeX tables from floating
+
+source("R/helper.R")
+
+include_solution <- params$include_solution
+
+empty_str <- "\\ "
+```
+
+## Aufgabe 1
+
+Eine Psychologin plant eine Studie zur Selbstregulationsfähigkeit. Dabei soll untersucht werden, ob ein Selbstregulations-Coaching wirksam ist. Die abhängige Variable ist ein Fragebogen zur Selbstregulationsfähigkeit, der einen Wert auf einer metrischen Skala ergibt. Es werden die Mittelwerte zweier Gruppen (Treatment- und Kontrollgruppe) mittels t-Test verglichen. Die Stichprobengröße ist 100. Das Signifikanzniveau ist 5%. 
+
+- Welche Schritte sind nötig, um auf Basis dieser Informationen eine Teststärkenanalyse durchzuführen?
+
+- Wenn man das Signifikanzniveau von 5% auf 1% senkt, welche Auswirkung hat das auf die zu erwartende Teststärke?
+
+```{r ls, eval=include_solution, results="asis"}
+  solution_header()
+cat("Es gibt hier zwei Möglichkeiten für eine Teststärkenanalyse. Festgelegt sind bei der Studie das Signifikanzniveau und die Stichprobengröße. Damit verbleiben zwei freie Größen, nämlich die Stichprobengröße und die Teststärke. Entweder kann man durch Festlegung einer angenommenen Effektstärke die Teststärke schätzen (sog. a-priori Teststärkenanalyse) oder man kann durch Festlegung der Stichprobengröße die detektierbare Effektgröße schätzen (sog. Sensitivitätsanalyse).")
+
+cat("\n\nSenkt man das Signifikanzniveau, sinkt die statistische Teststärke.")
+```
+
+## Aufgabe 2
+
+Fügen Sie in folgender Abbildung die Beschriftungen "Kritischer Wert", "Wahrscheinlichkeit eines Typ-I-Fehlers", und "Teststärke" an den richtigen Stellen ein. Falls notwendig, schraffieren Sie entsprechende Flächen in der Grafik. Die rote Verteilung soll der Verteilung einer Teststatistik unter der Nullhypothese entsprechen, während die blaue Verteilung der Verteilung unter der Alternativhypothese entspricht.
+
+```{r}
+
+sd <- 1
+effect_size <- 3
+
+xs<-seq(-3, effect_size+2*sd,.05) # x axis grid
+
+y1 <-dnorm(xs,0,sd) 
+y2 <- dnorm(xs,3,sd)
+
+x <- rep(xs,2)
+y <- c(y1, y2)
+c <- rep(c(0,1),each=length(xs))
+
+gg_color_hue <- function(n) {
+  hues = seq(15, 375, length = n + 1)
+  hcl(h = hues, l = 65, c = 100)[1:n]
+}
+c1 <- gg_color_hue(2)[1]
+c2 <- gg_color_hue(2)[2]
+
+critv <- qnorm(p=0.95, 0, sd)
+
+select1 <- x>=critv
+select2 <- x>=critv
+
+df<-data.frame(x=x,y=y,c=factor(c))
+gnorm <- ggplot(data=df,aes(x=x,y=y,color=c,group=c))+
+  geom_line(lwd=3)+
+  theme_minimal()+
+  ggx::gg_("hide legend")+ylab("")+xlab("Prüfgröße")+
+  geom_vline(xintercept=critv,lwd=2,color="green")+
+ 
+  NULL
+
+#(gnorm)
+```
+
+```{r, results="asis",fig.width=6, fig.height=3}
+if (include_solution) {
+  cat("\\pagebreak")
+  solution_header()
+
+  g1 <- gnorm+
+    annotate(geom = "text", x = critv+1, y = .35, label = "Kritischer Wert", 
+           color = "green", size = 4)+
+  geom_ribbon(data=data.frame(x=xs[select1],y=y1[select1],c=factor(0)),
+              aes(x=x,ymin=0, ymax=y),alpha=0.5,fill=c1)+
+        annotate(geom = "text", x = 3, y = .1, label = "Typ-I-Fehler W'keit", 
+           color = c1, size = 4)+
+    geom_segment(aes(x = 2.2, y = .075, xend = 1.85, yend = 0.03), color=c1,
+arrow = arrow(length = unit(0.2, "cm")))
+ # plot(g1)
+  g2 <- gnorm+
+    geom_ribbon(data=data.frame(x=xs[select2],y=y2[select2],c=factor(1)),
+              aes(x=x,ymin=0, ymax=y),alpha=0.5, fill=c2)+
+            annotate(geom = "text", x = 0, y = .15, label = "Teststärke", 
+           color = c2, size = 4)+
+        geom_segment(aes(x = 0.7, y = .15, xend = 3, yend = 0.15), color=c2,
+arrow = arrow(length = unit(0.2, "cm")))
+ # gnorm <- gnorm + 
+
+
+} else {
+  (gnorm)
+}
+
+#(gnorm)
+```
+
+```{r, results="asis",fig.width=6, fig.height=3}
+if (include_solution) {
+  (g1)
+}
+```
+```{r, results="asis",fig.width=6, fig.height=3}
+if (include_solution) {
+  (g2)
+}
+```
