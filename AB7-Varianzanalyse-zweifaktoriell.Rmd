@@ -42,7 +42,7 @@ aov <- generate_anova_2f(av.name="Symptomschwere",
                   factor.b.levels = c("Depression","Angststörung","PTSD"),
                   obs_min = 0, obs_max = 20, nz = 5, obs_round = 2,
                   cellmeans_by_row = c(10, 8, 8,
-                                   10, 7, 12))
+                                   10, 7, 12),noise_sd = 0.8)
 ```
 
 In einer Studie wurde untersucht, inweit sich die Symptomschwere bei Personen mit verschiedenen Diagnosen (Angststörung, PTSD, Depression) verbessert in Abhängigkeit davon, ob eine Psychotherapie durchgeführt wurde oder ob lediglich Psychopharmaka verschrieben wurden (Es handelt sich hier um fikitive Daten). Die beiden Faktoren *A: Therapieform* (2 Stufen) und *Faktor B: Diagnose* (3 Stufen) wurden zwischen Personen variiert, daher wurde eine zweifaktorielle Varianzanalyse (ohne Messwiederholung) für die Analyse der Beobachtungen eingesetzt. Insgesamt wurden hier $n=`r aov$n`$ Personen mit einem balancierten Design untersucht. Gegeben sind folgende Quadratsummen:
@@ -140,8 +140,8 @@ aov_fake$qs_A <- aov$qs_AxB
 aov_fake$qs_AxB <- aov$qs_A
 
 aov_fake2 <- aov
-aov_fake2$qs_B <- aov$qs_B*3
-aov_fake2$qs_inn <- aov$qs_inn*3
+aov_fake2$qs_B <- aov$qs_B/3
+aov_fake2$qs_inn <- aov$qs_inn/3
 
 aov_fake3 <- aov
 aov_fake3$qs_A<- aov$qs_B
@@ -160,7 +160,7 @@ library(patchwork)
 ```{r results="asis", message=FALSE, warning=FALSE, eval=include_solution}
 cat("_Lösung:_\n\n")
 
-cat("Richtig ist Torte C. Die Innerhalb-QS ist ungefähr so groß wie die Interaktion. $QS_A$ ist verschwindend klein im Vergleich zum Rest.")
+cat("Richtig ist Torte C. Die $QS_B$ ist ungefähr so groß wie die Interaktion. $QS_A$ ist verschwindend klein im Vergleich zum Rest. $QS_inn$ ist um ein Vielfaches größer als die übrigen QS.")
 
 
 ```
