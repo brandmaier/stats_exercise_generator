@@ -47,14 +47,14 @@ cat("Standardabweichungen\n")
 cat("$$s_x = ",rg$sx,"$$")
 cat("$$s_y = ",rg$sy,"$$")
 ```
-a) Berechnen Sie die Schätzer für Regressionskonstante und das Regressionsgewicht aus den Angaben. 
-b) Was bedeutet das Regressionsgewicht hier inhaltlich?
+- Berechnen Sie die Schätzer für Regressionskonstante und das Regressionsgewicht aus den Angaben. 
+- Was bedeutet das Regressionsgewicht hier inhaltlich?
 
 ```{r, eval=include_solution, results="asis"}
 solution_header()
 wrap_math_align(solution_simple_regression(rg))
 
-cat("Für jeden zusätzlichen Skalenpunkt in der Offenheit sagt das Modell eine um ",rg$b1," Skalenpunkte höheren beruflichen Erfolg vorher.")
+cat("Für jeden zusätzlichen Skalenpunkt in der Offenheit sagt das Modell einen um ",rg$b1," Skalenpunkte höheren beruflichen Erfolg vorher.")
 ```
 
 # Aufgabe 2
@@ -82,16 +82,18 @@ mr2 <- round(model$r2,2 )
 ```
 
 Die Modellgüte betrug $R^2=`r mr2 `$.
-Was bedeuten Regressionskonstante und Regressionsgewichte hier inhaltlich? Inwieweit sind hier kausale Aussagen möglich?
+
+- Was bedeuten Regressionskonstante und Regressionsgewichte hier inhaltlich?
+- Inwieweit sind hier kausale Aussagen möglich?
 
 ```{r, eval=include_solution, results="asis"}
 solution_header()
 
-cat("Die Regressionskonstante ist der vom Modell vorhergesagte Wert für eine Person, die die Ausprägung Null auf allen Prädiktoren hat. Im Beispiel sagen wir für eine Person mit 0 Followern und 0 Freunden eine Lebenszufriedenheit von ",round(beta_estimates[1],2)," Skalenpunkten vorher.")
+cat("Die Regressionskonstante ist der vom Modell vorhergesagte Wert für eine Person, die die Ausprägung Null auf allen Prädiktoren hat. Im Beispiel sagen wir für eine Person mit 0 Followern und 0 Freunden eine Lebenszufriedenheit von ",round(beta_estimates[1],3)," Skalenpunkten vorher (hier wäre eine Zentrierung der Prädiktoren vermutlich sinnvoll gewesen, um die Konstante aussagekräftiger zu machen). ")
 
-cat("Für jeden zusätzliche Instagram-Follower, erhöht sich die Vorhersage um ",round(beta_estimates[2],2)," Punkte auf der Lebenszufriedenheitsskala.")
+cat("Für jeden zusätzlichen Freund erhöht sich die Vorhersage um ",round(beta_estimates[2],3)," Punkte auf der Lebenszufriedenheitsskala. ")
 
-cat("Für jeden zusätzlichen Freund, erhöht sich die Vorhersage um ",round(beta_estimates[3],2)," Punkte auf der Lebenszufriedenheitsskala.")
+cat("Für jeden zusätzlichen Follower erhöht sich die Vorhersage um ",round(beta_estimates[3],3)," Punkte auf der Lebenszufriedenheitsskala. ")
 
 cat("Da es sich um eine korrelative Studie (oder auch Beobachtungsstudie) handelt, sind kausale Aussagen natürlich nicht zulässig. Signifikante Ergebnisse deuten zwar auf einen statistischen Zusammenhang hin, den man für die Vorhersage nutzen kann, allerdings kann keine Ursache-Wirk-Richtung (wie bspw. sich mit mehr Menschen anzufreunden erhöht ursächlich die Lebenszufriedenheit) getroffen werden.")
 ```

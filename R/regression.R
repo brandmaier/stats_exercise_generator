@@ -123,6 +123,8 @@ coeff_table <- function(x) {
                           T = round( sm$coefficients[,3], 3),
                           p = round( sm$coefficients[,4],3))
   
+  rownames(pres_data)[1] <- "Konstante"
+  
   knitr::kable( pres_data
     
   )# %>%  kable_styling(latex_options = "striped")
