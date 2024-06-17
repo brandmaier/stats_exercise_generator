@@ -32,9 +32,13 @@ anova_in_R(myaov2)
 # 4.5
 #
 
-myaov3 <- generate_anova_2f(noise_sd = 1.91,cellmeans_by_row = c(1,2,3,
-                                                                 4,5,6),factor.a.levels = c("A1","A2"),
-                            factor.b.levels=c("B1","B2","B3"),nz=3)
+myaov3 <- generate_anova_2f(noise_sd = 1.91,
+                            cellmeans_by_row = c(1,2,3,
+                                                 4,5,60),
+                            factor.a.levels = c("A1","A2"),
+                            factor.b.levels=c("B1","B2","B3"),
+                            nz=3,
+                            ssq_round=1e20)
 
 result_table(myaov3)
 

@@ -3,9 +3,7 @@ title: "Arbeitsblatt 4 - Hauptkomponentenanalyse"
 author: "Statistik II - Andreas M. Brandmaier"
 date: "`r format(Sys.time(), '%d. %B %Y')`"
 output:
-  pdf_document: 
-    extra_dependencies: ["float","breqn","amsmath"]
-  html_document: default
+  pdf_document: default
 params:
   include_solution: true
 ---
@@ -61,14 +59,14 @@ r2 <- round( ev/nvar*100,2)
 rownames(df) <- item_names
 colnames(df) <- paste0("HK",1:2)
 
-knitr::kable(df,caption = "Faktorladungsmatrix" )
+knitr::kable(df,caption = "Faktorladungsmatrix" ) %>% kableExtra::kable_styling(latex_options = "hold_position")
 ```
 
 a) Berechnen Sie die Kommunalitäten und die Eigenwerte.
 
 b) Wieviel Varianz wird durch die erste Hauptkomponente erklärt? Und wieviel wird durch die ersten beiden gemeinsam erklärt?
 
-c) Wie könnte man die Hauptkomponenten benennen?
+c) Wie könnte man die Hauptkomponenten inhaltlich aussagekräftig benennen?
 
 ```{r results="asis", eval=include_solution}
 cat(solution_header())
@@ -76,7 +74,7 @@ cat(solution_header())
 dfx <- rbind(df, Eigenwerte=ev)
 dfx <- cbind(dfx, Kommunalitäten=c(communality,""))
 
-knitr::kable(dfx, caption="Ladungsmatrix mit Kommunalitäten und Eigenwerten")
+knitr::kable(dfx, caption="Ladungsmatrix mit Kommunalitäten und Eigenwerten") %>% kableExtra::kable_styling(latex_options = "hold_position")
 
 cat("Erklärte Varianz durch die erste Komponente: ", ev[1],"/",nvar,"=", r2[1],"%.\n")
 cat("Erklärte Varianz durch die ersten beiden Komponenten: (", ev[1],"+",ev[2],")/",nvar,"=", sum(r2),"%.\n")

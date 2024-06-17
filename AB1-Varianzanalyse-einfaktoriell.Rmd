@@ -90,7 +90,11 @@ In einer Studie wurde die _working alliance_ (also das Vertrauen und die Bereits
 data_table(aov1, longtable=FALSE)
 ```
 
-Die Psychologin hat bereits berechnet: $QS_{tot}=`r aov1$qs_tot`$.Formulieren Sie die Nullhypothese und führen Sie den geeigneten statistischen Test zur Auswertung durch. Formulieren Sie einen Antwortsatz, der auch eine Effektgröße enthält. Das Signifikanzniveau sei 1%.
+Die Psychologin hat bereits berechnet: $QS_{tot}=`r aov1$qs_tot`$.Formulieren Sie die Nullhypothese und führen Sie den geeigneten statistischen Test zur Auswertung durch. Formulieren Sie einen Antwortsatz, der auch eine Effektgröße enthält. Das Signifikanzniveau sei 1%. 
+
+```{r results="asis"}
+cat(f_crit(aov1))
+```
 
 ```{r, results="asis", eval=include_solution}
 cat("_Lösung:_")

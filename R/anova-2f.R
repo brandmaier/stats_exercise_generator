@@ -55,7 +55,7 @@ generate_anova_2f <- function(av.name = "",
   # so that given cell means actually do not represent empirical
   # means
 #  if (raw_data_given) {
-    cellmeans_by_row <- dat %>% group_by(a, b) %>% summarise(mean(av))
+    cellmeans_by_row <- dat %>% group_by(a, b) %>% summarise(mean(av), .groups="keep")
     cellmeans_by_row <- round(cellmeans_by_row[, 3, drop = TRUE], 2)
 #  }
   xm = round(mean(av), ssq_round)
@@ -353,8 +353,8 @@ table_of_means <- function(x) {
   temporary_data
 }
 
-show_table_of_means <- function(x) {
-  knitr::kable(table_of_means(x))
+show_table_of_means <- function(x, booktabs=TRUE) {
+  knitr::kable(table_of_means(x), booktabs=booktabs)
 }
 
 solution_df <- function(x) {
@@ -425,7 +425,7 @@ solution_f <- function(x) {
 }
 
 
-result_table <- function(x) {
+result_table <- function(x, booktabs = TRUE) {
   report_table <-
     data.frame(
       Quelle = c(
@@ -443,7 +443,7 @@ result_table <- function(x) {
     )
   #eta2=c(x$eta2,NA,NA))
   
-  knitr::kable(report_table)
+  knitr::kable(report_table, booktabs=booktabs)
 }
 
 pie_plot <- function(x) {

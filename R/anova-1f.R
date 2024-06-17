@@ -1,4 +1,4 @@
-
+#' @export
 generate_anova <- function(av.name = "",
                            factor.name = "", factor_level_names = NULL,
                            within = 3,
@@ -101,6 +101,7 @@ generate_anova <- function(av.name = "",
   return(result)
 }
 
+#' @export
 qs_solution <- function(x, id) {
 
   strsol = paste0( "QS_{tot} = ",paste0g("(",x$dat$av,"-",x$grand_mean,")^2")
@@ -157,7 +158,7 @@ result_table <- function(x) {
                              p = c(x$Fp, NA, NA),
                              eta2=c(x$eta2,NA,NA))
   
-  knitr::kable(report_table)
+  knitr::kable(report_table) 
 }
 
 data_table <- function(x, ...) {
@@ -193,6 +194,7 @@ group_means_solution <- function(x) {
   strlist
 }
 
+#' @export
 contrast_qs <- function(x) {
   ctr <- x$ctr
   ln <- length(ctr)
@@ -211,6 +213,7 @@ contrast_qs <- function(x) {
   
 }
 
+#' @export
 orthogonal <- function(ctr1, ctr2) {
   result = round(sum(ctr1$ctr*ctr2$ctr),2)
   paste0( "Test auf Orthogonalität:\n$$",
@@ -220,6 +223,7 @@ orthogonal <- function(ctr1, ctr2) {
     )
 }
 
+#' @export
 contrast_hypotheses <- function(x, direction) {
   if (direction == 0) {
     cmpH0 <- "="
@@ -234,6 +238,7 @@ contrast_hypotheses <- function(x, direction) {
   paste0("$$H_0: \\Lambda ", cmpH0, "0 \\mathrm{\\; und\\; } H_1: \\Lambda", cmpH1," 0$$")
 }
 
+#' @export
 generate_contrast <- function(x, ctr, alpha=0.05, directed=FALSE) {
 
   if (directed) alpha = alpha*2
@@ -255,6 +260,7 @@ generate_contrast <- function(x, ctr, alpha=0.05, directed=FALSE) {
               aov=x,ksum=ksum,df1=df1,df2=df2,Fcrit=Fcrit,alpha=alpha))
 }
 
+#' @export
 contrast_F <- function(x) {
   #
   paste0("$$F=\\frac{MQS_{Kontrast}}{MQS_{inn}}=\\frac{",x$qs_kontrast,"}{",x$aov$mqs_wth,"}=",x$Fest,"$$")
