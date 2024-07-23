@@ -8,6 +8,10 @@ output:
     df_print: paged
 params:
   include_solution: yes
+mainfont: SourceSansPro
+header-includes:
+   - \usepackage[T1]{fontenc}
+   - \usepackage{booktabs}
 ---
 
 
@@ -64,7 +68,7 @@ if (include_solution) {
 if (include_solution)
   solution_header()
 
-knitr::kable(rdisplay)
+knitr::kable(rdisplay, booktabs = FALSE)
 ```
 
 
@@ -92,7 +96,7 @@ colnames(cfs)<-c("Schätzer","Standardfehler","t-Wert","p-Wert")
 
 cfs <- round(cfs,2)
 
-knitr::kable(cfs)
+knitr::kable(cfs, booktabs=TRUE)
 ```
 
 Ferner ergab sich $R^2=`r r2 `$ als Modellgütemaß.

@@ -41,8 +41,9 @@ generate_chisq <-
     
     data_indep <- data.frame(df)
     
-    nij <- simplify(data_raw)
-    eij <- simplify(data_indep[1:nrows, 1:ncols])
+    
+    nij <- simplify2array(data_raw)
+    eij <- simplify2array(data_indep[1:nrows, 1:ncols])
     
     chisq <- round(sum((nij - eij) ^ 2 / eij), 2)
     

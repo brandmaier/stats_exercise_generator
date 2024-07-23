@@ -1,6 +1,6 @@
 # specify cellmeans by row means, pick factor level a1, then list all
 # factor levels of b
-
+#' @export
 generate_anova_2f <- function(av.name = "",
                               factor.a.name = "A",
                               factor.b.name = "B",
@@ -175,10 +175,12 @@ generate_anova_2f <- function(av.name = "",
   )
 }
 
+#' @export
 anova_in_R <- function(x) {
   anova(lm(av ~ a + b + a:b, x$dat))
 }
 
+#' @export
 data_plot <- function(x) {
   #  ggplot(dat, aes(x=interaction(a,b),y=av))+geom_violin()+geom_boxplot(width=0.1)+geom_jitter(width=.01)+ggx::gg_("wrap labels on x-axis")
   gp <- ggplot(x$dat, aes(x = 1, y = av)) +
@@ -193,6 +195,7 @@ data_plot <- function(x) {
   return(gp)
 }
 
+#' @export
 interaction_plot <- function(x, empty = FALSE, gray = FALSE) {
   alpha <- ifelse(empty, 0, 1)
   
@@ -245,6 +248,7 @@ interaction_plot <- function(x, empty = FALSE, gray = FALSE) {
   return(g1 + g2)
 }
 
+#' @export
 solution_anova2 <- function(x) {
   strsol = paste0(
     "QS_{A} = ",
@@ -291,6 +295,7 @@ solution_anova2 <- function(x) {
   
 }
 
+#' @export
 f_crit <- function(x, type = "A") {
   alpha <- x$alpha
   
@@ -325,12 +330,13 @@ f_crit <- function(x, type = "A") {
   
 }
 
+#' @export
 long_data_table <- function(x) {
   knitr::kable(x$dat)
 }
 
 
-
+#' @export
 table_of_means <- function(x) {
   temporary_data <-
     x$dat %>% group_by(a, b) %>% summarise(m = mean(av)) %>% add_column(id =
@@ -357,6 +363,7 @@ show_table_of_means <- function(x, booktabs=TRUE) {
   knitr::kable(table_of_means(x), booktabs=booktabs)
 }
 
+#' @export
 solution_df <- function(x) {
   paste0(
     "df_A=",
@@ -405,6 +412,7 @@ solution_mqs <- function(x) {
   )
 }
 
+#' @export
 solution_f <- function(x) {
   paste0(
     paste0("F_A=\\frac{", x$mqs_A, "}{", x$mqs_inn, "}=", x$Fval_A),
@@ -424,7 +432,7 @@ solution_f <- function(x) {
   )
 }
 
-
+#' @export
 result_table <- function(x, booktabs = TRUE) {
   report_table <-
     data.frame(
@@ -446,6 +454,7 @@ result_table <- function(x, booktabs = TRUE) {
   knitr::kable(report_table, booktabs=booktabs)
 }
 
+#' @export
 pie_plot <- function(x) {
   qs_data <-
     data.frame(
@@ -460,6 +469,7 @@ pie_plot <- function(x) {
     NULL
 }
 
+#' @export
 solution_partial_eta2 <- function(x) {
   eta2p_A <- round(x$qs_A / (x$qs_A + x$qs_inn), 2)
   eta2p_B <- round(x$qs_B / (x$qs_B + x$qs_inn), 2)
@@ -508,6 +518,7 @@ solution_partial_eta2 <- function(x) {
   return(ret)
 }
 
+#' @export
 distractors_FvalA <- function(x) {
   d1 <- x$mqs_A / x$mqs_AxB
   d2 <- x$mqs_A / x$mqs_tot

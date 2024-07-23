@@ -6,6 +6,10 @@ output:
   pdf_document: default
 params:
   include_solution: yes
+mainfont: SourceSansPro
+header-includes:
+   - \usepackage[T1]{fontenc}
+   - \usepackage{booktabs}
 ---
 
 ```{r setup, include=FALSE, eval=TRUE, echo=FALSE}

@@ -1,45 +1,60 @@
-generate_pca <- function(item_names, data=NULL, loadings=NULL, nfactors=2) {
-  
- if (!is.null(data)) {
-   psych::fa(subs, nfactors=2,fm="pa")
- }
-  
- x <- list(item_names = item_names, data = data, loadings=loadings, nfactors = nfactors)
- 
- return(x)
-}
+#' @export
+generate_pca <-
+  function(item_names,
+           data = NULL,
+           loadings = NULL,
+           nfactors = 2) {
+    if (!is.null(data)) {
+      psych::fa(data, nfactors = nfactors, fm = "pa")
+    }
+    
+    x <-
+      list(
+        item_names = item_names,
+        data = data,
+        loadings = loadings,
+        nfactors = nfactors
+      )
+    
+    class(x) <- "pca"
+    
+    return(x)
+  }
 
-
+#' @export
 solution_communality <- function(x) {
   ll <- x$loadings
-  coms <- round(colSums(ll^2),2)
+  coms <- round(colSums(ll ^ 2), 2)
   
   solstr <- ""
   for (i in 1:nrow(ll)) {
-    
-    lrow <- ll[i,]
+    lrow <- ll[i, ]
     for (j in 1:length(lrow)) {
-      if (lrow[j]<0) lrow[j]=paste0("(",(lrow[j]),")")
+      if (lrow[j] < 0)
+        lrow[j] = paste0("(", (lrow[j]), ")")
     }
-    solstr<-paste0(solstr, paste0(lrow,"^2",collapse="+"),"=",coms[i],"\n")
+    solstr <-
+      paste0(solstr, paste0(lrow, "^2", collapse = "+"), "=", coms[i], "\n")
   }
   
   return(solstr)
-
+  
 }
 
+#' @export
 solution_ev <- function(x) {
   ll <- x$loadings
-  coms <- round(rowSums(ll^2),2)
+  coms <- round(rowSums(ll ^ 2), 2)
   
   solstr <- ""
   for (i in 1:ncol(ll)) {
-    
-    lcol <- ll[,i]
+    lcol <- ll[, i]
     for (j in 1:length(lcol)) {
-      if (lcol[j]<0) lcol[j]=paste0("(",(lcol[j]),")")
+      if (lcol[j] < 0)
+        lcol[j] = paste0("(", (lcol[j]), ")")
     }
-    solstr<-paste0(solstr, paste0(lcol,"^2",collapse="+"),"=",coms[i],"\n")
+    solstr <-
+      paste0(solstr, paste0(lcol, "^2", collapse = "+"), "=", coms[i], "\n")
   }
   
   return(solstr)
@@ -53,17 +68,17 @@ solution_ev <- function(x) {
 #r2 <- round( ev/nvar*100,2)
 
 
+#' @export
 communality_with_distractors <- function(x, i) {
-  
   # correct
   ll <- x$loadings
-  coms <- round(rowSums(ll^2)[i],2)
+  coms <- round(rowSums(ll ^ 2)[i], 2)
   
-  distractor1 <- round(rowSums(ll)[i],2)
-  distractor2 <- round(colSums(ll^2)[i],2)
-  distractor3 <- round(colSums(ll)[i],2)
+  distractor1 <- round(rowSums(ll)[i], 2)
+  distractor2 <- round(colSums(ll ^ 2)[i], 2)
+  distractor3 <- round(colSums(ll)[i], 2)
   
-  if (length(unique(coms, distractor1,distractor2,distractor3) != 4)) {
+  if (length(unique(coms, distractor1, distractor2, distractor3) != 4)) {
     stop("Non-unique solutions!")
   }
   

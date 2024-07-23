@@ -114,7 +114,7 @@ sm <- summary(lm(y~x1+x2,dat))
 
 library(kableExtra)
 
-coeff_table <- function(x) {
+coeff_table <- function(x, booktabs=TRUE) {
   
   ncoeff <- x$k
   pres_data <- data.frame(#Modell=c(1,rep("",x$k)),
@@ -125,7 +125,7 @@ coeff_table <- function(x) {
   
   rownames(pres_data)[1] <- "Konstante"
   
-  knitr::kable( pres_data
+  knitr::kable( pres_data, booktabs=booktabs
     
   )# %>%  kable_styling(latex_options = "striped")
 }
