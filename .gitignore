@@ -5,3 +5,9 @@
 publish/
 klausur/
 *.pdf
+exam/
+*.csv
+*.gif
+*.tex
+*.log
+*.aux
