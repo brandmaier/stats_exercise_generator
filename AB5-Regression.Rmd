@@ -29,7 +29,7 @@ empty_str <- "\\ "
 
 # Aufgabe 1
 
-Mittels eines einfachen linearen Regressionsmodells soll ein Vorhersagemodell erstellt werden. Vorhergesagt werden soll das Ausmaß beruflichen Erfolgs (Y) anhand des Persönlichkeitsmerkmals Offenheit (X). Beide Maße sind hier als metrisch angenommen. Bekannt ist die bivariate Korrelation sowie die Mittelwerte und Standardabweichungen der beiden Variablen. 
+Mittels eines _einfachen linearen Regressionsmodells_ soll ein Vorhersagemodell erstellt werden. Vorhergesagt werden soll das Ausmaß beruflichen Erfolgs (Y) anhand des Persönlichkeitsmerkmals Offenheit (X). Beide Maße sind hier als metrisch angenommen. Bekannt ist die bivariate Korrelation sowie die Mittelwerte und Standardabweichungen der beiden Variablen. 
 
 
 ```{r}
@@ -43,22 +43,29 @@ rg <- generate_simple_regression(n=100, rxy=.5, mx = 3, my=5, sx=1, sy=3)
 
 
 ```{r results="asis", echo=FALSE}
-cat("$$r_{X,Y} = ",rg$rxy,"$$")
-cat("Mittelwerte\n")
-cat("$$m_x = ",rg$mx,"$$")
-cat("$$m_y = ",rg$my,"$$")
-cat("Standardabweichungen\n")
+cat("Korrelation:\n")
+cat("$$r_{XY} = ",rg$rxy,"$$")
+cat("Mittelwerte:\n")
+cat("$$\\bar{x} = ",rg$mx,"$$")
+cat("$$\\bar{y} = ",rg$my,"$$")
+cat("Standardabweichungen:\n")
 cat("$$s_x = ",rg$sx,"$$")
 cat("$$s_y = ",rg$sy,"$$")
 ```
-- Berechnen Sie die Schätzer für Regressionskonstante und das Regressionsgewicht aus den Angaben. 
-- Was bedeutet das Regressionsgewicht hier inhaltlich?
+
+a) Berechnen Sie die Schätzer für Regressionskonstante und das Regressionsgewicht aus den Angaben.
+b) Was bedeutet das Regressionsgewicht hier inhaltlich?
+c) Was bedeutet die Regressionskonstante hier inhaltlich?
+
 
 ```{r, eval=include_solution, results="asis"}
 solution_header()
 wrap_math_align(solution_simple_regression(rg))
 
-cat("Für jeden zusätzlichen Skalenpunkt in der Offenheit sagt das Modell einen um ",rg$b1," Skalenpunkte höheren beruflichen Erfolg vorher.")
+cat("Für jeden zusätzlichen Skalenpunkt in der Offenheitskala sagt das Modell einen um ",rg$b1," Skalenpunkte höheren beruflichen Erfolg vorher.")
+
+cat("Für eine Person mit einer Offenheit von 0 Skalenpunkten, sagen wir einen beruflichen Erfolg von ",rg$b0," Skalenpunkten vorher.")
+
 ```
 
 # Aufgabe 2
@@ -73,9 +80,9 @@ dat <- data.frame(anz_freunde, anz_follower, happy)
 model <- generate_multipleregression(lm(happy~.,dat))
 ```
 
-In einer empirischen Studie wurde untersucht, inwieweit die Lebenszufriedenheit durch die Anzahl der Follower  und Freunde im echten Leben vorhergesagt werden kann. Dazu wurde als abhängige Variable die Lebenszufriedenheit untersucht (metrische Skala von 0--100). Die unabhängigen Variablen waren Anzahl der Freunde  (anz_freunde) und Anzahl der Instagram-Follower (Variablenname: anz_follower). Untersucht wurde eine Stichprobe von $N=`r N`$ Personen.
+In einer empirischen Studie wurde untersucht, inwieweit die Lebenszufriedenheit durch die Anzahl der Social-Media-Follower der und Freunde im echten Leben vorhergesagt werden kann. Dazu wurde als abhängige Variable die Lebenszufriedenheit untersucht (metrische Skala von 0--100). Die unabhängigen Variablen waren Anzahl der Freunde  (anz_freunde) und Anzahl der Instagram-Follower (Variablenname: anz_follower). Untersucht wurde eine Stichprobe von $N=`r N`$ Personen.
 
-Bei der statistischen Analyse erhielt man folgendes Ergebnis:
+Bei der statistischen Analyse mittels _multipler linearer Regression_ erhielt man folgendes Ergebnis:
 
 ```{r cftable, results="asis"}
 coeff_table(model)
@@ -83,12 +90,14 @@ coeff_table(model)
 beta_estimates <- coef(model$lm)
 
 mr2 <- round(model$r2,2 )
+
+vary <- round(var(happy),2)
 ```
 
 Die Modellgüte betrug $R^2=`r mr2 `$.
 
-- Was bedeuten Regressionskonstante und Regressionsgewichte hier inhaltlich?
-- Inwieweit sind hier kausale Aussagen möglich?
+a) Was bedeuten Regressionskonstante und Regressionsgewichte hier inhaltlich?
+b) Inwieweit sind hier kausale Aussagen möglich?
 
 ```{r, eval=include_solution, results="asis"}
 solution_header()
@@ -99,22 +108,46 @@ cat("Für jeden zusätzlichen Freund erhöht sich die Vorhersage um ",round(beta
 
 cat("Für jeden zusätzlichen Follower erhöht sich die Vorhersage um ",round(beta_estimates[3],3)," Punkte auf der Lebenszufriedenheitsskala. ")
 
-cat("Da es sich um eine korrelative Studie (oder auch Beobachtungsstudie) handelt, sind kausale Aussagen natürlich nicht zulässig. Signifikante Ergebnisse deuten zwar auf einen statistischen Zusammenhang hin, den man für die Vorhersage nutzen kann, allerdings kann keine Ursache-Wirk-Richtung (wie bspw. sich mit mehr Menschen anzufreunden erhöht ursächlich die Lebenszufriedenheit) getroffen werden.")
+cat("Da es sich um eine korrelative Studie (oder auch Beobachtungsstudie) handelt, sind kausale Aussagen natürlich nicht zulässig. Signifikante Ergebnisse deuten zwar auf einen statistischen Zusammenhang hin, den man für die Vorhersage nutzen kann, allerdings kann hiermiet keine Ursache-Wirk-Richtung (wie bspw. sich mit mehr Menschen anzufreunden erhöht ursächlich die Lebenszufriedenheit) bewiesen werden.")
 ```
 
 # Aufgabe 3
 
-Die Modellgüte im Modell von Aufgabe 2 wurde mit $R^2$ angegeben. Was ist das Problem dieses Maßes. Berechnen Sie eine Variante des Maßes, die dieses Problem korrigiert. Welche Eigenschaft hat das korrigierte Maß?
+a) Die Modellgüte im Modell von Aufgabe 2 wurde mit $R^2$ angegeben. Was ist das Problem dieses Maßes? Berechnen Sie eine Variante des Maßes, die dieses Problem korrigiert. Welche Eigenschaft hat das korrigierte Maß?
 
 
-Wie kann man die Modellgüte beurteilen? 
 
 
 ```{r, eval=include_solution, results="asis"}
 solution_header()
 
-cat("$R^2$ ist ein Maß der Modellgüte, das überoptimistisch als Schätzer der wahren Modellgüte ist. Daher sollte man besser das adjustierte $R^2$ berichten, das diese Verzerrung korrigiert. Das adjustierte $R^2$ ist höchstens so groß wie das herkömmliche $R^2$.")
+cat("$R^2$ ist ein Maß der Modellgüte, das überoptimistisch als Schätzer der wahren Modellgüte ist (d.h., sie wird eher als zu groß/zu gut eingeschätzt). Daher sollte man besser das adjustierte $R^2$ berichten, das diese Verzerrung korrigiert. Das adjustierte $R^2$ ist höchstens so groß wie das herkömmliche $R^2$.")
 
 wrap_math_flalign(solution_adjr2(model))
+
+
 ``` 
 
+b) Die Modellgüte kann man außerdem durch den Standardschätzfehler beurteilen. Berechnen Sie den Standardschätzfehler aus den obigen Angaben. Bekannt sei zusätzlich die Varianz des Kriteriums, $\hat{\sigma}_y^2=`r vary`$. Was gibt dieser an?
+
+```{r, eval=include_solution, results="asis"}
+solution_header()
+
+k <- 2
+
+
+sol_lm <- summary(model$lm)$sigma
+
+
+r2 <- round(model$r2,2)
+
+sol_manual <- sqrt(vary*(1-r2)*(N-1)/(N-k-1))
+
+
+str =  paste0("\\sqrt{",vary,"(1-",r2,") \\cdot \\frac{",N,"-1}{",N,"-",k,"-1} }")
+
+cat("$$","\\hat{\\sigma_{\\epsilon}}" ,"=",str,"=", round(sol_manual,2) ,"$$")
+
+cat("Eine weitere Möglichkeit zur Beurteilung der Modellgüte ist beispielsweise der Standardschätzfehler, der Informationen über die Streuung der Fehler um die Regressionsgerade angibt. Im Gegensatz zum $R^2$ ist die Einheit des Standardschätzfehlers die Einheit des Kriteriums.")
+
+```

@@ -118,7 +118,7 @@ coeff_table <- function(x, booktabs=TRUE) {
   
   ncoeff <- x$k
   pres_data <- data.frame(#Modell=c(1,rep("",x$k)),
-                          Regressionskoeffizient= round( coefficients(x$lm), 3),
+                          `Schätzer`= round( coefficients(x$lm), 3),
                           `Std. Fehler`= round( sm$coefficients[,2], 3),
                           T = round( sm$coefficients[,3], 3),
                           p = round( sm$coefficients[,4],3))

@@ -206,8 +206,12 @@ interaction_plot <- function(x, empty = FALSE, gray = FALSE) {
       y = m,
       color = b
     )) +
-    geom_line(lwd = 1.5, alpha = alpha) + ylab(x$av.name) + theme(legend.position = "bottom") +
-    xlab(x$factor.a.name) +  guides(color = guide_legend(title = ""))
+    geom_line(lwd = 1.5, alpha = alpha) + 
+    ylab(x$av.name) + 
+    theme(legend.position = "bottom") +
+    xlab(x$factor.a.name) +  
+    guides(color = guide_legend(title = ""))+
+    NULL
   
   g2 <-
     x$dat %>% group_by(a, b) %>% summarise(m = mean(av)) %>% ggplot(aes(
@@ -216,8 +220,12 @@ interaction_plot <- function(x, empty = FALSE, gray = FALSE) {
       y = m,
       color = a
     )) +
-    geom_line(lwd = 1.5, alpha = alpha) + ylab(x$av.name) + theme(legend.position = "bottom") +
-    xlab(x$factor.b.name) + guides(color = guide_legend(title = ""))
+    geom_line(lwd = 1.5, alpha = alpha) + 
+    ylab(x$av.name) + 
+    theme(legend.position = "bottom") +
+    xlab(x$factor.b.name) + 
+    guides(color = guide_legend(title = "")) +
+    NULL
   
   if (gray) {
     g1 <-
@@ -228,7 +236,8 @@ interaction_plot <- function(x, empty = FALSE, gray = FALSE) {
         color = b
       )) +
       geom_line(lwd = 1.5, alpha = alpha) + ylab(x$av.name) + theme(legend.position = "bottom") +
-      xlab(x$factor.a.name) +  guides(color = guide_legend(title = "")) +
+      xlab(x$factor.a.name) +  
+      guides(color = guide_legend(title = "")) +
       scale_color_grey()
     
     g2 <-
@@ -239,7 +248,8 @@ interaction_plot <- function(x, empty = FALSE, gray = FALSE) {
         color = a
       )) +
       geom_line(lwd = 1.5, alpha = alpha) + ylab(x$av.name) + theme(legend.position = "bottom") +
-      xlab(x$factor.b.name) + guides(color = guide_legend(title = "")) +
+      xlab(x$factor.b.name) + 
+      guides(color = guide_legend(title = "")) +
       scale_color_grey()
   }
   
