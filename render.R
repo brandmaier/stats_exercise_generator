@@ -1,3 +1,6 @@
+require("kableExtra")
+require("datasauRus")
+
 options(encoding = 'UTF-8')
 #options(knitr.table.format = "latex")
 

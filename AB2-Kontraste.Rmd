@@ -4,8 +4,6 @@ author: "Statistik II - Andreas M. Brandmaier"
 date: "`r format(Sys.time(), '%d. %B %Y')`"
 output:
   pdf_document: default
-  html_document:
-    df_print: paged
 params:
   include_solution: yes
 mainfont: SourceSansPro
@@ -37,7 +35,7 @@ aov1 <- generate_anova(factor_level_names = c("Eigene Texte","Fremde Texte", "Fo
 In einer Studie wurde untersucht, inwiefern unterschiedliche Bereitstellungsformen von Social-Media-Inhalten die Beliebtheit von Content-Ersteller\*innen auf einer Fotografieplatform beeinflusst. Konkret wurden Proband\*innen randomisiert in verschiedene Gruppen aufgeteilt, die Social-Media-Inhalte nur über eine der vier Formen verbreiten sollten (Eigene Texte, Übernahme fremder Texte, eigene Fotos, eigene Videos). Als abhängige Variable wurde die Anzahl der _likes_ für die Inhalte der Proband\*innen erhoben. Eine einfaktorielle Varianzanalyse zeigte signifikante Unterschiede zwischen den vier Bedingungen. Dabei waren folgende Faktorstufenmittelwerte gefunden worden:
 ```{r}
 knitr::kable( data.frame(aov1$factor_level_names, aov1$factor_means),
-              col.names = c("Bedingung","Mittelwert"), booktabs=TRUE ) %>% kableExtra::kable_styling(latex_options = c("hold_position"))
+              col.names = c("Bedingung","Mittelwert")) #%>% kableExtra::kable_styling(latex_options = c("hold_position"))
 ```
 
 Außerdem ist die mittlere Innerhalb-Quadratsumme bekannt: $MQS_{inn}=`r aov1$mqs_wth`$ mit Freiheitsgraden $df_{inn}=`r aov1$df2`$. In jeder Bedingung wurden `r aov1$nz` Personen beobachtet. Das Signifikanzniveau sei 5%.
@@ -121,7 +119,7 @@ aov1 <- generate_anova(factor_level_names = c("Abhängigkeitssyndrom","Angststö
 
 Dabei waren folgende Faktorstufenmittelwerte gefunden worden:
 ```{r}
-knitr::kable( data.frame(aov1$factor_level_names, aov1$factor_means),col.names = c("Störung","Mittelwert"), booktabs=TRUE ) %>% kableExtra::kable_styling(latex_options = c("hold_position"))
+knitr::kable( data.frame(aov1$factor_level_names, aov1$factor_means),col.names = c("Störung","Mittelwert"))# %>% kableExtra::kable_styling(latex_options = c("hold_position"))
 
 ctr_coeff1 <- c(-1,1,-1,+1)
 ctr1 <- generate_contrast(aov1,ctr_coeff1, directed=TRUE, alpha=0.01)
@@ -136,6 +134,7 @@ cat("Für den Kontrast gilt (beim gerichteten Testen wird das doppelte Alpha ang
 Im Vorfeld gab es die Vermutung, dass die _working alliance_ von Personen mit einer emotional instabilen Persönlichkeitsstörung oder einer Angststörung höher ist als bei den anderen untersuchten Störungen. Formulieren Sie das passende Hypothesenpaar und testen Sie dies in einem Kontrast. Formulieren Sie zusätzlich noch einen Kontrast, der orthogonal zu dem ersten ist.
  
 ```{r results="asis", eval=include_solution}
+cat(solution_header())
 
 cat(contrast_hypotheses(ctr1,1))
 cat("\n")
@@ -164,7 +163,7 @@ aov1 <- generate_anova(factor_level_names = paste0("Kurs ",1:6),num.facs = 6, nu
 Im Rahmen der Statistik-Vorlesung wurde die Zufriedenheit mit der Vorlesung erhoben. Die Zufriedenheit sei auf einer Skala zwischen 0 und 100 erhoben worden, die wir als intervallskaliert annehmen. Die Teilnehmenden kamen aus sechs Kursen. Im Rahmen einer Varianzanalyse wurde die Nullhypothese "Es gibt keine Mittelwertsunterschiede zwischen den sechs Gruppen" abgelehnt (auf einem Signifikanzniveau von 5%). Folgende Gruppenmittelwerte sind bekannt:
 
 ```{r}
-knitr::kable( data.frame(aov1$factor_level_names, aov1$factor_means),col.names = c("Zufriedenheit","Mittelwert"), booktabs=TRUE )
+knitr::kable( data.frame(aov1$factor_level_names, aov1$factor_means),col.names = c("Zufriedenheit","Mittelwert"))
 ```
 
 Außerdem ist die mittlere Innerhalb-Quadratsumme aus der Varianzanalyse bekannt: $MQS_{inn}=`r aov1$mqs_wth`$  mit Freiheitsgraden $df_{inn}=`r aov1$df2`$. In jeder Bedingung wurden `r aov1$nz` Personen beobachtet. Als Signifikanzniveau wurde 1% festgelegt.

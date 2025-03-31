@@ -29,15 +29,15 @@ empty_str <- "\\ "
 
 Eine Psychologin plant eine Studie zur Selbstregulationsfähigkeit. Dabei soll untersucht werden, ob ein Selbstregulations-Coaching wirksam ist. Die abhängige Variable ist ein Fragebogen zur Selbstregulationsfähigkeit, der einen Wert auf einer metrischen Skala ergibt. Es werden die Mittelwerte zweier Gruppen (Treatment- und Kontrollgruppe) mittels t-Test verglichen. Die Stichprobengröße ist 100. Das Signifikanzniveau ist 5%. 
 
-- Welche Schritte sind nötig, um auf Basis dieser Informationen eine Teststärkenanalyse durchzuführen?
+- Welche zusätzlichen Annahmen sind nötig, um auf Basis dieser Informationen eine Teststärkenanalyse durchzuführen?
 
 - Wenn man das Signifikanzniveau von 5% auf 1% senkt, welche Auswirkung hat das auf die zu erwartende Teststärke?
 
 ```{r ls, eval=include_solution, results="asis"}
   solution_header()
-cat("Es gibt hier zwei Möglichkeiten für eine Teststärkenanalyse. Festgelegt sind bei der Studie das Signifikanzniveau und die Stichprobengröße. Damit verbleiben zwei freie Größen, nämlich die Stichprobengröße und die Teststärke. Entweder kann man durch Festlegung einer angenommenen Effektstärke die Teststärke schätzen (sog. a-priori Teststärkenanalyse) oder man kann durch Festlegung der Stichprobengröße die detektierbare Effektgröße schätzen (sog. Sensitivitätsanalyse).")
+cat("Es gibt hier zwei Möglichkeiten für eine Teststärkenanalyse. Festgelegt sind bei der Studie das Signifikanzniveau und die Stichprobengröße. Damit verbleiben zwei freie Größen, nämlich die Effektgröße und die Teststärke. Entweder kann man durch Festlegung einer angenommenen Effektstärke die Teststärke schätzen (sog. a-priori Teststärkenanalyse) oder man kann durch Festlegung der Stichprobengröße die detektierbare Effektgröße schätzen (sog. Sensitivitätsanalyse).")
 
-cat("\n\nSenkt man das Signifikanzniveau, sinkt die statistische Teststärke.")
+cat("\n\nSenkt man das Signifikanzniveau, sinkt die statistische Teststärke. Senkt man im Beispiel das Signifikanzniveau auf 1%, sinkt dadurch die Wahrscheinlichkeit eines Alpha-Fehlers, allerdings wird der Test strenger, d.h. die statistische Teststärke sinkt.")
 ```
 
 ## Aufgabe 2

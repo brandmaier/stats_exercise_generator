@@ -93,11 +93,13 @@ generate_anova <- function(av.name = "",
   
   eta2 <- round(qs_btw/(qs_tot),2)
   
+  omega2 <- round((qs_btw-(J-1)*mqs_wth)/(qs_tot+mqs_wth) , 2)
+  
   factor_means=cmns
   nz=num.obs.per.fac
   grand_mean=xm
   result <- list(qs_tot=qs_tot, qs_btw=qs_btw, qs_wth=qs_wth, df_tot=df_tot,df1=df1, df2=df2, mqs_tot=mqs_tot, mqs_btw=mqs_btw, mqs_wth=mqs_wth, Fval=Fval, Fp=Fp,Fcrit=Fcrit,eta2=eta2, factor_means=factor_means, nz=nz, grand_mean=grand_mean, dat=dat, alpha=alpha,J=J,
-                 factor_level_names=factor_level_names)
+                 factor_level_names=factor_level_names, eta2=eta2, omega2=omega2)
   return(result)
 }
 

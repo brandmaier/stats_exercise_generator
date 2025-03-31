@@ -63,7 +63,7 @@ r2 <- round( ev/nvar*100,2)
 rownames(df) <- item_names
 colnames(df) <- paste0("HK",1:2)
 
-knitr::kable(df,caption = "Faktorladungsmatrix",booktabs=TRUE ) %>% kableExtra::kable_styling(latex_options = "hold_position")
+knitr::kable(df,caption = "Faktorladungsmatrix",booktabs=TRUE ) #%>% kableExtra::kable_styling(latex_options = "hold_position")
 ```
 
 a) Berechnen Sie die Kommunalitäten und die Eigenwerte.
@@ -78,7 +78,7 @@ cat(solution_header())
 dfx <- rbind(df, Eigenwerte=ev)
 dfx <- cbind(dfx, Kommunalitäten=c(communality,""))
 
-knitr::kable(dfx, caption="Ladungsmatrix mit Kommunalitäten und Eigenwerten", booktabs=TRUE) %>% kableExtra::kable_styling(latex_options = "hold_position")
+knitr::kable(dfx, caption="Ladungsmatrix mit Kommunalitäten und Eigenwerten", booktabs=TRUE) #%>% kableExtra::kable_styling(latex_options = "hold_position")
 
 cat("Erklärte Varianz durch die erste Komponente: ", ev[1],"/",nvar,"=", r2[1],"%.\n")
 cat("Erklärte Varianz durch die ersten beiden Komponenten: (", ev[1],"+",ev[2],")/",nvar,"=", sum(r2),"%.\n")

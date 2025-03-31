@@ -4,7 +4,6 @@ author: "Statistik II - Andreas M. Brandmaier"
 date: "`r format(Sys.time(), '%d. %B %Y')`"
 output:
   pdf_document: default
-  html_document: default
 params:
   include_solution: true
 ---
