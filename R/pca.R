@@ -5,7 +5,11 @@ generate_pca <-
            loadings = NULL,
            nfactors = 2) {
     if (!is.null(data)) {
-      psych::fa(data, nfactors = nfactors, fm = "pa")
+#      fit <- psych::fa(data,
+#                       nfactors = nfactors, fm = "pc", rotate="varimin")
+      fit <- psych::principal(observed, nfactors=2, rotate="varimax", covar=FALSE)
+      
+      loadings <- loadings(fit)[,]
     }
     
     x <-
@@ -23,6 +27,9 @@ generate_pca <-
 
 #' @export
 solution_communality <- function(x) {
+  
+  stopifnot(inherits(x,"pca"))
+  
   ll <- x$loadings
   coms <- round(colSums(ll ^ 2), 2)
   
@@ -69,7 +76,8 @@ solution_ev <- function(x) {
 
 
 #' @export
-communality_with_distractors <- function(x, i) {
+exam_communality_with_distractors <- function(x, i) {
+  
   # correct
   ll <- x$loadings
   coms <- round(rowSums(ll ^ 2)[i], 2)
@@ -78,8 +86,27 @@ communality_with_distractors <- function(x, i) {
   distractor2 <- round(colSums(ll ^ 2)[i], 2)
   distractor3 <- round(colSums(ll)[i], 2)
   
-  if (length(unique(coms, distractor1, distractor2, distractor3) != 4)) {
-    stop("Non-unique solutions!")
+  if (any(duplicated(coms, distractor1, distractor2, distractor3))) {
+    stop("Non-unique solutions in distractors! Choose different loading values. Solutions are: ",paste0(  
+      c(coms, distractor1, distractor2, distractor3),collapse=", "))
+  }
+  
+  c(coms, distractor1, distractor2, distractor3)
+}
+
+exam_explained_variance_with_distractors <- function(x, i)
+{
+  explained_variance <- colSums(x$loadings^2) / nrow(x$loadings)
+  
+  coms <- explained_variance[i]
+  distractor1 <- colSums(x$loadings^2)[i]
+  distractor2 <- colSums(x$loadings^2)[i]
+  distractor3 <- colSums(x$loadings^2)  
+  distractor3 <- rowSums(x$loadings^2) / nrow(x$loadings)  
+  
+  if (any(duplicated(coms, distractor1, distractor2, distractor3))) {
+    stop("Non-unique solutions in distractors! Choose different loading values. Solutions are: ",paste0(  
+      c(coms, distractor1, distractor2, distractor3),collapse=", "))
   }
   
   c(coms, distractor1, distractor2, distractor3)
