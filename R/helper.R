@@ -45,3 +45,7 @@ wrap_p <- function(p, tex_math = TRUE) {
       return("<0.001")
     }else{ return(round(p,3))}
 }
+
+print_alpha <- function(x) {
+  return(paste0(alpha*100,"%"))
+}

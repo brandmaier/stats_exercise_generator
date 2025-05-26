@@ -30,7 +30,10 @@ empty_str <- "\\ "
 # Aufgabe 1
 ```{r}
 set.seed(23509)
-aov1 <- generate_anova(factor_level_names = c("Eigene Texte","Fremde Texte", "Fotos","Videos"), within = 3, between=c(4,3,9.2,5.5), obs_round = 1, num.facs = 4, num.obs.per.fac = 5)
+
+alpha <- 0.05
+
+aov1 <- generate_anova(factor_level_names = c("Eigene Texte","Fremde Texte", "Fotos","Videos"), within = 3, between=c(4,3,9.2,5.5), obs_round = 1, num.facs = 4, num.obs.per.fac = 5,alpha=alpha)
 ```
 In einer Studie wurde untersucht, inwiefern unterschiedliche Bereitstellungsformen von Social-Media-Inhalten die Beliebtheit von Content-Ersteller\*innen auf einer Fotografieplatform beeinflusst. Konkret wurden Proband\*innen randomisiert in verschiedene Gruppen aufgeteilt, die Social-Media-Inhalte nur über eine der vier Formen verbreiten sollten (Eigene Texte, Übernahme fremder Texte, eigene Fotos, eigene Videos). Als abhängige Variable wurde die Anzahl der _likes_ für die Inhalte der Proband\*innen erhoben. Eine einfaktorielle Varianzanalyse zeigte signifikante Unterschiede zwischen den vier Bedingungen. Dabei waren folgende Faktorstufenmittelwerte gefunden worden:
 ```{r}
@@ -38,7 +41,7 @@ knitr::kable( data.frame(aov1$factor_level_names, aov1$factor_means),
               col.names = c("Bedingung","Mittelwert")) #%>% kableExtra::kable_styling(latex_options = c("hold_position"))
 ```
 
-Außerdem ist die mittlere Innerhalb-Quadratsumme bekannt: $MQS_{inn}=`r aov1$mqs_wth`$ mit Freiheitsgraden $df_{inn}=`r aov1$df2`$. In jeder Bedingung wurden `r aov1$nz` Personen beobachtet. Das Signifikanzniveau sei 5%.
+Außerdem ist die mittlere Innerhalb-Quadratsumme bekannt: $MQS_{inn}=`r aov1$mqs_wth`$ mit Freiheitsgraden $df_{inn}=`r aov1$df2`$. In jeder Bedingung wurden `r aov1$nz` Personen beobachtet. Das Signifikanzniveau sei `r print_alpha(alpha)`.
 ```{r results="asis"}
 ctr_coeff1 <- c(-1,-1,1,1)
 ctr_coeff2 <- c(0,0,-1,1)
@@ -97,12 +100,13 @@ cat(orthogonal(ctr1, ctr2))
 
 Wir betrachten nochmal die Aufgabe des Arbeitsblattes "Einfaktorielle Varianzanalyse", in der _working alliance_ (also das Vertrauen und die Bereitschaft zur Zusammenarbeit) von Patienten in einer psychiatrischen Klinik untersucht wurde.
 ```{r}
+alpha = 0.01
 set.seed(34059)
 aov1 <- generate_anova(factor_level_names = c("Abhängigkeitssyndrom","Angststörung","Depressive Episode","Persönlichkeitsstörung"),num.facs = 4, num.obs.per.fac = 7,obs_round = 0, 
                        between=4,within=2, overallmean = 10,
                        obs_min=1,
                        obs_max=20,
-                       alpha=0.01
+                       alpha=alpha
                        )
 
 #aov1 <- generate_anova(factor_level_names = #c("Abhängigkeitssyndrom","Angststörung","Depressive #Episode","Persönlichkeitsstörung"),num.facs = 4, num.obs.per.fac = 7,obs_round = 0, 
@@ -122,11 +126,11 @@ Dabei waren folgende Faktorstufenmittelwerte gefunden worden:
 knitr::kable( data.frame(aov1$factor_level_names, aov1$factor_means),col.names = c("Störung","Mittelwert"))# %>% kableExtra::kable_styling(latex_options = c("hold_position"))
 
 ctr_coeff1 <- c(-1,1,-1,+1)
-ctr1 <- generate_contrast(aov1,ctr_coeff1, directed=TRUE, alpha=0.01)
+ctr1 <- generate_contrast(aov1,ctr_coeff1, directed=TRUE, alpha=alpha)
 
 ```
 
-Außerdem ist die mittlere Innerhalb-Quadratsumme bekannt: $MQS_{inn}=`r aov1$mqs_wth`$  mit Freiheitsgraden $df_{inn}=`r aov1$df2`$. In jeder Bedingung wurden `r aov1$nz` Personen beobachtet. Als Signifikanzniveau wurde $\alpha=1\%$ festgelegt. 
+Außerdem ist die mittlere Innerhalb-Quadratsumme bekannt: $MQS_{inn}=`r aov1$mqs_wth`$  mit Freiheitsgraden $df_{inn}=`r aov1$df2`$. In jeder Bedingung wurden `r aov1$nz` Personen beobachtet. Als Signifikanzniveau wurde `r print_alpha(alpha)` festgelegt. 
 ```{r results="asis"}
 cat("Für den Kontrast gilt (beim gerichteten Testen wird das doppelte Alpha angesetzt): ",f_crit(ctr1))
 ```
@@ -151,23 +155,28 @@ cat("Es gibt verschiedene Möglichkeiten für weitere, orthogonale Kontraste. Ei
 
 ## Aufgabe 3
 ```{r}
+alpha <- 0.01
 set.seed(3413059)
 aov1 <- generate_anova(factor_level_names = paste0("Kurs ",1:6),num.facs = 6, num.obs.per.fac = 35,obs_round = 0, 
                        between=2,within=4, overallmean = 40,
                        obs_min=0,
                        obs_max=100,
-                       alpha=0.05)
+                       alpha=alpha)
 
+ctr_coeff1 <- c(-1,1,-1,1,-1,1)
+ctr1 <- generate_contrast(aov1,ctr_coeff1, directed=TRUE, alpha=alpha)
 ```
 
-Im Rahmen der Statistik-Vorlesung wurde die Zufriedenheit mit der Vorlesung erhoben. Die Zufriedenheit sei auf einer Skala zwischen 0 und 100 erhoben worden, die wir als intervallskaliert annehmen. Die Teilnehmenden kamen aus sechs Kursen. Im Rahmen einer Varianzanalyse wurde die Nullhypothese "Es gibt keine Mittelwertsunterschiede zwischen den sechs Gruppen" abgelehnt (auf einem Signifikanzniveau von 5%). Folgende Gruppenmittelwerte sind bekannt:
+Im Rahmen der Statistik-Vorlesung wurde die Zufriedenheit mit der Vorlesung erhoben. Die Zufriedenheit sei auf einer Skala zwischen 0 und 100 erhoben worden, die wir als intervallskaliert annehmen. Die Teilnehmenden kamen aus sechs Kursen. Im Rahmen einer Varianzanalyse wurde die Nullhypothese "Es gibt keine Mittelwertsunterschiede zwischen den sechs Gruppen" abgelehnt (auf einem Signifikanzniveau von `r print_alpha(alpha)`). Folgende Gruppenmittelwerte sind bekannt:
 
 ```{r}
 knitr::kable( data.frame(aov1$factor_level_names, aov1$factor_means),col.names = c("Zufriedenheit","Mittelwert"))
 ```
 
-Außerdem ist die mittlere Innerhalb-Quadratsumme aus der Varianzanalyse bekannt: $MQS_{inn}=`r aov1$mqs_wth`$  mit Freiheitsgraden $df_{inn}=`r aov1$df2`$. In jeder Bedingung wurden `r aov1$nz` Personen beobachtet. Als Signifikanzniveau wurde 1% festgelegt.
-
+Außerdem ist die mittlere Innerhalb-Quadratsumme aus der Varianzanalyse bekannt: $MQS_{inn}=`r aov1$mqs_wth`$  mit Freiheitsgraden $df_{inn}=`r aov1$df2`$. In jeder Bedingung wurden `r aov1$nz` Personen beobachtet. Als Signifikanzniveau wurde `r print_alpha(alpha)` festgelegt. 
+```{r results="asis"}
+cat(" Für den Kontrast gilt (beim gerichteten Testen wird das doppelte Alpha angesetzt): ",f_crit(ctr1))
+```
 Die Gruppen mit geraden Kursnummern fanden immer Montags statt und die ungeraden immer Freitags. Es soll nun (einseitig!) geprüft werden, ob die "geraden" Kurse zufriedener waren als die "ungeraden" Kurse. Führen sie die entsprechende Kontrastanalyse durch.
 
 
@@ -175,8 +184,7 @@ Die Gruppen mit geraden Kursnummern fanden immer Montags statt und die ungeraden
 ```{r results="asis", eval=include_solution}
 cat(solution_header())
 
-ctr_coeff1 <- c(-1,1,-1,1,-1,1)
-ctr1 <- generate_contrast(aov1,ctr_coeff1, directed=TRUE)
+
 
 cat(contrast_hypotheses(ctr1,1))
 cat("\n")

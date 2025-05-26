@@ -25,13 +25,21 @@ generate_pca <-
     return(x)
   }
 
+communality <- function(x) {
+  return(rowSums(x$loadings ^ 2))
+}
+
+eigenvectors <- function(x) {
+  return(colSums(x$loadings ^ 2))
+}
+
 #' @export
 solution_communality <- function(x) {
   
   stopifnot(inherits(x,"pca"))
   
   ll <- x$loadings
-  coms <- round(colSums(ll ^ 2), 2)
+  coms <- round(communality(x), 2)
   
   solstr <- ""
   for (i in 1:nrow(ll)) {
