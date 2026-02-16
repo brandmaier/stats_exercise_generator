@@ -72,10 +72,10 @@ select2 <- x>=critv
 
 df<-data.frame(x=x,y=y,c=factor(c))
 gnorm <- ggplot(data=df,aes(x=x,y=y,color=c,group=c))+
-  geom_line(lwd=3)+
+  geom_line(linewidth = 3)+
   theme_minimal()+
   ggx::gg_("hide legend")+ylab("")+xlab("Prüfgröße")+
-  geom_vline(xintercept=critv,lwd=2,color="green")+
+  geom_vline(xintercept=critv,linewidth=2,color="green")+
  
   NULL
 

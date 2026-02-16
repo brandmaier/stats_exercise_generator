@@ -150,6 +150,11 @@ hypothesis_solution <- function(x) {
   paste("H_0: ", paste(paste0("\\mu_",1:x$J), collapse="=" )  )
 }
 
+hypothesis_solution_h1 <- function(x) {
+  
+  paste("H_1: ", paste(paste0("\\mu_i \\ne \\mu_j für ein i \\in \\{1\\ldots",x$J,"\\}"), collapse="=" )  )
+}
+
 
 result_table <- function(x) {
   report_table <- data.frame(Quelle=c("Zwischen","Innerhalb","Total"),

@@ -1,5 +1,5 @@
 ---
-title: "Arbeitsblatt 2 - Kontrastanalyse"
+title: "Arbeitsblatt - Kontrastanalyse"
 author: "Statistik II - Andreas M. Brandmaier"
 date: "`r format(Sys.time(), '%d. %B %Y')`"
 output:

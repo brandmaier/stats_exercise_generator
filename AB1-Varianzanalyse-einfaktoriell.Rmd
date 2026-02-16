@@ -1,11 +1,17 @@
 ---
-title: "Arbeitsblatt 1 - Einfaktorielle Varianzanalyse"
+title: "Arbeitsblatt - Einfaktorielle Varianzanalyse"
 author: "Statistik II - Andreas M. Brandmaier"
 date: "`r format(Sys.time(), '%d. %B %Y')`"
 output:
   pdf_document: default
 params:
   include_solution: true
+header-includes:
+  - \usepackage[ngerman]{babel}
+  - \usepackage{caption}
+  - \captionsetup[table]{position=bottom}
+  - \usepackage{soul}
+  - \usepackage{xcolor}
 ---
 
 ```{r setup, include=TRUE, results = "hide", eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
@@ -30,13 +36,18 @@ set.seed(23509)
 aov1 <- generate_anova(factor_level_names = c("Nähen","Tanzen","Gedichte"), within = 3, between=3, obs_round = 1)
 ```
 
-In einer Studie wurde untersucht, inwiefern sich verschiedene Freizeitbeschäftigungen auf das Wohlbefinden auswirken können. Dazu wurden 12 Proband\*innen, die vorher kein Hobby hatten, zufällig auf gleichgroße Gruppen aufgeteilt, die je ein unterschiedliches Hobby ausüben sollten. Eine Gruppe beschäftigte sich mit Nähen&Stricken, eine Gruppe mit Tanzen, und eine Gruppe lernte Gedichte auswendig. Nach Ablauf von zwei Wochen, gaben die Proband\*innen ihr Wohlbefinden an (höhere Werte = höheres Wohlbefinden). Dies sind die beobachteten Werte:
+In einer fiktiven Studie wurde untersucht, inwiefern sich verschiedene Freizeitbeschäftigungen auf das Wohlbefinden auswirken können. Dazu wurden 12 Proband\*innen, die vorher kein Hobby hatten, zufällig auf gleichgroße Gruppen aufgeteilt, die je ein unterschiedliches Hobby ausüben sollten. Eine Gruppe beschäftigte sich mit Nähen, eine Gruppe mit Tanzen, und eine Gruppe lernte Gedichte auswendig. Nach Ablauf von zwei Wochen, gaben die Proband\*innen ihr Wohlbefinden an (höhere Werte = höheres Wohlbefinden). Dies sind die beobachteten Werte:
 
-```{r}
+```{r tab.cap="Selbstberichtetes Wohlbefinden aufgeschlüsselt nach verschiedenen Hobbies. Jede Zahl entspricht dem Urteil einer Versuchsperson in der Studie."}
 data_table(aov1)
 ```
 
-Formulieren Sie die Nullhypothese und führen Sie den geeigneten statistischen Test zur Auswertung durch. Berechnen Sie auch die Effektgröße. Formulieren Sie einen Antwortsatz.
+Bearbeiten Sie folgende Aufgaben:
+
+a) Formulieren Sie die Nullhypothese und die Alternativhypothese.
+b) Führen Sie den geeigneten statistischen Test zur Beantwortung der Frage durch, ob sich das mittlere Wohlbefinden zwischen den Gruppen unterscheidet.
+c) Berechnen Sie auch die Effektgröße. 
+d) Formulieren Sie einen Antwortsatz.
 
 ```{r results="asis"}
 cat(f_crit(aov1))
@@ -46,20 +57,43 @@ cat(f_crit(aov1))
 ```{r, results="asis", eval=include_solution}
 solution_header()
 
+section("1. Hypothesen aufstellen")
+
+cat("Nullhypothese:")
 wrap_math_block(hypothesis_solution(aov1))
+cat("Alternativhypothese:")
+wrap_math_block(hypothesis_solution_h1(aov1))  
+
+section("2. Gruppenmittelwerte berechnen")
+  
 wrap_math_flalign(group_means_solution(aov1))
+
+section("3. Berechnung der Quadratsummen")
+
+cat("In der Formelsammlung finden wir:")
+  
+cat("$$QS_{zw} = \\sum_{j=1}^{J} \\sum_{m=1}^{n_j} \\left( \\bar{x}_j - \\bar{x} \\right)^2$$")
+  
+cat("Nun setzen wir ein:")
 
 wrap_math_flalign(qs_solution(aov1,1))
 wrap_math_block(qs_solution(aov1,2))
 wrap_math_block(qs_solution(aov1,3))
+
+section("4. Berechnung der mittleren Quadratsummen")
+
 wrap_math_block( mqs_solution(aov1) ) 
+
+section("5. Berechnung der empirischen Prüfgröße")
+
 wrap_math_block( f_solution(aov1) )
 
 cat(f_crit(aov1))
-cat("Da der empirische F-Wert kleiner als der kritische F-Wert ist, behalten wir die Nullhypothese bei.")
+cat("Da der empirische F-Wert kleiner als der kritische F-Wert ist, behalten wir die Nullhypothese bei. ")
 cat("Wir finden keinen signifikanten Unterschied im Wohlbefinden zwischen den Gruppen.")
 
-cat("Die Effektstärke berechnet sich wie folgt:\n")
+section("5. Berechnung der Effekstärke")
+
 wrap_math_block(effect_solution(aov1))
 
 ```
@@ -132,7 +166,7 @@ Beschreiben Sie ein weiteres Beispiel für eine Studie, die mit einer einfaktori
 ```{r, results="asis", eval=include_solution}
 cat(solution_header())
 
-cat("Mögliche Lösungen:\\\\")
+cat("Mögliche Lösungen:\\\\ \\n")
 
 cat("- Hat die Art der Belohnung (materiell vs. verbal vs. keine Belohnung) einen Einfluss auf die Motivation von Schüler:innen in der Schule?
 

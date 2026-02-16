@@ -345,6 +345,11 @@ long_data_table <- function(x) {
   knitr::kable(x$dat)
 }
 
+dataset <- function(x) {
+  dat <- x$dat
+  names(dat) <- c(x$av.name,x$factor.a.name, x$factor.b.name)
+  return(dat)
+}
 
 #' @export
 table_of_means <- function(x) {

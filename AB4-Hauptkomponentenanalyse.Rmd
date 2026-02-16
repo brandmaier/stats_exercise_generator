@@ -1,5 +1,5 @@
 ---
-title: "Arbeitsblatt 4 - Hauptkomponentenanalyse"
+title: "Arbeitsblatt - Hauptkomponentenanalyse"
 author: "Statistik II - Andreas M. Brandmaier"
 date: "`r format(Sys.time(), '%d. %B %Y')`"
 output:
