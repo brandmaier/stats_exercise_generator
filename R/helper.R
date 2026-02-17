@@ -21,7 +21,8 @@ wrap_math_flalign <-  function(x) {cat(paste0("\\begin{flalign*}\n",x,"\\end{fla
 wrap_test <- function(x){ cat("\\[ ",x,"\\]")}
 
 solution_header <- function() {
-  cat("_Lösung_:\n\n")
+  #cat("_Lösung_:\n\n")
+  cat("## Lösung\n\n")
 }
 
 #' @export
@@ -48,4 +49,12 @@ wrap_p <- function(p, tex_math = TRUE) {
 
 print_alpha <- function(x) {
   return(paste0(alpha*100,"%"))
+}
+
+section <- function(x) {
+  cat("\\emph{",x,"}\n\n")
+}
+
+highlight <- function(x) {
+  cat("\\hl{",x,"}")
 }

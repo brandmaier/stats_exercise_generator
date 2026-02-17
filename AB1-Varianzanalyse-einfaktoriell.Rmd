@@ -10,9 +10,44 @@ header-includes:
   - \usepackage[ngerman]{babel}
   - \usepackage{caption}
   - \captionsetup[table]{position=bottom}
-  - \usepackage{soul}
+  - \usepackage{tcolorbox}
   - \usepackage{xcolor}
+  - \usepackage{setspace}
+  - \setstretch{1.05}
+  - \setlength{\parskip}{6pt}
+  - \setlength{\parindent}{0pt}
+  - \usepackage{microtype}
+  - \usepackage{fancyhdr}
+  - \pagestyle{fancy}
+  - \fancyhf{}
+  - \lhead{Statistik II}
+  - \chead{Einfaktorielle Varianzanalyse}
+  - \rhead{Prof. Brandmaier}
 ---
+
+\begin{tcolorbox}[
+  colback=gray!8,
+  colframe=gray!60,
+  title=Ziel und Voraussetzungen,
+  sharp corners,
+  boxrule=0.5pt
+]
+Dieses Arbeitsblatt dient dazu, Rechenaufgaben zur Inferenz
+in der einfaktoriellen ANOVA zu üben.
+
+\textbf{Voraussetzungen:}
+\begin{itemize}
+\item Verständnis von Mittelwert und Varianz
+\item Grundlagen des Hypothesentestens
+\end{itemize}
+\textbf{Sie üben heute:}
+\begin{itemize}
+\item Hypothesen formulieren
+\item (Mittlere) Quadratsummen berechnen
+\item F-Wert und Effektstärke berechnen
+\item Statistische Entscheidung treffen
+\end{itemize}
+\end{tcolorbox}
 
 ```{r setup, include=TRUE, results = "hide", eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 library(tidyverse)
@@ -45,9 +80,9 @@ data_table(aov1)
 Bearbeiten Sie folgende Aufgaben:
 
 a) Formulieren Sie die Nullhypothese und die Alternativhypothese.
-b) Führen Sie den geeigneten statistischen Test zur Beantwortung der Frage durch, ob sich das mittlere Wohlbefinden zwischen den Gruppen unterscheidet.
-c) Berechnen Sie auch die Effektgröße. 
-d) Formulieren Sie einen Antwortsatz.
+b) Führen Sie eine einfaktorielle Varianzanalyse durch zur Beantwortung der Frage, ob sich das mittlere Wohlbefinden zwischen den Gruppen unterscheidet. Berechnen Sie dazu alle notwendigen Mittelwerte, Quadratsummen, mittleren Quadratsummen und den F-Wert.
+c) Berechnen Sie die Effektgröße $\hat{\eta}^2$. 
+d) Treffen Sie eine statistische Entscheidung und formulieren Sie einen Antwortsatz.
 
 ```{r results="asis"}
 cat(f_crit(aov1))
@@ -72,31 +107,51 @@ section("3. Berechnung der Quadratsummen")
 
 cat("In der Formelsammlung finden wir:")
   
-cat("$$QS_{zw} = \\sum_{j=1}^{J} \\sum_{m=1}^{n_j} \\left( \\bar{x}_j - \\bar{x} \\right)^2$$")
+cat("$$QS_{zw} = n_Z \\cdot \\sum_{j=1}^{J}  \\left( \\bar{x}_j - \\bar{x} \\right)^2$$")
+
+cat("$$QS_{inn} = \\sum_{j=1}^{J} \\sum_{m=1}^{n_j} \\left( x_{mj} - \\bar{x}_j \\right)^2$$")
   
 cat("Nun setzen wir ein:")
 
-wrap_math_flalign(qs_solution(aov1,1))
-wrap_math_block(qs_solution(aov1,2))
-wrap_math_block(qs_solution(aov1,3))
+wrap_math_flalign(qs_solution(aov1,2))
+wrap_math_flalign(qs_solution(aov1,4))
+#wrap_math_block(qs_solution(aov1,3))
+
+cat("Die totale Quadratsumme ergibt sich aus der Summe der beiden Quadratsummen")
+
+cat("$$QS_{inn}+QS_{zw}=",aov1$qs_wth,"+",aov1$qs_btw,"=",aov1$qs_tot,"$$")
 
 section("4. Berechnung der mittleren Quadratsummen")
 
-wrap_math_block( mqs_solution(aov1) ) 
+#wrap_math_block( mqs_solution(aov1) ) 
+wrap_math_flalign( mqs_solution(aov1) )
 
 section("5. Berechnung der empirischen Prüfgröße")
 
 wrap_math_block( f_solution(aov1) )
 
-cat(f_crit(aov1))
-cat("Da der empirische F-Wert kleiner als der kritische F-Wert ist, behalten wir die Nullhypothese bei. ")
-cat("Wir finden keinen signifikanten Unterschied im Wohlbefinden zwischen den Gruppen.")
+cat(f_crit(aov1),"\n\n")
 
-section("5. Berechnung der Effekstärke")
+section("6. Berechnung der Effektstärke")
 
 wrap_math_block(effect_solution(aov1))
 
+cat("Da der empirische F-Wert kleiner als der kritische F-Wert ist, behalten wir die Nullhypothese bei. ")
+cat("Wir finden keinen signifikanten Unterschied im Wohlbefinden zwischen den Gruppen.")
+
 ```
+
+\begin{tcolorbox}[
+  colback=blue!5,
+  colframe=blue!50,
+  title= Erinnerung,
+  sharp corners,
+  boxrule=0.5pt
+]
+
+Auch ein großer Effekt kann in einer kleinen Stichprobe nicht signifikant sein aufgrund der hohen Schätzunsicherheit.
+
+\end{tcolorbox}
 
 ```{r}
 aov1<-NULL
@@ -117,13 +172,14 @@ aov1 <- generate_anova(factor_level_names = c("Abhängigkeitssyndrom","Angststö
 ```
 
 
-In einer Studie wurde die _working alliance_ (also das Vertrauen und die Bereitschaft zur Zusammenarbeit) von Patient:innen in einer psychiatrischen Klinik untersucht. Die durchführende Psychologin vermutet, dass sich die Patient:innen abhängig von ihrer Diagnose unterscheiden und möchte diese Vermutung statistisch absichern. Sie befragt je `r aov1$nz` Personen mit der gleichen Diagnose und bewertet ihre working alliance auf einer Skala von $1-20$. Dies sind die notierten Werte:
+In einer Studie wurde die _Working Alliance_ (also das Vertrauen und die Bereitschaft zur Zusammenarbeit) von Patient:innen in einer psychiatrischen Klinik untersucht. Die durchführende Psychologin vermutet, dass sich die Patient:innen abhängig von ihrer Diagnose unterscheiden und möchte diese Vermutung statistisch absichern. Sie befragt je `r aov1$nz` Personen mit der gleichen Diagnose und bewertet ihre Working Alliance auf einer Skala von $1--20$. Dies sind die notierten Werte:
 
-```{r}
+```{r tab.cap="Working Alliance aufgeschlüsselt nach Diagnose."}
 data_table(aov1, longtable=FALSE)
 ```
 
-Die Psychologin hat bereits berechnet: $QS_{tot}=`r aov1$qs_tot`$.Formulieren Sie die Nullhypothese und führen Sie den geeigneten statistischen Test zur Auswertung durch. Formulieren Sie einen Antwortsatz, der auch eine Effektgröße enthält. Das Signifikanzniveau sei 1%. 
+Die Psychologin hat bereits berechnet: $QS_{tot}=`r aov1$qs_tot`$,
+$QS_{zw}=`r aov1$qs_btw`$ und $QS_{inn}=`r aov1$qs_wth`$. Formulieren Sie die Nullhypothese und führen Sie eine einfaktorielle Varianzanalyse zur Auswertung durch. Formulieren Sie einen Antwortsatz, der auch eine Effektgröße enthält. Das Signifikanzniveau sei 1%. 
 
 ```{r results="asis"}
 cat(f_crit(aov1))
@@ -131,46 +187,76 @@ cat(f_crit(aov1))
 
 ```{r, results="asis", eval=include_solution}
 cat("_Lösung:_")
-wrap_math_block(hypothesis_solution(aov1))
-wrap_math_align(group_means_solution(aov1))
 
-wrap_math_flalign(qs_solution(aov1,1))
-cat("\n")
-wrap_math_flalign(qs_solution(aov1,2))
-cat("\n")
-wrap_math_flalign(qs_solution(aov1,3))
-cat("\n")
-wrap_math_block( mqs_solution(aov1) )
+section("1. Nullhypothese aufstellen")
+
+wrap_math_block(hypothesis_solution(aov1))
+
+
+section("2. Mittlere Quadratsummen berechnen")
+wrap_math_flalign( mqs_solution(aov1) )
+
+section("3. Empirische Prüfgröße berechnen")
 wrap_math_block( f_solution(aov1) )
 
-cat(f_crit(aov1))
+cat(f_crit(aov1),"\n\n")
 
+section("4. Effektstärke berechnen")
 
 wrap_math_block(effect_solution(aov1))
 
-cat("Die Nullhypothese wird verworfen, da der empirische F-Wert größer als der kritische F-Wert ist. Wir finden einen signifikanten Unterschied in der _working alliance_ zwischen den Diagnosen.")
+section("5. Statistische Entscheidung treffen")
+
+cat("Die Nullhypothese wird verworfen, da der empirische F-Wert größer als der kritische F-Wert ist. Wir finden einen großen und signifikanten Unterschied in der _Working Alliance_ zwischen den Diagnosen.")
 ```
+
+\begin{tcolorbox}[
+  colback=blue!5,
+  colframe=blue!50,
+  title= Erinnerung,
+  sharp corners,
+  boxrule=0.5pt
+]
+
+Ein großer F-Wert bedeutet, dass die Unterschiede zwischen den Gruppen
+groß sind im Vergleich zur Streuung innerhalb der Gruppen.
+
+\end{tcolorbox}
 
 
 # Aufgabe 3
 
-Warum ist das Berichten von $\hat{\eta}^2$ als Effektstärkemaß problematisch?
+Warum ist das Berichten von $\hat{\eta}^2$ als Effektstärkemaß problematisch? <!--Was könnte man alternativ berechnen? Führen Sie die Berechnung der Alternative für das obige Beispiel aus.-->
 
 `r if (isTRUE(include_solution)){ "_Lösung:_ \n Weil Eta-Quadrat ein verzerrter Schätzer ist. Im Allgemeinen weisst es einen zu optimistischen, also zu großen Effekt aus. Besser wäre ein korrigierter Schätzer, wie bspw. Omega-Quadrat."} `
 
 
 # Aufgabe 4
 
-Beschreiben Sie ein weiteres Beispiel für eine Studie, die mit einer einfaktoriellen Varianzanalyse ausgewertet wird. 
+Beschreiben Sie ein weiteres Beispiel für eine Studie, die mit einer einfaktoriellen Varianzanalyse ausgewertet wird. Wieviele Faktorstufen gibt es in Ihrer Studie?
 
 ```{r, results="asis", eval=include_solution}
 cat(solution_header())
 
-cat("Mögliche Lösungen:\\\\ \\n")
+cat("Mögliche Lösungen: \n\n")
 
-cat("- Hat die Art der Belohnung (materiell vs. verbal vs. keine Belohnung) einen Einfluss auf die Motivation von Schüler:innen in der Schule?
+cat("- Hat die Art der Belohnung (materiell vs. verbal vs. keine Belohnung) einen Einfluss auf die Motivation von Schüler:innen in der Schule? Dies entspricht 3 Faktorstufen.
 
-- Beeinflusst das Vorhandensein von Hintergrundgeräuschen (laut vs. leise vs. keine Geräusche) die Konzentrationsfähigkeit von Schüler:innen bei einer Aufgabe?
+- Beeinflusst das Vorhandensein von Hintergrundgeräuschen (klassische Musik vs. weißes Rauschen vs. Heavy Metal vs. keine Geräusche) die Konzentrationsfähigkeit von Schüler:innen bei einer Aufgabe? Dies entspricht 4 Faktorstufen.
 
-- Beeinflusst die Art der Ablenkung (visuell vs. auditiv vs. keine Ablenkung) die Gedächtnisleistung bei einer bestimmten Aufgabe?")
+- Beeinflusst die Art der Ablenkung (visuell vs. auditiv vs. keine Ablenkung) die Gedächtnisleistung bei einer bestimmten Aufgabe? Dies entspricht 3 Faktorstufen.")
 ``` 
+
+
+\begin{tcolorbox}[
+  colback=blue!5,
+  colframe=blue!50,
+  title=Erinnerung,
+  sharp corners,
+  boxrule=0.5pt
+]
+
+In der ANOVA testen wir, ob sich mindestens ein Gruppenmittelwert
+von den anderen unterscheidet; nicht, welche Gruppen sich unterscheiden. Dafür wären Post-hoc-Tests erforderlich.
+
+\end{tcolorbox}

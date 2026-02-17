@@ -52,22 +52,26 @@ generate_anova <- function(av.name = "",
     wdat<-pivot_wider(dat,names_from = 2, values_from=1)  
 
   }
-  
+
   cmns <- round(colMeans(wdat[,-1]), 2)
 
   xm <- round(mean(dat$av),2)
   
   qs_tot <- round(
     sum(
-      round((dat$av-xm)^2,2)
+      (dat$av-xm)^2
     )
     ,2)
-  qs_btw <- num.obs.per.fac * round(
+  qs_btw <- round(num.obs.per.fac *
     sum(
-      round((cmns-xm)^2,2)
+      (cmns-xm)^2
     )
     ,2)
-  qs_wth <- qs_tot - qs_btw
+  qs_wth <- 
+    round(
+      sum(  (rep(cmns,each=num.obs.per.fac)-dat$av)^2 )
+    )
+    #qs_tot - qs_btw
   
   
   
@@ -123,12 +127,15 @@ qs_solution <- function(x, id) {
   #                 round(sum(x$factor_means-x$grand_mean)^2,2)
   #                 )
   
+  st = paste0g( "(", rep(x$factor_means,each=x$nz) ,"-", x$dat$av,")^2",collapse="+")
+  strsol4 = paste0("QS_{inn} = ", st, "=", x$qs_wth)
+  
   strsol3 = paste0("QS_{inn} = QS_{tot}-QS_{zw}=",x$qs_tot,"-",x$qs_btw,"=", x$qs_wth)
   
-  #paste(strsol, strsol2, strsol3, collapse="\newline")
   if (id==1) return(strsol)
   else if (id==2) return (strsol2)
   else if (id==3) return (strsol3)
+  else if (id==4) return (strsol4)
   else return("Unbekannte Quadratsumme angefordert!");
 }
 
@@ -136,6 +143,7 @@ mqs_solution <- function(x) {
 
   paste( "\\\\",
          paste0("MQS_{zw} = \\frac{ ", x$qs_btw, "}{",x$df1,"}=",x$mqs_btw),"\\\\",
+         "\\\\ \n",
          paste0("MQS_{inn} = \\frac{ ", x$qs_wth, "}{",x$df2,"}=",x$mqs_wth)
   )
 }
@@ -152,7 +160,7 @@ hypothesis_solution <- function(x) {
 
 hypothesis_solution_h1 <- function(x) {
   
-  paste("H_1: ", paste(paste0("\\mu_i \\ne \\mu_j für ein i \\in \\{1\\ldots",x$J,"\\}"), collapse="=" )  )
+  paste("H_1: ", paste(paste0("\\mu_i \\ne \\mu_j \\mathrm{\\,für\\,ein\\,} i,j \\in \\{1\\ldots",x$J,"\\}"), collapse="=" )  )
 }
 
 
