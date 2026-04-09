@@ -7,6 +7,8 @@ output:
 params:
   include_solution: true
 header-includes:
+  - \usepackage[T1]{fontenc}
+  - \usepackage{booktabs}
   - \usepackage[ngerman]{babel}
   - \usepackage{caption}
   - \captionsetup[table]{position=bottom}

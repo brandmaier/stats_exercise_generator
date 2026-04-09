@@ -8,8 +8,48 @@ params:
   include_solution: yes
 mainfont: SourceSansPro
 header-includes:
-   - \usepackage[T1]{fontenc}
-   - \usepackage{booktabs}
+  - \usepackage[T1]{fontenc}
+  - \usepackage{booktabs}
+  - \usepackage[ngerman]{babel}
+  - \usepackage{caption}
+  - \captionsetup[table]{position=bottom}
+  - \usepackage{tcolorbox}
+  - \usepackage{xcolor}
+  - \usepackage{setspace}
+  - \setstretch{1.05}
+  - \setlength{\parskip}{6pt}
+  - \setlength{\parindent}{0pt}
+  - \usepackage{microtype}
+  - \usepackage{fancyhdr}
+  - \pagestyle{fancy}
+  - \fancyhf{}
+  - \lhead{Statistik II}
+  - \chead{Lineare Regression}
+  - \rhead{Prof. Brandmaier}
+---
+
+\begin{tcolorbox}[
+  colback=gray!8,
+  colframe=gray!60,
+  title=Ziel und Voraussetzungen,
+  sharp corners,
+  boxrule=0.5pt
+]
+Dieses Arbeitsblatt dient dazu, Rechenaufgaben zur Regression zu üben.
+
+\textbf{Voraussetzungen:}
+\begin{itemize}
+\item Verständnis der einfachen und multiplen linearen Regression 
+\item Grundlagen des Hypothesentestens
+\end{itemize}
+\textbf{Sie üben heute:}
+\begin{itemize}
+\item Regressionskonstante und -gewicht in der einfachen linearen Regression berechnen
+\item Modellgütemaße berechnen
+\item Ein Regressionsmodell interpretieren
+\end{itemize}
+\end{tcolorbox}
+
 ---
 
 ```{r setup, include=FALSE, eval=TRUE, echo=FALSE}
@@ -71,11 +111,11 @@ cat("Für eine Person mit einer Offenheit von 0 Skalenpunkten, sagen wir einen b
 # Aufgabe 2
 
 ```{r}
-set.seed(2459)
-N <- 80
+set.seed(11245439)
+N <- 50
 anz_freunde <- rnorm(N)
 anz_follower <- rnorm(N)
-happy <- anz_freunde*0.5+anz_follower*0.3+rnorm(N,0,0.5)
+happy <- 0+anz_freunde*0.5+anz_follower*0.3+rnorm(N,0,0.8)
 dat <- data.frame(anz_freunde, anz_follower, happy)
 model <- generate_multipleregression(lm(happy~.,dat))
 ```
@@ -98,6 +138,7 @@ Die Modellgüte betrug $R^2=`r mr2 `$.
 
 a) Was bedeuten Regressionskonstante und Regressionsgewichte hier inhaltlich?
 b) Inwieweit sind hier kausale Aussagen möglich?
+c) Entscheiden Sie einmal anhand der gegebenen $p$-Werte, ob die Regressionsgewichte und -konstante jeweils auf einem 1%-Signifikanzniveau von Null verschieden ist?
 
 ```{r, eval=include_solution, results="asis"}
 solution_header()

@@ -184,7 +184,7 @@ anova_in_R <- function(x) {
 data_plot <- function(x) {
   #  ggplot(dat, aes(x=interaction(a,b),y=av))+geom_violin()+geom_boxplot(width=0.1)+geom_jitter(width=.01)+ggx::gg_("wrap labels on x-axis")
   gp <- ggplot(x$dat, aes(x = 1, y = av)) +
-    geom_boxplot(width = 0.1) + geom_jitter(width = .01) +
+    geom_boxplot(width = 0.1, alpha=.8) + geom_jitter(width = .01,alpha=1) +
     facet_wrap( ~ a + b) +
     ylab(x$av.name) + xlab("") +
     theme(
@@ -352,9 +352,9 @@ dataset <- function(x) {
 }
 
 #' @export
-table_of_means <- function(x) {
+table_of_means <- function(x, round=3) {
   temporary_data <-
-    x$dat %>% group_by(a, b) %>% summarise(m = mean(av)) %>% add_column(id =
+    x$dat %>% group_by(a, b) %>% summarise(m = mean(av) ) %>% add_column(id =
                                                                           1:(x$p * x$q))
   temporary_data <- temporary_data %>% pivot_wider(names_from = a,
                                                    values_from = m,
@@ -374,8 +374,8 @@ table_of_means <- function(x) {
   temporary_data
 }
 
-show_table_of_means <- function(x, booktabs=TRUE) {
-  knitr::kable(table_of_means(x), booktabs=booktabs)
+show_table_of_means <- function(x, booktabs=TRUE, round=3) {
+  knitr::kable(table_of_means(x, round=round), booktabs=booktabs)
 }
 
 #' @export

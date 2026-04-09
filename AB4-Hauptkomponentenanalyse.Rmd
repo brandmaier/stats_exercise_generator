@@ -8,9 +8,48 @@ params:
   include_solution: true
 mainfont: SourceSansPro
 header-includes:
-   - \usepackage[T1]{fontenc}
-   - \usepackage{booktabs}
+  - \usepackage[T1]{fontenc}
+  - \usepackage{booktabs}
+  - \usepackage[ngerman]{babel}
+  - \usepackage{caption}
+  - \captionsetup[table]{position=bottom}
+  - \usepackage{tcolorbox}
+  - \usepackage{xcolor}
+  - \usepackage{setspace}
+  - \setstretch{1.05}
+  - \setlength{\parskip}{6pt}
+  - \setlength{\parindent}{0pt}
+  - \usepackage{microtype}
+  - \usepackage{fancyhdr}
+  - \pagestyle{fancy}
+  - \fancyhf{}
+  - \lhead{Statistik II}
+  - \chead{Hauptkomponentenanalyse}
+  - \rhead{Prof. Brandmaier}
 ---
+
+\begin{tcolorbox}[
+  colback=gray!8,
+  colframe=gray!60,
+  title=Ziel und Voraussetzungen,
+  sharp corners,
+  boxrule=0.5pt
+]
+Dieses Arbeitsblatt dient dazu, Rechenaufgaben zur Hauptkomponentenanalyse zu üben.
+
+\textbf{Voraussetzungen:}
+\begin{itemize}
+\item Verständnis von Regression und erklärter Varianz
+\item Grundlagen der Hauptkomponentenanalyse
+\end{itemize}
+\textbf{Sie üben heute:}
+\begin{itemize}
+\item Kommunalität und Eigenwerte berechnen
+\item Interpretation von Hauptkomponenten
+\item Bestimmung der Anzahl der Hauptkomponenten
+\end{itemize}
+\end{tcolorbox}
+
 
 ```{r setup, include=TRUE, results = "hide", eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 library(tidyverse)
@@ -34,7 +73,7 @@ empty_str <- "\\ "
 
 ## Aufgabe 1
 
-Ein Fragebogen mit fünf Likert-Items wurde in einer Stichprobe der Größe 2800 erhoben. Die Ergebnisse der Befragung wurden mit einer Hauptkomponentenanalyse untersucht. Die folgende Tabelle enthält die unrotierte Lösung:
+Ein Fragebogen mit fünf Likert-Items wurde in einer Stichprobe von 2800 Personen erhoben. Die Ergebnisse der Befragung wurden mit einer Hauptkomponentenanalyse untersucht, um herauszufinden, ob die Urteile auf wenige zugrundeliegende Faktoren zurückgeführt werden können. Die folgende Tabelle enthält die unrotierte Lösung:
 
 ```{r aufgabe1, message=FALSE}
 
@@ -66,11 +105,15 @@ colnames(df) <- paste0("HK",1:2)
 knitr::kable(df,caption = "Faktorladungsmatrix",booktabs=TRUE ) #%>% kableExtra::kable_styling(latex_options = "hold_position")
 ```
 
-a) Berechnen Sie die Kommunalitäten und die Eigenwerte.
+Führen Sie folgende Aufgaben der Reihe nach aus:
+
+a) Berechnen Sie die Kommunalitäten aller Items und die Eigenwerte aller Hauptkomponenten.
 
 b) Wieviel Varianz wird durch die erste Hauptkomponente erklärt? Und wieviel wird durch die ersten beiden gemeinsam erklärt?
 
 c) Wie könnte man die Hauptkomponenten inhaltlich aussagekräftig benennen?
+
+d) In JASP ist von der "Uniqueness" der Items die Rede? Wie verhält sich diese zur Kommunalität?
 
 ```{r results="asis", eval=include_solution}
 cat(solution_header())
@@ -78,27 +121,44 @@ cat(solution_header())
 dfx <- rbind(df, Eigenwerte=ev)
 dfx <- cbind(dfx, Kommunalitäten=c(communality,""))
 
+section("1. Vollständige Lösung für Kommunalitäten und Eigenwerte")
+
 knitr::kable(dfx, caption="Ladungsmatrix mit Kommunalitäten und Eigenwerten", booktabs=TRUE) #%>% kableExtra::kable_styling(latex_options = "hold_position")
+```
+
+```{r results="asis", eval=include_solution}
+section("2. Erklärte Varianz")
+
 
 cat("Erklärte Varianz durch die erste Komponente: ", ev[1],"/",nvar,"=", r2[1],"%.\n")
 cat("Erklärte Varianz durch die ersten beiden Komponenten: (", ev[1],"+",ev[2],")/",nvar,"=", sum(r2),"%.\n")
+```
+
+```{r results="asis", eval=include_solution}
+section("3. Benennung der Hauptkomponenten")
+
 
 cat("Die erste Hauptkomponente könnte man mit 'Gewissenhaftigkeit' und die zweite Hauptkomponente mit 'Verträglichkeit'  bezeichnen, wenn man im Fünf-Faktor-Modell der Persönlichkeit bleibt (tatsächlich wird das letzte Item eigentlich der Dimension 'Extraversion' zugerechnet). Andere Bezeichnungen sind natürlich möglich.")
 ```
 
 
-## Aufgabe 2
+## Aufgabe 2 - Reduktion
 
-a) Was ist die wesentliche Kritik an der Verwendung des Scree-Tests zur Bestimmung der Anzahl der Hauptkomponenten?
+Wird eine Hauptkomponentenanalyse eingesetzt, betrifft eine wesentliche Entscheidung die Auswahl der Anzahl der Hauptkomponenten. Dies ist eine Entscheidung, die oft aufgrund der Daten selbst getroffen wird.
 
-```{r results="asis", eval=include_solution}
-cat(solution_header())
-cat("Das Kriterium ist unscharf definiert.")
-```
+Beantworten Sie zu diesem Thema folgende Fragen:
 
-b) Nennen Sie ein weiteres Kriterium zur Bestimmung der Anzahl der Hauptkomponenten.
+a) Was ist der Scree-Test und was ist die wesentliche Kritik an dessen Verwendung zur Bestimmung der Anzahl der Hauptkomponenten?
 
 ```{r results="asis", eval=include_solution}
 cat(solution_header())
-cat("Kaiser-Gutmann-Kriterium oder Parallelanalyse.")
+cat("Im Eigenwert-Diagramm wird ein Knick gesucht. Dieser Knickpunkt bestimmt dann die Anzahl der zu behaltenden Hauptkomponenten. Das Kriterium ist unscharf definiert. Es ist unklar, wo der sogenannte 'Knick' i m Diagramm sein soll.")
 ```
+
+b) Nennen Sie ein weiteres Kriterium zur Bestimmung der Anzahl der Hauptkomponenten. Wie wird es durchgeführt?
+
+```{r results="asis", eval=include_solution}
+cat(solution_header())
+cat("Kaiser-Gutmann-Kriterium (man behält alle Hauptkomponenten mit Eigenwert größer als 1) oder Parallelanalyse (durch ein Simulationsverfahren werden zufällige Datensätze mit identischer Anzahl Personen und Variablen erzeugt und dann werden die entstehenden Eigenwerte gemittelt. Diese dienen dann als eine Grundlage zur Entscheidung, ob ein bestimmter beobachteter Eigenwert dann größer ist als der, den man bei zufälligen, unstrukturierten Daten erwarten würde.")
+```
+

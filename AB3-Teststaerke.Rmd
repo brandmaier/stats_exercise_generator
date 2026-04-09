@@ -9,8 +9,24 @@ params:
   include_solution: true
 mainfont: SourceSansPro
 header-includes:
-   - \usepackage[T1]{fontenc}
-   - \usepackage{booktabs}
+  - \usepackage[T1]{fontenc}
+  - \usepackage{booktabs}
+  - \usepackage[ngerman]{babel}
+  - \usepackage{caption}
+  - \captionsetup[table]{position=bottom}
+  - \usepackage{tcolorbox}
+  - \usepackage{xcolor}
+  - \usepackage{setspace}
+  - \setstretch{1.05}
+  - \setlength{\parskip}{6pt}
+  - \setlength{\parindent}{0pt}
+  - \usepackage{microtype}
+  - \usepackage{fancyhdr}
+  - \pagestyle{fancy}
+  - \fancyhf{}
+  - \lhead{Statistik II}
+  - \chead{Einfaktorielle Varianzanalyse}
+  - \rhead{Prof. Brandmaier}
 ---
 
 ```{r setup, include=TRUE, results = "hide", eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
@@ -25,19 +41,45 @@ include_solution <- params$include_solution
 empty_str <- "\\ "
 ```
 
+\begin{tcolorbox}[
+  colback=gray!8,
+  colframe=gray!60,
+  title=Ziel und Voraussetzungen,
+  sharp corners,
+  boxrule=0.5pt
+]
+Dieses Arbeitsblatt dient dazu, sich mit den Grundlagen von statistischen Entscheidungen und dem Konzept der Teststärke zu beschäftigen.
+
+\textbf{Voraussetzungen:}
+\begin{itemize}
+\item Kenntnis der Grundidee von Teststärkeanalyse
+\item Grundlagen des Hypothesentestens
+\end{itemize}
+\textbf{Sie üben heute:}
+\begin{itemize}
+\item Welche Arten der Teststärkenanalyse gibt es?
+\item Was sind Teststärke, kritischer Wert, Signifikanzniveau?
+\end{itemize}
+\end{tcolorbox}
+
 ## Aufgabe 1
 
 Eine Psychologin plant eine Studie zur Selbstregulationsfähigkeit. Dabei soll untersucht werden, ob ein Selbstregulations-Coaching wirksam ist. Die abhängige Variable ist ein Fragebogen zur Selbstregulationsfähigkeit, der einen Wert auf einer metrischen Skala ergibt. Es werden die Mittelwerte zweier Gruppen (Treatment- und Kontrollgruppe) mittels t-Test verglichen. Die Stichprobengröße ist 100. Das Signifikanzniveau ist 5%. 
 
-- Welche zusätzlichen Annahmen sind nötig, um auf Basis dieser Informationen eine Teststärkenanalyse durchzuführen?
+a) Was bedeutet das Signifikanzniveau?
 
-- Wenn man das Signifikanzniveau von 5% auf 1% senkt, welche Auswirkung hat das auf die zu erwartende Teststärke?
+b) Welche zusätzlichen Annahmen sind nötig, um auf Basis dieser Informationen eine Teststärkenanalyse durchzuführen? Welche der vier Teststärkeanalysen könnte man hier dann durchführen?
+
+c) Wenn man das Signifikanzniveau von 5% auf 1% senkt, welche Auswirkung hat das auf die zu erwartende Teststärke?
 
 ```{r ls, eval=include_solution, results="asis"}
   solution_header()
-cat("Es gibt hier zwei Möglichkeiten für eine Teststärkenanalyse. Festgelegt sind bei der Studie das Signifikanzniveau und die Stichprobengröße. Damit verbleiben zwei freie Größen, nämlich die Effektgröße und die Teststärke. Entweder kann man durch Festlegung einer angenommenen Effektstärke die Teststärke schätzen (sog. a-priori Teststärkenanalyse) oder man kann durch Festlegung der Stichprobengröße die detektierbare Effektgröße schätzen (sog. Sensitivitätsanalyse).")
 
-cat("\n\nSenkt man das Signifikanzniveau, sinkt die statistische Teststärke. Senkt man im Beispiel das Signifikanzniveau auf 1%, sinkt dadurch die Wahrscheinlichkeit eines Alpha-Fehlers, allerdings wird der Test strenger, d.h. die statistische Teststärke sinkt.")
+cat("a) Das Signifikanzniveau bestimmt den kritischen Wert, anhand dessen wir entscheiden, ob wir eine bestimmte Nullhypothese verwerfen oder beibehalten. Das Signifikanzniveau beschränkt die Fehler der 1.Art (auch $\\alpha$-Fehler), d.h., die Wahrscheinlichkeit, eine Nullhypothese abzulehnen wenn diese wahr ist.")
+
+cat("\n\n b) Es gibt hier zwei Möglichkeiten für eine Teststärkenanalyse. Festgelegt sind bei der Studie das Signifikanzniveau und die Stichprobengröße. Damit verbleiben zwei freie Größen, nämlich die Effektgröße und die Teststärke. Entweder kann man durch Festlegung einer angenommenen Effektstärke die Teststärke schätzen (sog. a-priori Teststärkenanalyse) oder man kann durch Festlegung der Stichprobengröße die detektierbare Effektgröße schätzen (sog. Sensitivitätsanalyse).")
+
+cat("\n\n c)Senkt man das Signifikanzniveau, sinkt die statistische Teststärke. Senkt man im Beispiel das Signifikanzniveau auf 1%, sinkt dadurch die Wahrscheinlichkeit eines Alpha-Fehlers. Das ist vorteilhaft in dem Sinne, dass es unwahrscheinlicher wird eine Nullhypothese fälschlich abzulehnen. ")
 ```
 
 ## Aufgabe 2

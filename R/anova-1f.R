@@ -185,7 +185,7 @@ data_table <- function(x, ...) {
 
 f_crit <- function(x) {
   
-  paste0("Der kritische Wert einer *F*-Verteilung mit ",x$df1, " Zählerfreiheitsgraden und ", x$df2, " Nennerfreiheitsgraden und einem Signifikanzniveau von ",x$alpha*100,"% ist ", x$Fcrit,".")
+  paste0("Der kritische Wert einer *F*-Verteilung mit ",x$df1, " Zählerfreiheitsgraden und ", x$df2, " Nennerfreiheitsgraden und einem Signifikanzniveau von ",x$alpha*100,"% ist ", x$Fcrit,". ")
   
 }
 
@@ -193,6 +193,17 @@ effect_solution <- function(x) {
  
   paste0("\\hat{\\eta}^2=\\frac{",x$qs_btw,"}{",x$qs_tot,"}=",x$eta2)
   
+}
+
+effect_size_in_words <- function(x, type=c("omega","r","eta2")) {
+  x <- abs(x)
+  if (type=="omega"){ # 0.1 0.3 0.5
+    if (x <= 0.2) return("klein") else if (x<=0.4) return("mittel") else return("groß")
+  } else if (type=="eta2") {
+    # 0.01, 0.06, 0.14
+    if (x <= 0.035) return("klein") else if (x <= 0.1) return("mittel") else return("groß")
+  }
+  return("UNDEFINED EFFECT SIZE")
 }
 
 group_means_solution <- function(x) {

@@ -100,10 +100,10 @@ return(mat)
 }
 
 
-generate_multipleregression <- function(lm) {
+generate_multipleregression <- function(x) {
   
-  sm <- summary(lm)
-  result <- list(lm=lm, r2 = sm$r.squared, adjr2 = sm$adj.r.squared,
+  sm <- summary(x)
+  result <- list(lm=x, r2 = sm$r.squared, adjr2 = sm$adj.r.squared,
                  n=length(sm$residuals), k = nrow(sm$coefficients)-1)
   #class(result) <- "multreg"
   return(result)
@@ -116,11 +116,13 @@ library(kableExtra)
 
 coeff_table <- function(x, booktabs=TRUE) {
   
+  sm <- summary(x$lm)
+  
   ncoeff <- x$k
   pres_data <- data.frame(#Modell=c(1,rep("",x$k)),
                           `Schätzer`= round( coefficients(x$lm), 3),
-                          `Std. Fehler`= round( sm$coefficients[,2], 3),
-                          T = round( sm$coefficients[,3], 3),
+                          `Std Fehler`= round( sm$coefficients[,2], 3),
+                          t = round( sm$coefficients[,3], 3),
                           p = round( sm$coefficients[,4],3))
   
   rownames(pres_data)[1] <- "Konstante"

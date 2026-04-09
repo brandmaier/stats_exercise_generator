@@ -9,8 +9,24 @@ params:
   include_solution: true
 mainfont: SourceSansPro
 header-includes:
-   - \usepackage[T1]{fontenc}
-   - \usepackage{booktabs}
+  - \usepackage[T1]{fontenc}
+  - \usepackage{booktabs}
+  - \usepackage[ngerman]{babel}
+  - \usepackage{caption}
+  - \captionsetup[table]{position=bottom}
+  - \usepackage{tcolorbox}
+  - \usepackage{xcolor}
+  - \usepackage{setspace}
+  - \setstretch{1.05}
+  - \setlength{\parskip}{6pt}
+  - \setlength{\parindent}{0pt}
+  - \usepackage{microtype}
+  - \usepackage{fancyhdr}
+  - \pagestyle{fancy}
+  - \fancyhf{}
+  - \lhead{Statistik II}
+  - \chead{Zweifaktorielle Varianzanalyse}
+  - \rhead{Prof. Brandmaier}
 ---
 
 ```{r setup, include=TRUE, results = "hide", eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
@@ -30,44 +46,96 @@ empty_str <- "\\ "
 
 ```
 
-
+\begin{tcolorbox}[
+  colback=gray!8,
+  colframe=gray!60,
+  title=Ziel und Voraussetzungen,
+  sharp corners,
+  boxrule=0.5pt
+]
+Sie üben heute:
+\begin{itemize}
+\item die Struktur einer zweifaktoriellen Varianzanalyse erklären
+\item Nullhypothesen für Haupteffekte und Interaktionen formulieren
+\item Freiheitsgrade, mittlere Quadratsummen und F-Werte berechnen
+\item Ergebnisse statistisch und inhaltlich interpretieren
+\item Interaktionen beschreiben und unterscheiden
+\item (Partielle) Effektstärken $\eta^2_p$ berechnen und einordnen
+\end{itemize}
+Voraussetzungen:
+\begin{itemize}
+\item Verständnis der einfaktoriellen und zweifaktoriellen ANOVA
+\item Kenntnisse zu Varianzzerlegung und Quadratsummen
+\item Grundwissen zu Hypothesentests ($\alpha$-Niveau, F-Verteilung)
+\item Umgang mit Mittelwerttabellen und Diagramme
+\end{itemize}
+\end{tcolorbox}
 
 Im Folgenden finden Sie Übungsaufgaben zur zweifaktoriellen Varianzanalyse. Runden Sie auf zwei Nachkommastellen (auch Zwischenergebnisse). Wenn die Aufgabenstellung nicht davon abweicht, gilt ein Signifikanzniveau von $5\%$.
 
-# Aufgabe 1
+# Aufgabe 1 - ANOVA rechnerisch durchführen
 ```{r}
-nz <- 20
+nz <- 5
 set.seed(985)
 aov <- generate_anova_2f(av.name="Symptomschwere",
-                  factor.a.levels = c("Psychotherapie","Psychopharmaka"),
-                  factor.a.name = "Therapieform", factor.b.name = "Diagnose",
-                  factor.b.levels = c("Depression","Angststörung","PTSD"),
+                  factor.a.levels = c("Mit Psychopharmaka","Ohne Psychopharmaka"),
+                  factor.a.name = "Therapieform", factor.b.name = "Therapiedauer",
+                  factor.b.levels = c("1 Kurz","2 Mittel","3 Lang"),
                   obs_min = 0, obs_max = 20, nz = nz, obs_round = 2,
-                  cellmeans_by_row = c(16, 7, 9, 
-                                       6, 9, 19),noise_sd = 2)
+                  cellmeans_by_row = c(16, 10, 4, 
+                                       14, 12, 10),noise_sd = 2)
+
+n <- 2*3*nz
 ```
 
-In einer (fiktiven) Studie wurde untersuht, inweit sich die Symptomschwere bei Personen mit verschiedenen Diagnosen (Angststörung, PTSD, Depression) unterscheidet in Abhängigkeit davon, ob eine Psychotherapie durchgeführt wurde oder ob lediglich Psychopharmaka verschrieben wurden (Es handelt sich hier um fikitive Daten). Die beiden Faktoren *A: Therapieform* (2 Stufen) und *Faktor B: Diagnose* (3 Stufen) wurden zwischen Personen variiert, daher wurde eine zweifaktorielle Varianzanalyse (ohne Messwiederholung) für die Analyse der Beobachtungen eingesetzt. Insgesamt wurden hier $n=`r aov$n`$ Personen mit einem balancierten Design untersucht. Gegeben sind folgende Quadratsummen:
+In einer Studie wurde untersucht, wie sich die Symptomschwere bei Personen mit einer Angststörung nach einer Behandlung verändert. Dabei interessierte insbesondere, ob der Behandlungserfolg von der Therapieform und der Dauer der Behandlung abhängt.
+
+Forschungsfrage:
+Unterscheiden sich die mittleren Symptomwerte in Abhängigkeit von Therapieform und Therapiedauer, und gibt es Hinweise darauf, dass die Wirksamkeit der Therapie von der Dauer abhängt?
+
+Insgesamt wurden hier $n=`r aov$n`$ Personen mit einem balancierten Design untersucht.
+Faktor A ist die Therapieform mit den zwei Stufen Psychotherapie mit oder ohne psychopharmakologische Unterstützung. Faktor B ist die Therapiedauer mit den drei Stufen kurz (4 Wochen), mittel (8 Wochen) oder lang (12 Wochen).
+
+Die abhängige Variable ist die Symptomschwere nach der Behandlung (höhere Werte = stärkere Symptome).
+
+<!--
+
+-->
+
+Folgende Grafik zeigt die Verteilung der Beobachtungen für jede Faktorstufenkombination. Die Punkte entsprechen den einzelnen Werten der Symptomschwere der Personen. Die Verteilung innerhalb jeder Faktorstufenkombination ist als Boxplot dargestellt.
+
+```{r message=FALSE, warning=FALSE}
+data_plot(aov)
+```
+
+Was bedeutet eine Interaktion in diesem Design? Finden Sie in der Abbildung (deskriptiv) bereits Hinweise auf eine mögliche Interaktion?
+
+
+```{r results="asis", message=FALSE, warning=FALSE, eval=include_solution}
+cat("_Lösung:_\n")
+
+cat("Eine Interaktion bedeutet allgemein, dass der Effekt des einen Faktors von dem anderen Faktor abhängig ist. In der Praxis bedeutet das, dass die Betrachtung eines Faktors alleine nicht ausreicht, um dessen Wirkung zu beschreiben. Konkret kann eine Interaktion im vorliegenden Design bedeuten, dass sich die beiden Therapieformen darin unterscheiden, wie sehr die zunehmende Therapiedauer die Symptome lindert. Würde beispielsweise eine Therapieform unabhängig von der Dauer dieselbe Wirkung zeigen, die andere aber mit zunehmender Dauer an Wirkung gewinnen, wäre dies eine Interaktion. Wenn wir uns hier die Mediane der Boxplots ansehen, sehen wir dass die Therapie mit Psychopharmaka eine stärkere Symptomreduktion mit zunehmender Dauer zeigt als die Therapie ohne Psychopharmaka. Keine Interaktion würde bedeuten, dass die Reduktion der Symptome in beiden Therapien über die zunehmende Dauer genau parallel ist.")
+```
+
+# Aufgabe 2 - ANOVA rechnerisch durchführen
+
+
+Führen Sie eine zweifaktorielle Varianzanalyse auf Basis der vorherigen Angaben vollständig durch.
+
+
+Gegeben sind folgende Quadratsummen:
 
 ```{r results="asis"}
 cat(paste0("$QS_A=",aov$qs_A,"$, $QS_B=",aov$qs_B,"$,  $QS_{AxB}=",aov$qs_AxB,"$, $QS_{inn}=",aov$qs_inn,"$\n"))
 ```
 
-In folgender Tabelle finden sich die Mittelwerte aller Faktorstufenkombinationen sowie die Randmittelwerte. In der rechten unteren Zelle befindet sich der Gesamtmittelwert.
+a) Formulieren Sie die drei relevanten Nullhypothesen in Worten.
+b) Bestimmen Sie die Freiheitsgrade aller Quadratsummen.
+c) Berechnen Sie die mittleren Quadratsummen.
+d) Berechnen Sie die F-Werte.
+e) Treffen Sie eine Signifikanzentscheidung für die Haupteffekte und die Interaktion.
+f) Formulieren Sie einen Ergebnisbericht.
 
-```{r message=FALSE, warning=FALSE}
-
-show_table_of_means(aov)
-```
-
-Folgende Grafik dient rein der Anschauung und zeigt die Verteilung der Beobachtungen für jede Faktorstufenkombination. Die Punkte entsprechen den einzelnen Werten der Symptomschwere der Personen. Die Verteilung innerhalb jeder Faktorstufenkombination ist als Boxplot dargestellt.
-
-```{r message=FALSE, warning=FALSE}
-
-data_plot(aov)
-```
-
-Führen Sie eine zweifaktorielle Varianzanalyse vollständig durch (beachten Sie, dass die Quadratsummen schon gegeben sind). Formulieren Sie die Nullypothesen (in Worten) und testen Sie die Haupteffekte und Interaktion auf Signifikanz, indem Sie die entsprechenden F-Werte berechnen und gegen ihre jeweiligen kritischen Werte testen. Formulieren Sie Antwortsätze für Ihre statistische Entscheidung.
 
 ```{r results="asis"}
 cat(f_crit(aov, type="A"))
@@ -78,18 +146,32 @@ cat(f_crit(aov, type="AxB"))
 
 cat("_Lösung:_\n\n")
 cat("\n")
+
+section("1. Hypothesen aufstellen")
+
 cat("Wir testen drei Nullhypothesen  :\n\n $H0_A$: Es gibt keinen Haupteffekt von  Therapieform\n\n $H0_B$: Es gibt keinen Haupteffekt von Diagnose.\n\n $H0_{AxB}$: Es gibt keine Wechselwirkung von Therapieform und Diagnose.\n\n")
+
+section("2. Quadratsummen berechnen")
+
+cat("Dieser Schritt entfällt, da die Quadratsummen in der Aufgabe gegeben waren.\n\n")
+
+section("3. Freiheitsgrade bestimmen")
 
 wrap_math_align(solution_df(aov))
 cat("\n")
+section("4. Berechnung der mittleren Quadratsummen")
+
 wrap_math_flalign(solution_mqs(aov))
 cat("\n")
+section("5. Berechnung der empirischen Prüfgröße")
 wrap_math_flalign(solution_f(aov))
 cat("\n")
 
+section("6. Statistische Entscheidung treffen")
+
 cat("Kritischer Wert für Haupteffekt des Faktors A - Therapieform:\n")
 cat(f_crit(aov,type="A"))
-cat("Kritischer Wert für Haupteffekt des Faktors B - Diagnose:\n")
+cat("Kritischer Wert für Haupteffekt des Faktors B - Therapiedauer:\n")
 cat(f_crit(aov,type="B"))
 cat("Kritischer Wert für Wechselwirkung:\n")
 cat(f_crit(aov,type="AxB"))
@@ -98,14 +180,21 @@ cat("Es entsteht folgende Ergebnistabelle (hier auch mit p-Werten, die Sie anhan
 
 result_table(aov) 
 
-cat("Der Haupteffekt von Diagnose und die Wechselwirkung sind signfikant auf einem 5%-Niveau. Der Haupteffekt von Therapieform ist nicht signifikant auf einem 5%-Niveau.")
+cat("Der Haupteffekt von Therapiedauer und die Wechselwirkung beider Faktoren sind signfikant auf einem 5%-Niveau. Wir verwerfen die Nullhypothese $H_{0B}$ und $H_{0A\\times B}$. Der Haupteffekt von Therapieform ist nicht signifikant auf einem 5%-Niveau. Wir behalten die Nullhypothese $H_{0A}$ bei.")
 
 #knitr::kable(anova_in_R(aov))
 ```
 
-# Aufgabe 2
+# Aufgabe 3
 
-Wir bleiben bei dem Beispiel aus Aufgabe 1. Benutzen Sie die Angaben aus der Mittelwertstabelle in Aufgabe 1, um ein Interaktionsdiagramm zu zeichnen.  Wie nennt man die Interaktionsart und was bedeutet sie für die globale Interpretierbarkeit der Haupteffekte? Welche Aussage über die Haupteffekte können wir treffen?
+Wir bleiben bei dem Beispiel aus Aufgabe 1. In folgender Tabelle finden sich die Mittelwerte  aller Faktorstufenkombinationen sowie die Randmittelwerte. In der rechten unteren Zelle befindet sich der Gesamtmittelwert.
+
+```{r message=FALSE, warning=FALSE}
+
+show_table_of_means(aov, round=2)
+```
+
+Benutzen Sie die Angaben aus der Mittelwertstabelle in Aufgabe 1, um ein Interaktionsdiagramm zu zeichnen.  Wie nennt man die Interaktionsart und was bedeutet sie für die globale Interpretierbarkeit der Haupteffekte? Welche Aussage über die Haupteffekte können wir treffen?
 
 ```{r message=FALSE, warning=FALSE}
 interaction_plot(aov, empty=TRUE)
@@ -116,21 +205,23 @@ interaction_plot(aov, empty=TRUE)
 cat("_Lösung:_\n")
 interaction_plot(aov)
 
-cat("Es handelt sich hierbei um eine disordinale Interaktion. Beide Haupteffekte sind nicht global interpretierbar. Es gibt einen signifikanten Haupteffekt von Diagnose. Wenn man also die Therapieform außer acht lässt (genaugenommen über die möglichen Therapien mittelt), können wir sagen, dass sich Personen mit verschiedenen Diagnosen in der Symptomschwere unterscheiden. Da es aber die signifikante disordinale Interaktion gibt, wissen wir, dass diese Aussage nicht innerhalb jeder Stufe des anderen Faktors (Therapieform) gilt. Wenn man bspw. PTSD und die Depression vergleicht, sieht man, dass die beste Therapieform jeweils eine andere für die jeweilige Diagnosen ist (vgl. die rechts Abbildung im Interaktionsdiagram). ")
+cat("Es handelt sich hierbei um eine semidisordinale Interaktion. Nur der Haupteffekt von Therapiedauer ist global interpretierbar (da sich die Linien auf der linken Seite des Diagramms nicht überschneiden). Rein deskriptiv ist die Kurzzeittherapie weniger wirksam als die mittlere und diese weniger als die Langzeittherapie. Diese Aussage können wir global machen, also unabhängig von der Therapieform. Anders sieht es aus, wenn wir die Effekte der Therapieformen vergleichen (rechts). Die Aussage, welche Therapie die bessere ist, ist nicht global möglich, sondern hängt davon ab, wie lange die Therapie dauert. Vergessen Sie aber nicht, dass es sich hier um fiktive Daten handelt. ")
 ```
 
 
 # Aufgabe 3
 
 Berechnen Sie die Effektstärke partielles Eta-Quadrat $\hat{\eta}^2_p$ für jeweils
-die beiden Haupteffekte und die Interaktion.
+die beiden Haupteffekte und die Interaktion. Wie schätzen Sie die größe der Effekte ein? 
 
 ```{r results="asis", message=FALSE, warning=FALSE, eval=include_solution}
 cat("_Lösung:_")
 
 wrap_math_align(solution_partial_eta2(aov))
 
+cat("Es handelt sich um einen kleinen Effekt der Therapieform und sonst um sehr große Effekte.")
 ```
+
 
 # Aufgabe 4
 
@@ -162,7 +253,7 @@ library(patchwork)
 ```{r results="asis", message=FALSE, warning=FALSE, eval=include_solution}
 cat("_Lösung:_\n\n")
 
-cat("Richtig ist Torte C. Die $QS_{AxB}$ ist ungefähr zweieinhalb mal so groß wie die $QS_{B}$. $QS_A$ ist verschwindend klein im Vergleich zum Rest. $QS_inn$ ist um ein Vielfaches größer als die übrigen QS.")
+cat("Richtig ist Torte C. $QS_A$ ist  klein im Vergleich zum Rest. $QS_B$ ist um ein Vielfaches größer als die übrigen QS.")
 
 
 ```
@@ -171,12 +262,12 @@ cat("Richtig ist Torte C. Die $QS_{AxB}$ ist ungefähr zweieinhalb mal so groß 
 
 # Aufgabe 5
 
-Überlegen Sie sich eine Forschungsfrage, die Sie mit einer zweifaktoriellen Varianzanalyse beantworten können. Was bedeutet eine signifikante Interaktion?
+Überlegen Sie sich eine Forschungsfrage, die Sie mit einer zweifaktoriellen Varianzanalyse beantworten können. Formulieren Sie konkrete Hypothesen. Was würde eine signifikante Interaktion in Ihrer Studie inhaltlich bedeuten?
 
 ```{r results="asis", message=FALSE, warning=FALSE, eval=include_solution}
 cat("_Lösung:_")
 
-cat("\nHier sind viele Antworten möglich. Zum Beispiel könnten wir uns dafür interessieren, ob sich Personen unterschiedlicher Berufsfelder (Faktor A) in ihrer Wahrnehmung des beruflichen Stress (AV) unterscheiden. Dabei interessiert weiterhin, ob es Unterschiede in Bezug darauf gibt, ob jemand ein Studium abgeschloßen hat oder nicht (Faktor B). Eine vorstellbare Interaktion könnte sein, dass in Berufsfeld #A Studierte und Nicht-Studierte dieselbe mittlere Stresswahrnehmung haben während in Berufsfeld #B Nicht-Studierte eine wesentlich höhere Stresswahrnehmung als Studierte haben.")
+cat("\nHier sind viele Antworten möglich. Zum Beispiel könnten wir uns dafür interessieren, ob sich Personen unterschiedlicher Berufsfelder (Faktor A) in ihrer Wahrnehmung des beruflichen Stress (AV) unterscheiden. Dabei interessiert weiterhin, ob es Unterschiede in Bezug darauf gibt, ob jemand ein Studium abgeschloßen hat oder nicht (Faktor B). Die Hypothesen beziehen sich also auf Haupteffekte (es gibt Unterschiede zwischen der mittleren Stresswahrnehmung zwischen Berufsfelder; und, es gibt Unterschiede zwischen Studierten und Nicht-Studierten) und auf eine Interaktion.  Eine vorstellbare Interaktion könnte sein, dass in Berufsfeld #A Studierte und Nicht-Studierte dieselbe mittlere Stresswahrnehmung haben während in Berufsfeld #B Nicht-Studierte eine wesentlich höhere Stresswahrnehmung als Studierte haben.")
 
 ```
 
