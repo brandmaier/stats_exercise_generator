@@ -78,7 +78,8 @@ chisq_data_table <- function(x,
                              type = "",
                              caption = "",
                              position = "!h",
-                             format = NULL) {
+                             format = NULL,
+                             align = "c") {
   if (type == "") {
     if (caption == "")
       caption = "Kontingenztabelle"
@@ -89,7 +90,8 @@ chisq_data_table <- function(x,
         caption = caption,
         col.names = x$labels.b,
         position = position,
-        booktabs = FALSE
+        booktabs = FALSE,
+        align = align
       )
     )
   } else if (type == "indep") {
@@ -100,8 +102,11 @@ chisq_data_table <- function(x,
       knitr::kable(
         x$data_indep,
         caption = caption,
+        col.names = c(x$labels.b,""),
+        format = format,
         position = position,
-        booktabs = FALSE
+        booktabs = FALSE,
+        align = align
       )
     )
   } else if (type == "sums") {
@@ -112,7 +117,10 @@ chisq_data_table <- function(x,
       x$data_sums,
       caption = caption,
       position = position,
-      booktabs = FALSE
+      booktabs = FALSE,
+      col.names = c(x$labels.b,""),
+      format = format,
+      align = align
     ))
   } else {
     print(paste0("Unknown type :", type, ". Try *indep* or *sums*"))
@@ -150,7 +158,7 @@ mcnemar_effectsize <- function(x, type = 1) {
   if (type == 1)
     rs <- paste0("\\frac{", x$n12, "}{", x$n21, "}=", chance, "")
   if (type == 2)
-    rs <- paste0("\\frac{", x$n12, "}{", (x$n12 + x$n21), "}=", frac, "%")
+    rs <- paste0("\\frac{", x$n12, "}{", (x$n12 + x$n21), "}=", frac, "\\%")
   
   (rs)
 }
@@ -191,7 +199,7 @@ chisq_crit <- function(x, undirected = TRUE) {
     # ifelse(undirected,"",paste0("(gerichtet) $\\chi^2_krit(",1-alpha,";",df,")$")), chisqcrt,".")
     ifelse(undirected, "", "(gerichtete Hypothese!) "),
     chisqcrt,
-    "."
+    ". "
   )
   
 }
@@ -297,13 +305,15 @@ chisq_effectsize_with_distractors <- function(x)
     x$p)
 }
 
-chisq_uni_data_table <- function(x, position = "!h")
+chisq_uni_data_table <- function(x, position = "!h", caption="",align="c")
 {
   knitr::kable(
     t(x$obs),
     col.names = x$labels,
     position = position,
-    booktabs = FALSE
+    booktabs = FALSE,
+    caption = caption,
+    align = align
   )
 }
 
