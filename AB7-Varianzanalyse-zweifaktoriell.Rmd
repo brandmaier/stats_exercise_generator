@@ -104,7 +104,7 @@ Die abhängige Variable ist die Symptomschwere nach der Behandlung (höhere Wert
 
 Folgende Grafik zeigt die Verteilung der Beobachtungen für jede Faktorstufenkombination. Die Punkte entsprechen den einzelnen Werten der Symptomschwere der Personen. Die Verteilung innerhalb jeder Faktorstufenkombination ist als Boxplot dargestellt.
 
-```{r message=FALSE, warning=FALSE}
+```{r dataplot, message=FALSE, warning=FALSE}
 data_plot(aov)
 ```
 

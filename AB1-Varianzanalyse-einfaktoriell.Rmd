@@ -27,6 +27,21 @@ header-includes:
   - \rhead{Prof. Brandmaier}
 ---
 
+
+```{r setup, include=TRUE, results = "hide", eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+library(tidyverse)
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(fig.pos = "!H", out.extra = "") # prevent LaTeX tables from floating
+
+source("R/anova-1f.R")
+source("R/helper.R")
+
+include_solution <- params$include_solution
+
+empty_str <- "\\ "
+```
+
+
 \begin{tcolorbox}[
   colback=gray!8,
   colframe=gray!60,
@@ -50,20 +65,6 @@ in der einfaktoriellen ANOVA zu üben.
 \item Statistische Entscheidung treffen
 \end{itemize}
 \end{tcolorbox}
-
-```{r setup, include=TRUE, results = "hide", eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
-library(tidyverse)
-knitr::opts_chunk$set(echo = FALSE)
-knitr::opts_chunk$set(fig.pos = "!H", out.extra = "") # prevent LaTeX tables from floating
-
-source("R/anova-1f.R")
-source("R/helper.R")
-
-include_solution <- params$include_solution
-
-empty_str <- "\\ "
-```
-
 Im Folgenden finden Sie Übungsaufgaben zur einfaktoriellen Varianzanalyse. Dabei sind im Allgemeinen die Quadratsummen, mittlere Quadratsummen und F-Werte zu berechnen. Ferner sind kritische Werte zu bestimmen, um eine statistische Entscheidung zu treffen. Runden Sie auf zwei Nachkommastellen (auch Zwischenergebnisse). Wenn die Aufgabenstellung nicht davon abweicht, gilt ein Signifikanzniveau von $5\%$.
 
 # Aufgabe 1
@@ -251,8 +252,8 @@ cat("- Hat die Art der Belohnung (materiell vs. verbal vs. keine Belohnung) eine
 
 
 \begin{tcolorbox}[
-  colback=blue!5,
-  colframe=blue!50,
+  colback=gray!8,
+  colframe=gray!60,
   title=Erinnerung,
   sharp corners,
   boxrule=0.5pt

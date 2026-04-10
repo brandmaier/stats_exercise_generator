@@ -179,7 +179,7 @@ result_table <- function(x) {
 data_table <- function(x, ...) {
   
   wdat<-pivot_wider(x$dat,names_from = 2, values_from=1)  
-  knitr::kable(wdat[,-1],col.names = x$factor_level_names, ...)
+  knitr::kable(wdat[,-1],col.names = x$factor_level_names, align="c", ...)
 }
 
 

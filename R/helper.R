@@ -58,3 +58,16 @@ section <- function(x) {
 highlight <- function(x) {
   cat("\\hl{",x,"}")
 }
+
+
+start_intro_box <- function(title = "Ziele und Voraussetzungen") {
+  return(paste("
+  \\begin{tcolorbox}[
+    colback=blue!5,
+    colframe=blue!50,
+    title=",title,",
+    sharp corners,
+    boxrule=0.5pt
+  ]
+  "))
+}

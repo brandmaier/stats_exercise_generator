@@ -247,7 +247,7 @@ scale_x_continuous(limits=c(0,100))+
   scale_y_continuous(limits=c(0,100))
 ```
 
-Wie interpretieren Sie das Ergebnis ihres vorherigen Signifikanztests im Lichte dieses Darstellung?
+Wie interpretieren Sie das Ergebnis ihres vorherigen Signifikanztests im Lichte dieser Darstellung?
 
 ```{r results="asis", eval=include_solution, fig.width=5, fig.height=3}
 cat(solution_header())
