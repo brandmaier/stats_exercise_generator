@@ -8,13 +8,33 @@ output:
   html_document: default
 params:
   include_solution: true
+mainfont: SourceSansPro
+header-includes:
+  - \usepackage[T1]{fontenc}
+  - \usepackage{booktabs}
+  - \usepackage[ngerman]{babel}
+  - \usepackage{caption}
+  - \captionsetup[table]{position=bottom}
+  - \usepackage{tcolorbox}
+  - \usepackage{xcolor}
+  - \usepackage{setspace}
+  - \setstretch{1.05}
+  - \setlength{\parskip}{6pt}
+  - \setlength{\parindent}{0pt}
+  - \usepackage{microtype}
+  - \usepackage{fancyhdr}
+  - \pagestyle{fancy}
+  - \fancyhf{}
+  - \lhead{Statistik II}
+  - \chead{Korrelation}
+  - \rhead{Prof. Brandmaier}
 ---
 ```{r setup, include=TRUE, results = "hide", eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 library(tidyverse)
 library(psych)
 library(patchwork)
 library(datasauRus)
-library(jaspGraphs) # remotes::install_github("jasp-stats/jaspGraphs")
+#library(jaspGraphs) # remotes::install_github("jasp-stats/jaspGraphs")
 
 knitr::opts_chunk$set(echo = FALSE)
 knitr::opts_chunk$set(fig.pos = "!H", out.extra = "") # prevent LaTeX tables from floating around
@@ -34,11 +54,34 @@ rport <- function(x) {pval=round(x$p.value,3); if (pval<0.001)pval="<0.001"; pas
 ## Korrelation
 
 
+\begin{tcolorbox}[
+  colback=gray!8,
+  colframe=gray!60,
+  title=Ziel und Voraussetzungen,
+  sharp corners,
+  boxrule=0.5pt
+]
+Dieses Arbeitsblatt dient dazu, Rechenaufgaben zur Pearson-Korrelation zu üben.
+
+\textbf{Voraussetzungen:}
+\begin{itemize}
+\item Verständnis der Pearson-Korrelation
+\item Grundlagen der Inferenzstatistik
+\end{itemize}
+\textbf{Sie üben heute:}
+\begin{itemize}
+\item Korrelation berechnen
+\item Korrelation interpretieren und ihre Grenzen zu kennen
+\end{itemize}
+\end{tcolorbox}
+
+
 ## Aufgabe 1
+
 Mit Hilfe des Datensatzes "bfi" aus dem SAPA Projekt (Revelle, Wilt und Rosenthal, 2010) wurde untersucht, inwieweit
 es eine Korrelation zwischen Gewissenhaftigkeit und Alter gibt. Dazu wurde
 das Lebensalter in Jahren mit dem Persönlichkeitsmerkmal
-Gewissenhaftigkeit korreliert. Gewissenhaftigkeit wurde als Summe der entsprechenden Fragebogen-Items (Bsp.: "Ich höre nicht auf bevor ich etwas beendet habe") gebildet.
+Gewissenhaftigkeit korreliert in einer Stichprobe von $N=`r nrow(bfi)`$. Gewissenhaftigkeit wurde als Summe der entsprechenden Fragebogen-Items (Bsp.: "Ich höre nicht auf bevor ich etwas beendet habe") gebildet.
 Die beobachteten Datenpunkte und eine Linie, die den linearen Zusammenhang verdeutlicht sind in folgender Abbildung dargestellt:
 
 ```{r}
@@ -53,13 +96,13 @@ ggplot2::ggplot(df,aes(y=conscientousness,x=age))+geom_point()+theme_minimal()+
 ```
 
 Es ergab sich eine Korrelation von `r rport(ctest)`. Wie interpretieren Sie
-dieses Ergebnis?
+dieses Ergebnis? Wie schätzen Sie die Effektstärke ein? Haben Sie hiermit bewiesen, dass der wahre Zusammenhang linear ist?
 
 
 ```{r results="asis", eval=include_solution}
 cat(solution_header())
 
-cat("Es zeigte sich ein positiver Zusammenhang, der signifikant von Null verschieden war. Dieser positive Zusammenhang bedeutet, dass ältere Personen in der Stichprobe auch gewissenhafter sind. Einzuschränken ist hier, dass es sich um querschnittliche Daten handelt, d.h., dieser Effekt könnte nicht in Wirklichkeit auf Unterschiede im Alter, sondern auf Kohortenunterschiede zurückzuführen sein (d.h., Unterschiede in den verschiedenen Geburtsjahrgängen). Laut Cohen's Definition handelt es sich hier um einen schwachen Zusammenhang ($r\\approx0.1$).")
+cat("Es zeigte sich ein positiver Zusammenhang, der signifikant von Null verschieden war. Dieser positive Zusammenhang bedeutet, dass ältere Personen in der Stichprobe auch gewissenhafter sind. Einzuschränken ist hier, dass es sich um querschnittliche Daten handelt, d.h., dieser Effekt könnte nicht in Wirklichkeit auf Unterschiede im Alter, sondern auf Kohortenunterschiede zurückzuführen sein (d.h., Unterschiede in den verschiedenen Geburtsjahrgängen). Laut Cohen's Definition handelt es sich hier um einen schwachen Zusammenhang ($r\\approx0.1$). Mittels frequentistischer Inferenzstatistik können wir niemals etwas beweisen; wir zeigen höchstens, dass bestimmte angenommene Effekte unwahrscheinlich sind, wenn wir annehmen, dass die Nullhypothese gilt. Selbst ein signifikanter Effekt zeigt auch nur, dass ein linearer Effekt signifikante Varianz erklärt; der wahre Zusammenhang kann dennoch eine völlig andere Form haben.")
 
 ```
 
@@ -86,7 +129,7 @@ sig2 = ifelse(tst2$p.value<0.05,"signifikanter","nicht-signifikanter")
 
 ```
 
-Im Rahmen einer empirischen Studie  wurde untersucht, inwieweit sich Persönlichkeitsmerkmale
+Im Rahmen einer fiktiven Studie  wurde untersucht, inwieweit sich Persönlichkeitsmerkmale
 auf den erlebten Stress im Studium auswirken. Dabei wurden zwei Kohorten von 
 Erstsemestern untersucht, die in verschiedenen Jahren mit dem Studium begonnen haben. 
 In jeder Kohorte wurden 25 Studierende befragt.
@@ -147,7 +190,6 @@ cat("Eine Person erzählt der anderen, dass sie bisher immer dachte, dass eine K
 
 ## Aufgabe 4
 
-Laden Sie die Datensätze "korrelation-beispiel1.csv" und "korrelation-beispiel2.csv". Berechnen Sie eine einfache lineare Regression (oder auch eine bivariate Korrelation) mit einem Statistikprogramm ihrer Wahl (z.B. JASP). Prüfen Sie, ob es einen linearen Zusammenhang je zwischen den beiden Variablen $X$ und $Y$ gibt. Was folgern Sie? Erstellen Sie auch die Streudiagramme (z.B. in JASP über die Korrelation^[Beachten Sie ggf. die Reihenfolge der Variablen. Erstellen Sie das Diagramm so, dass X auf der horizontalen Achse und Y auf der vertikalen Achse liegt]). Was kann man daraus erkennen?
 
 ```{r}
 
@@ -155,20 +197,61 @@ x1 <- datasauRus::datasaurus_dozen %>% filter(dataset=="slant_up") %>% select(-d
 x2 <- datasauRus::datasaurus_dozen %>% filter(dataset=="dino") %>% select(-dataset)
 
 # save datasets to drive
-write.csv(x1, file="korrelation-beispiel1.csv", row.names = FALSE)
-write.csv(x2, file="korrelation-beispiel2.csv", row.names = FALSE)
+#write.csv(x1, file="korrelation-beispiel1.csv", row.names = FALSE)
+#write.csv(x2, file="korrelation-beispiel2.csv", row.names = FALSE)
 
 ct1 <- cor.test(x1$x,x1$y)
 ct2 <- cor.test(x2$x,x2$y)
 ```
 
+Gegeben seien zwei Variablen, die hier nur $x$ und $y$ heißen. Es sei bekannt,
+dass deren Korrelation in einer Stichprobe $r= `r round(ct2$estimate,2)`$ sei. Die Stichprobengröße sei $N= `r nrow(x2)`$. Der kritische Wert einer t-Verteilung mit 140 Freiheitsgraden ist `r round( qt(p=0.975,140),2) `.
+Testen Sie, ob diese Korrelation von Null verschieden ist mit folgenden Schritten:
+
+a) Stellen Sie die Null- und Alternativhypothese in Worten auf
+b) Berechnen Sie die Prüfgröße
+c) Treffen Sie eine statistische Entscheidung
 
 ```{r results="asis", eval=include_solution, fig.width=5, fig.height=3}
 cat(solution_header())
 
-cat("Die Korrelation beträgt ",rport(ct1), "im ersten Beispiel und ", rport(ct2), "im zweiten Beispiel. Wir können die Nullhypothese in beiden Fällen nicht ablehnen und sprechen von einem nicht-signifikanten Zusammenhang.")
+section("1. Hypothesen aufstellen")
 
-datasauRus::datasaurus_dozen %>% filter(dataset=="dino" | dataset=="slant_up") %>% ggplot(aes(x=x,y=y))+geom_point()+facet_wrap(~dataset)+jaspGraphs::themeJaspRaw()
+cat("$H_0$: Die wahre Korrelation ist Null.\n")
+cat("$H_1$: Die wahre Korrelation ist von Null verschieden.\n")
 
-cat("Wir wissen, dass wir hier nur lineare Zusammenhänge testen. Aus dem Beispiel lernen wir insbesondere: Wenn man keinen linearen Zusammenhang findet, bedeutet das nicht, dass es dennoch möglicherweise bedeutsame Muster in den Daten gibt.")
+section("\n2. Prüfgröße berechnen")
+
+r = round(ct2$estimate,2)
+n = nrow(x2)
+
+erg = round( (r*sqrt(n-2))/sqrt(1-r^2) , 2 )
+
+cat("$$t=\\frac{",r,"\\cdot(",n,"-2)}{\\sqrt{1-",r,"^2 }}=",erg," $$\n")
+
+cat("Die Freiheitsgrade dieser t-Statistik sind n-2=",(n-2),".\n")
+
+section("\n3. Statistische Entscheidung treffen")
+
+cat("Da die empirische Prüfgröße betragsmäßig kleiner ist als der kritische Wert, behalten wir die Nullhypothese bei. Die Korrelation der beiden Variablen ist nicht signifikant.")
+
+```
+
+## Aufgabe 5
+
+Hier sehen Sie ein Punktewolke der Variablen $x$ und $y$ aus der vorherigen Aufgabe:
+
+```{r}
+datasauRus::datasaurus_dozen %>% filter(dataset=="dino") %>% ggplot(ggplot2::aes(x=x,y=y))+ggplot2::geom_point()+facet_wrap(~dataset)+#+jaspGraphs::themeJaspRaw()
+scale_x_continuous(limits=c(0,100))+
+  scale_y_continuous(limits=c(0,100))
+```
+
+Wie interpretieren Sie das Ergebnis ihres vorherigen Signifikanztests im Lichte dieses Darstellung?
+
+```{r results="asis", eval=include_solution, fig.width=5, fig.height=3}
+cat(solution_header())
+
+
+cat("Wir wissen, dass wir mit der Korrelation nur lineare Zusammenhänge testen. Aus dem Beispiel lernen wir insbesondere: Wenn man keinen linearen Zusammenhang findet, bedeutet das nicht, dass es dennoch möglicherweise bedeutsame Muster in den Daten gibt.")
 ```
