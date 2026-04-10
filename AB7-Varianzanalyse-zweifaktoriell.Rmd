@@ -46,13 +46,7 @@ empty_str <- "\\ "
 
 ```
 
-\begin{tcolorbox}[
-  colback=gray!8,
-  colframe=gray!60,
-  title=Ziel und Voraussetzungen,
-  sharp corners,
-  boxrule=0.5pt
-]
+`r start_intro_box()`
 Sie üben heute:
 \begin{itemize}
 \item die Struktur einer zweifaktoriellen Varianzanalyse erklären

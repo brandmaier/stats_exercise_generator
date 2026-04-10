@@ -71,3 +71,16 @@ start_intro_box <- function(title = "Ziele und Voraussetzungen") {
   ]
   "))
 }
+
+
+start_info_box <- function(title = "") {
+  return(paste("
+  \\begin{tcolorbox}[
+    colback=gray!8,
+    colframe=gray!60,
+    title=",title,",
+    sharp corners,
+    boxrule=0.5pt
+  ]
+  "))
+}

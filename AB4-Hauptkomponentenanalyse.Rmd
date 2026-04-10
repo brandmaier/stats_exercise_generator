@@ -28,13 +28,7 @@ header-includes:
   - \rhead{Prof. Brandmaier}
 ---
 
-\begin{tcolorbox}[
-  colback=gray!8,
-  colframe=gray!60,
-  title=Ziel und Voraussetzungen,
-  sharp corners,
-  boxrule=0.5pt
-]
+`r start_intro_box()`
 Dieses Arbeitsblatt dient dazu, Rechenaufgaben zur Hauptkomponentenanalyse zu üben.
 
 \textbf{Voraussetzungen:}

@@ -47,13 +47,7 @@ empty_str <- "\\ "
 ```
 
 
-\begin{tcolorbox}[
-  colback=gray!8,
-  colframe=gray!60,
-  title=Ziel und Voraussetzungen,
-  sharp corners,
-  boxrule=0.5pt
-]
+`r start_intro_box()`
 Dieses Arbeitsblatt dient dazu, Rechenaufgaben zum Chi-Quadrat-Test zu üben.
 
 \textbf{Voraussetzungen:}
@@ -81,7 +75,7 @@ csq <- generate_chisq(labels.a=c("Neues Medikament","Altes Medikament"),
 write.csv(file = "data/ab3-symptoms.csv", x=chisq_to_data(csq), row.names = FALSE)
 ```
 
-In einer randomisierten Studie haben 40 Patient:innen ein neuartiges Antidepressivum erhalten und 40 Patient:innen ein bereits erprobtes. Nach vier Wochen wurde erhoben, ob die Patient:innen Nebenwirkungen erfahren haben. Dies wurde als dichotomes Merkmal _Nebenwirkung_ (ja/nein) erhoben. Ein Forscherteam hat die Hypothese, dass das neuartige Antidepressivum anders wirkt als die etablierte Behandlung (ungerichtete Alternativhypothese).
+In einer randomisierten Studie haben 40 Patient:innen ein neuartiges Antidepressivum erhalten und 40 Patient:innen ein bereits erprobtes. Nach vier Wochen wurde erhoben, ob die Patient:innen Nebenwirkungen erfahren haben. Dies wurde als dichotomes Merkmal _Nebenwirkung_ (Ausprägungen: Nebenwirkung / keine Nebenwirkung) erhoben. Ein Forscherteam hat die Hypothese, dass das neuartige Antidepressivum anders wirkt als die etablierte Behandlung (ungerichtete Alternativhypothese).  Wir gehen von einem Signifikanzniveau von 5% aus. 
 ```{r a1crtv, results="asis"} 
 cat(chisq_crit(csq,undirected = TRUE))
 ```
@@ -92,8 +86,14 @@ Folgende Daten wurden beobachtet:
 chisq_data_table(csq)
 ```
 
+Führen Sie folgende Schritte aus:
 
-Stellen Sie zunächst die Nullhypothese und die Alternativhypothese in Worten auf. Berechnen Sie dann die Spalten- und Randsummen für die Häufigkeits-Tabelle. Erstellen Sie dann eine Tabelle von Häufigkeiten, die man erwarten würde, wenn es keinen Unterschied in den Nebenwirkungen zwischen den Antidepressiva gäbe. Berechnen Sie dann die Prüfgröße für den $\chi^2$-Unabhängigkeits-Test und treffen Sie eine statistische Entscheidung. Wir gehen von einem Signifikanzniveau von 5% aus.
+a) Stellen Sie die Nullhypothese und die Alternativhypothese in Worten auf. 
+b) Berechnen Sie die Spalten- und Randsummen für die Häufigkeits-Tabelle. 
+c) Erstellen Sie eine Tabelle von Häufigkeiten, die man erwarten würde, wenn
+es keinen Unterschied in den Nebenwirkungen zwischen den Antidepressiva gäbe. 
+d) Berechnen Sie die Prüfgröße für den $\chi^2$-Unabhängigkeits-Test
+e) Treffen Sie eine statistische Entscheidung
 
 
 ```{r a1sol, results="asis", eval=include_solution}
@@ -101,8 +101,8 @@ solution_header()
 
 section("1. Hypothesen aufstellen")
 
-cat("$H_0$: Medikamenteneinnahme und Nebenwirkungen sind unabhängig voneinander.")
-cat("$H_1$: Medikamenteneinnahme und Nebenwirkungen sind abhängig voneinander.")
+cat("$H_0$: Es gibt keine Unterschiede in den Nebenwirkungen zwischen den Medikamenten.\n\n")
+cat("$H_1$: Es gibt Unterschiede in den Nebenwirkungen zwischen den Medikamenten.\n\n")
 
 #cat("Dies ist die Kontigenztabelle mit Zeilensummen und Spaltensummen:")
 section("2. Zeilensummen und Spaltensummen berechnen")
@@ -113,7 +113,7 @@ chisq_data_table(csq, type="sums")
 ```{r a1sol2, results="asis", eval=include_solution}
 #cat("Dies ist die Tabelle der erwarteten Häufigkeiten von Nebenwirkungen unter der Unabhängigkeitsannahme:")
 
-section("3.  Kontingenztabelle der erwarteten Häufigkeiten von Nebenwirkungen unter Unabhängigkeitsannahme erstellen")
+section("\n3.  Kontingenztabelle der erwarteten Häufigkeiten von Nebenwirkungen unter Unabhängigkeitsannahme erstellen")
 
 chisq_data_table(csq, type="indep")
 
@@ -175,8 +175,8 @@ cat("_Lösung:_\n\n")
 
 section("1. Hypothesen aufstellen")
 
-cat("$H_0$: Es gibt keine Vorlieben für eine der vier Kategorien. Die wahren Häufigkeiten sind gleichverteilt\n")
-cat("$H_1$: Es gibt mindestens eine Kategorie, die häufiger angegeben wurde als die anderen.\n\n")
+cat("$H_0$: Die Verteilung der Tiervorlieben bei Psychologiestudierenden entspricht der Verteilung in der Normalbevölkerung.\n\n")
+cat("$H_1$: Die Verteilung unterscheidet sich von der Verteilung in der Normalbevölkerung.\n\n")
 
 section("2. Erwartete Häufigkeiten der vier Kategorien unter Annahme der Gültigkeit von $H_0$ berechnen")
 wrap_math_align(solution_chisq_uni(csq,1))
@@ -187,6 +187,12 @@ cat("\n")
 section("4. Statistische Entscheidung treffen")
 cat(chisq_crit(csq))
 cat("Wir lehnen die Nullhypothese ab und schließen daraus, dass sich die Vorlieben der Psychologiestudierenden von denen der Normalbevölkerung signifikant unterscheiden.")
+cat("Besonders auffällig ist hier zum Beispiel:
+
+- es wurde öfter 'Katzen' angegeben als erwartet
+- es wurde weniger ‚Keine‘ angegeben als erwartet
+
+Das heißt: In dieser Stichprobe scheinen Psychologiestudierende etwas tieraffiner zu sein als die Referenzverteilung vermuten ließe.")
 ```
 
 

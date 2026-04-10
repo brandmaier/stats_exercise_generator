@@ -54,13 +54,7 @@ rport <- function(x) {pval=round(x$p.value,3); if (pval<0.001)pval="<0.001"; pas
 ## Korrelation
 
 
-\begin{tcolorbox}[
-  colback=gray!8,
-  colframe=gray!60,
-  title=Ziel und Voraussetzungen,
-  sharp corners,
-  boxrule=0.5pt
-]
+`r start_intro_box()`
 Dieses Arbeitsblatt dient dazu, Rechenaufgaben zur Pearson-Korrelation zu üben.
 
 \textbf{Voraussetzungen:}
