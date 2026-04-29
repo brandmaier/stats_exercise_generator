@@ -25,7 +25,7 @@ header-includes:
   - \pagestyle{fancy}
   - \fancyhf{}
   - \lhead{Statistik II}
-  - \chead{Einfaktorielle Varianzanalyse}
+  - \chead{Testst\"arkeanalyse}
   - \rhead{Prof. Brandmaier}
 ---
 
@@ -51,7 +51,7 @@ Dieses Arbeitsblatt dient dazu, sich mit den Grundlagen von statistischen Entsch
 \end{itemize}
 \textbf{Sie üben heute:}
 \begin{itemize}
-\item Welche Arten der Teststärkenanalyse gibt es?
+\item Welche Arten der Teststärkeanalyse gibt es?
 \item Was sind Teststärke, kritischer Wert, Signifikanzniveau?
 \end{itemize}
 \end{tcolorbox}
@@ -73,7 +73,7 @@ cat("a) Das Signifikanzniveau bestimmt den kritischen Wert, anhand dessen wir en
 
 cat("\n\n b) Es gibt hier zwei Möglichkeiten für eine Teststärkenanalyse. Festgelegt sind bei der Studie das Signifikanzniveau und die Stichprobengröße. Damit verbleiben zwei freie Größen, nämlich die Effektgröße und die Teststärke. Entweder kann man durch Festlegung einer angenommenen Effektstärke die Teststärke schätzen (sog. a-priori Teststärkenanalyse) oder man kann durch Festlegung der Stichprobengröße die detektierbare Effektgröße schätzen (sog. Sensitivitätsanalyse).")
 
-cat("\n\n c)Senkt man das Signifikanzniveau, sinkt die statistische Teststärke. Senkt man im Beispiel das Signifikanzniveau auf 1%, sinkt dadurch die Wahrscheinlichkeit eines Alpha-Fehlers. Das ist vorteilhaft in dem Sinne, dass es unwahrscheinlicher wird eine Nullhypothese fälschlich abzulehnen. ")
+cat("\n\n c) Senkt man das Signifikanzniveau, sinkt die statistische Teststärke. Senkt man im Beispiel das Signifikanzniveau auf 1%, sinkt dadurch die Wahrscheinlichkeit eines Alpha-Fehlers. Das ist vorteilhaft in dem Sinne, dass es unwahrscheinlicher wird eine Nullhypothese fälschlich abzulehnen. ")
 ```
 
 ## Aufgabe 2
@@ -118,7 +118,7 @@ gnorm <- ggplot(data=df,aes(x=x,y=y,color=c,group=c))+
 #(gnorm)
 ```
 
-```{r, results="asis",fig.width=6, fig.height=3}
+```{r, results="asis",fig.width=6, fig.height=3, warning=FALSE}
 if (include_solution) {
   cat("\\pagebreak")
   solution_header()
@@ -150,12 +150,12 @@ arrow = arrow(length = unit(0.2, "cm")))
 #(gnorm)
 ```
 
-```{r, results="asis",fig.width=6, fig.height=3}
+```{r, results="asis",fig.width=6, fig.height=3, warning=FALSE}
 if (include_solution) {
   (g1)
 }
 ```
-```{r, results="asis",fig.width=6, fig.height=3}
+```{r, results="asis",fig.width=6, fig.height=3, warning=FALSE}
 if (include_solution) {
   (g2)
 }

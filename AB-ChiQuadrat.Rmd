@@ -88,12 +88,12 @@ chisq_data_table(csq)
 
 Führen Sie folgende Schritte aus:
 
-a) Stellen Sie die Nullhypothese und die Alternativhypothese in Worten auf. 
-b) Berechnen Sie die Spalten- und Randsummen für die Häufigkeits-Tabelle. 
-c) Erstellen Sie eine Tabelle von Häufigkeiten, die man erwarten würde, wenn
+1. Stellen Sie die Nullhypothese und die Alternativhypothese in Worten auf. 
+2. Berechnen Sie die Spalten- und Randsummen für die Häufigkeits-Tabelle. 
+3. Erstellen Sie eine Tabelle von Häufigkeiten, die man erwarten würde, wenn
 es keinen Unterschied in den Nebenwirkungen zwischen den Antidepressiva gäbe. 
-d) Berechnen Sie die Prüfgröße für den $\chi^2$-Unabhängigkeits-Test
-e) Treffen Sie eine statistische Entscheidung
+4. Berechnen Sie die Prüfgröße für den $\chi^2$-Unabhängigkeits-Test
+5. Treffen Sie eine statistische Entscheidung
 
 
 ```{r a1sol, results="asis", eval=include_solution}
@@ -165,10 +165,10 @@ cat(chisq_crit(csq,undirected = TRUE))
 
 Führen Sie folgende Schritte durch:
 
-a) Beschreiben Sie die Nullhypothese und Alternativhypothese in Worten
-b) Berechnen Sie die erwarteten Häufigkeiten der vier Kategorien unter Annahme der Gültigkeit der Nullhypothese
-c) Berechnen Sie die Prüfgröße
-d) Treffen Sie eine statistische Entscheidung
+1. Beschreiben Sie die Nullhypothese und Alternativhypothese in Worten
+2. Berechnen Sie die erwarteten Häufigkeiten der vier Kategorien unter Annahme der Gültigkeit der Nullhypothese
+3. Berechnen Sie die Prüfgröße
+4. Treffen Sie eine statistische Entscheidung
 
 ```{r a2sol, results="asis", eval=include_solution}
 cat("_Lösung:_\n\n")
@@ -215,10 +215,10 @@ cat(chisq_crit(csq,undirected = TRUE))
 
 Führen Sie folgende Schritte durch:
 
-a) Beschreiben Sie die Nullhypothese und Alternativhypothese in Worten
-b) Berechnen Sie die erwarteten Häufigkeiten unter Annahme der Gültigkeit der Nullhypothese
-c) Berechnen Sie die Prüfgröße
-d) Treffen Sie eine statistische Entscheidung
+1. Beschreiben Sie die Nullhypothese und Alternativhypothese in Worten
+2. Berechnen Sie die erwarteten Häufigkeiten unter Annahme der Gültigkeit der Nullhypothese
+3. Berechnen Sie die Prüfgröße
+4. Treffen Sie eine statistische Entscheidung
 
 
 ```{r a3sol, results="asis", eval=include_solution}
@@ -226,7 +226,7 @@ cat("_Lösung:_\n\n")
 
 section("1. Hypothesen aufstellen")
 
-cat("$H_0$: Das Interesse an einem A&O-Master unterscheidet sich nicht zwischen den Jahrgängen\n")
+cat("$H_0$: Das Interesse an einem A&O-Master unterscheidet sich nicht zwischen den Jahrgängen\n\n")
 cat("$H_1$: Das Interesse an einem A&O-Master unterscheidet sich zwischen den Jahrgängen\n\n")
 
 section("2. Erwartete Werte berechnen")
@@ -250,10 +250,10 @@ A&O-Masterstudiengang über die Jahrgänge hinweg unterscheidet.
 
 Wir bleiben bei den Studienergebnissen und Angaben aus Aufgabe 3. Wie müsste die Kontingenztabelle der beobachteten Häufigkeiten lauten, wenn man testen möchte, ob sich die Interessenlage in den Sommer- und Wintersemestern unterscheidet? Führen Sie den entsprechenden Unabhängigkeitstest durch:
 
-a) Beschreiben Sie die Nullhypothese und Alternativhypothese in Worten
-b) Berechnen Sie die erwarteten Häufigkeiten unter Annahme der Gültigkeit der Nullhypothese
-c) Berechnen Sie die Prüfgröße
-d) Treffen Sie eine statistische Entscheidung
+1. Beschreiben Sie die Nullhypothese und Alternativhypothese in Worten
+2. Berechnen Sie die erwarteten Häufigkeiten unter Annahme der Gültigkeit der Nullhypothese
+3. Berechnen Sie die Prüfgröße
+4. Treffen Sie eine statistische Entscheidung
 
 
 
@@ -303,24 +303,24 @@ A&O-Masterstudiengang über Sommer- und Wintersemester hinweg unterscheidet.
 
 # Aufgabe 5
 ```{r a5}
-csq <- generate_chisq(labels.a = c("Raucher (vorher)"," Nicht-Raucher (vorher)"),
-                      labels.b=c("Raucher (Nachher)","Nicht-Raucher (Nachher)"), 
-                                 short.labels.a=c("Raucher","Nicht-Raucher"), 
-                                 short.labels.b=c("Raucher","Nicht-Raucher"),
+csq <- generate_chisq(labels.a = c("Raucher (vorher)"," Nichtraucher (vorher)"),
+                      labels.b=c("Raucher (Nachher)","Nichtraucher (Nachher)"), 
+                                 short.labels.a=c("Raucher","Nichtraucher"), 
+                                 short.labels.b=c("Raucher","Nichtraucher"),
                        tbl = matrix(c(45,13,25,43),ncol=2,byrow = FALSE))
 write.csv("data/ab3-smoker.csv", x=chisq_to_data(csq),row.names = FALSE)
 ```
-Ein Forscherteam untersucht die Wirksamkeit einer Anti-Raucher-Kampagne. Dazu wird das Rauchverhalten (Raucher/Nicht-Raucher) in derselben Stichprobe zweimal untersucht: einmal vor der Kampagne und einmal nach der Kampagne. Die Vermutung ist, dass die Rauchkampagne das Rauchverhalten verändert. Dies entspricht einer ungerichteten Forschungshypothese (Veränderung bedeutet entweder, dass mehr Leute als vorher rauchen oder weniger). Untersuchen Sie diese Fragestellung mit einer ungerichteten Hypothese. Das Signifikanzniveau sei 5%.
+Ein Forscherteam untersucht die Wirksamkeit einer Anti-Raucher-Kampagne. Dazu wird das Rauchverhalten (Raucher/Nichtraucher) in derselben Stichprobe zweimal untersucht: einmal vor der Kampagne und einmal nach der Kampagne. Die Vermutung ist, dass die Rauchkampagne das Rauchverhalten verändert. Dies entspricht einer ungerichteten Forschungshypothese (Veränderung bedeutet entweder, dass mehr Leute als vorher rauchen oder weniger). Untersuchen Sie diese Fragestellung mit einer ungerichteten Hypothese. Das Signifikanzniveau sei 5%.
 ```{r a5crit, results="asis"} 
 cat(chisq_crit(csq,undirected = TRUE))
 ```
 
 Führen Sie den McNemar-Test rechnerisch mit folgenden Schritten durch:
 
-a) Formulieren Sie die Null-Hypothese
-b) Berechnen Sie die Prüfgröße
-c) Treffen Sie eine statistisch informierte Entscheidung. 
-d) Berechnen Sie eine sinnvolle Effektstärke
+1. Formulieren Sie die Null-Hypothese
+2. Berechnen Sie die Prüfgröße
+3. Treffen Sie eine statistisch informierte Entscheidung. 
+4. Berechnen Sie eine sinnvolle Effektstärke
 
 
 ```{r a5tab, results="asis"}
@@ -332,7 +332,7 @@ cat("_Lösung:_\n\n")
 
 section("1. Hypothesen aufstellen")
 
-cat("Eine ungerichtete Hypothese bedeutet hier: Wir nehmen an, dass die Anzahl (genaugenommen: relative Häufigkeit) der Wechsler von Raucher zu Nicht-Raucher (Populationswahrscheinlichkeit: $\\pi_{12}$) unterschiedlich ist von der Anzahl der Nicht-Raucher zu Raucher (Populationswahrscheinlichkeit: $\\pi_{21}$). Also schreiben wir: \n $$H_1: \\pi_{12} \\ne \\pi_{21}$$ und $$H_0: \\pi_{12}= \\pi_{21}$$")
+cat("Eine ungerichtete Hypothese bedeutet hier: Wir nehmen an, dass die Anzahl (genaugenommen: relative Häufigkeit) der Wechsler von Raucher zu Nichtraucher (Populationswahrscheinlichkeit: $\\pi_{12}$) unterschiedlich ist von der Anzahl der Nichtraucher zu Raucher (Populationswahrscheinlichkeit: $\\pi_{21}$). Also schreiben wir: \n $$H_1: \\pi_{12} \\ne \\pi_{21}$$ und $$H_0: \\pi_{12}= \\pi_{21}$$")
 
 section("2. Prüfgröße berechnen")
 wrap_math_block(mcnemar_solution(csq))
@@ -343,6 +343,7 @@ section("3. Statistische Entscheidung treffen")
 cat(chisq_crit(csq, undirected=TRUE),"\n")
 cat("Wir behalten die Nullhypothese bei. Es wurde keine signifikante Veränderung festgestellt.")
 
+cat("\n\n")
 section("4. Effektstärke berechnen")
  
 cat("Als Effektstärke können wir das Verhältnis der Wechsler berechnen:\n")
@@ -362,10 +363,10 @@ cat(chisq_crit(csq,undirected = FALSE))
 
 Führen Sie folgende Schritte durch:
 
-a) Formulieren Sie die Null-Hypothese und Alternativhypothese.
-b) Berechnen Sie die Prüfgröße
-c) Treffen Sie eine statistisch informierte Entscheidung. 
-d) Berechnen Sie ein aussagekräftiges Effektstärkemaß
+1. Formulieren Sie die Null-Hypothese und Alternativhypothese.
+2. Berechnen Sie die Prüfgröße
+3. Treffen Sie eine statistisch informierte Entscheidung. 
+4. Berechnen Sie ein aussagekräftiges Effektstärkemaß
 
 
 ```{r, results="asis"}
@@ -377,9 +378,9 @@ cat("_Lösung:_\n\n")
 
 section("1. Hypothesen aufstellen")
 
-cat("Eine gerichtete Hypothese bedeutet hier: Wir nehmen an, dass es mehr Wechsler von Raucher zu Nicht-Raucher (Populationswahrscheinlichkeit: $\\pi_{12}$) als Nicht-Raucher zu Raucher (Populationswahrscheinlichkeit: $\\pi_{21}$) gibt.\n $$H_1: \\pi_{12}>\\pi_{21}$$ und $$H_0: \\pi_{12}\\le \\pi_{21}$$")
+cat("Eine gerichtete Hypothese bedeutet hier: Wir nehmen an, dass es mehr Wechsler von Raucher zu Nichtraucher (Populationswahrscheinlichkeit: $\\pi_{12}$) als Nichtraucher zu Raucher (Populationswahrscheinlichkeit: $\\pi_{21}$) gibt.\n $$H_1: \\pi_{12}>\\pi_{21}$$ und $$H_0: \\pi_{12}\\le \\pi_{21}$$")
 
-cat("Der Effekt geht in die 'richtige' Richtung (d.h., konform mit der H1), 25 > 13, also führen wir den einseitigen Test durch, um das Ergebnis abzusichern.")
+cat("Der Effekt geht in die 'richtige' Richtung (d.h., konform mit der H1), 25 > 13, also führen wir den einseitigen Test durch, um das Ergebnis abzusichern.\n\n")
 
 section("2. Prüfgröße berechnen")
 
@@ -390,7 +391,7 @@ cat("\n")
 section("3. Statistische Entscheidung treffen")
 
 cat(chisq_crit(csq, undirected=FALSE),"\n")
-cat("Wir lehnen die Nullhypothese ab und glauben an die Wirksamkeit der Intervention zur Reduzierung der Anzahl der Raucher.")
+cat("Wir lehnen die Nullhypothese ab und glauben an die Wirksamkeit der Intervention zur Reduzierung der Anzahl der Raucher.\n\n")
 
 section("4. Effekstärke berechnen")
  
