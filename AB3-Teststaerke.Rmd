@@ -9,6 +9,7 @@ params:
   include_solution: true
 mainfont: SourceSansPro
 header-includes:
+  - \usepackage{float}
   - \usepackage[T1]{fontenc}
   - \usepackage{booktabs}
   - \usepackage[ngerman]{babel}
@@ -32,7 +33,7 @@ header-includes:
 ```{r setup, include=TRUE, results = "hide", eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 library(tidyverse)
 knitr::opts_chunk$set(echo = FALSE)
-knitr::opts_chunk$set(fig.pos = "!H", out.extra = "") # prevent LaTeX tables from floating
+knitr::opts_chunk$set(fig.pos = "H", out.extra = "") # prevent LaTeX tables from floating
 
 source("R/helper.R")
 
@@ -118,9 +119,9 @@ gnorm <- ggplot(data=df,aes(x=x,y=y,color=c,group=c))+
 #(gnorm)
 ```
 
-```{r, results="asis",fig.width=6, fig.height=3, warning=FALSE}
+```{r, results="asis",fig.width=5, fig.height=2.5, warning=FALSE, fig.cap="Theoretische Verteilungen - Hier Lösung direkt eintragen"}
 if (include_solution) {
-  cat("\\pagebreak")
+ # cat("\\pagebreak")
   solution_header()
 
   g1 <- gnorm+
@@ -150,12 +151,12 @@ arrow = arrow(length = unit(0.2, "cm")))
 #(gnorm)
 ```
 
-```{r, results="asis",fig.width=6, fig.height=3, warning=FALSE}
+```{r, results="asis",fig.width=6, fig.height=3, warning=FALSE, fig.cap="Theoretische Verteilungen mit kritischem Wert und Typ-I-Fehler Wahrscheinlichkeit"}
 if (include_solution) {
   (g1)
 }
 ```
-```{r, results="asis",fig.width=6, fig.height=3, warning=FALSE}
+```{r, results="asis",fig.width=6, fig.height=3, warning=FALSE, fig.cap="Theoretische Verteilungen mit Teststärke"}
 if (include_solution) {
   (g2)
 }

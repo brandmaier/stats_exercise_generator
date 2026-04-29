@@ -37,7 +37,7 @@ library(datasauRus)
 #library(jaspGraphs) # remotes::install_github("jasp-stats/jaspGraphs")
 
 knitr::opts_chunk$set(echo = FALSE)
-knitr::opts_chunk$set(fig.pos = "!H", out.extra = "") # prevent LaTeX tables from floating around
+knitr::opts_chunk$set(fig.pos = "H", out.extra = "") # prevent LaTeX tables from floating around
 
 source("R/helper.R")
 
@@ -84,7 +84,7 @@ ctest = cor.test(cnt, bfi$age)
 df = data.frame(conscientousness=cnt,age=bfi$age)
 ```
 
-```{r plot, warning=FALSE, message=FALSE, fig.width=6, fig.height=3}
+```{r plot, warning=FALSE, message=FALSE, fig.width=5, fig.height=2.5, fig.cap="Zusammenhang von Gewissenheit und Alter in einer querschnittlichen Erhebung aus dem SAPA Projekt."}
 ggplot2::ggplot(df,aes(y=conscientousness,x=age))+geom_point()+theme_minimal()+
   geom_smooth(method = "lm")+ylab("Gewissenhaftigkeit")+xlab("Alter")
 ```
@@ -123,18 +123,24 @@ sig2 = ifelse(tst2$p.value<0.05,"signifikanter","nicht-signifikanter")
 
 ```
 
-Im Rahmen einer fiktiven Studie  wurde untersucht, inwieweit sich Persönlichkeitsmerkmale
-auf den erlebten Stress im Studium auswirken. Dabei wurden zwei Kohorten von 
+Im Rahmen einer fiktiven Studie  wurde untersucht, inwieweit  Persönlichkeitsmerkmale mit erlebtem Stress im Studium zusammenhängen. Dabei wurden zwei Kohorten von 
 Erstsemestern untersucht, die in verschiedenen Jahren mit dem Studium begonnen haben. 
-In jeder Kohorte wurden 25 Studierende befragt.
-In der Kohorte "A" wurde ein `r sig1` Zusammenhang von `r rport(tst1)` gefunden. In der Kohorte "B" wurde ein `r sig2` Zusammenhang von `r rport(tst2)`gefunden.
+In jeder Kohorte wurden 25 Studierende befragt. Erfasst wurden die beiden Merkmale Neurotizismus (mittels des _NEO-FFI_) und erlebter Stress (mittels der _Perceived Stress Scale_).
+In der Kohorte "A" wurde ein `r sig1` Zusammenhang von `r rport(tst1)` gefunden. In der Kohorte "B" wurde ein `r sig2` Zusammenhang von `r rport(tst2)` gefunden.
 
-Wie können wir untersuchen, ob sich der Zusammenhang zwischen den Kohorten unterscheidet? Führen Sie alle notwendigen Schritte vom Erstellen der Hypothesen bis zu einem statistischen Schluss durch.
+Wie können wir untersuchen, ob sich der Zusammenhang zwischen den Kohorten unterscheidet? Führen Sie alle notwendigen Schritte vom Erstellen der Hypothesen, Berechnung der Prüfgröße bis hin zu einer statistischen Entscheidung durch.
 
 Der kritische Wert für die Z-Verteilung liegt bei ±1.96 (zweiseitig, $\alpha$=5%).
 
 ```{r results="asis", eval=include_solution}
 cat(solution_header())
+
+cat("1. Hypothesen aufstellen\n\n")
+
+cat("$H_0$: Die Korrelation zwischen erlebtem Stress und Neurotizismus ist Null. \n\n")
+cat("$H_0$: Die Korrelation zwischen erlebtem Stress und Neurotizismus ist von Null verschieden. \n\n")
+
+cat("2. Prüfgröße berechnen\n\n")
 
 cat("Wir benutzen die Fisher's z-Transformation und führen dann den Test auf Verschiedenheit zweier Korrelationen durch.\n")
 
@@ -156,6 +162,8 @@ zdiff = round( zdiff, 2)
 
 zkrit = round(qnorm(0.975),2)
 
+cat("3. Statistische Entscheidung treffen\n\n")
+
 cat("Der empirische z-Wert ist ",zdiff,"\n")
 cat("Der kritische z-Wert (5%; zweiseitig) ist 1.96\n")
 cat("Da wir zweiseitig testen, prüfen wir ob der Betrag des empirischen z-Werts größer als der kritische Wert ist. Dies ist nicht der Fall. Die Nullhypothese wird beibehalten. Es gibt keinen signifikanten Unterschied zwischen den beiden Kohorten.\n")
@@ -165,21 +173,21 @@ cat("Da wir zweiseitig testen, prüfen wir ob der Betrag des empirischen z-Werts
 
 ## Aufgabe 3
 
-```{r}
+```{r corcaus, fig.cap="Comic über Korrelation und Kausalität. Quelle: xkcd.com; R. Munroe; verfügbar unter folgender Lizenz Attribution-NonCommercial 2.5 Generic (CC BY-NC 2.5)"}
 knitr::include_graphics("img/correlation.png")
 
 ```
 
 
 
-(Quelle: xkcd.com; R. Munroe; verfügbar unter folgender Lizenz Attribution-NonCommercial 2.5 Generic (CC BY-NC 2.5))
+
 
 Was ist hier so lustig?
 
 ```{r results="asis", eval=include_solution}
 cat(solution_header())
 
-cat("Eine Person erzählt der anderen, dass sie bisher immer dachte, dass eine Korrelation zwischen zwei Variablen bedeute, dass die eine Variable die andere kausal, also ursächlich, beinflusse. Im zweiten Panel erzählt sie weiter, dass sie in ihrer Statistik-Vorlesung gelernt habe, dass diese Implikation im Allgemeinen aber gar nicht stimme. Daraufhin entgegnet die linke Person, dass der Besuch der Statistik-Vorlesung also etwas gebracht hätte (im Sinne eines Lernerfolgs). Darauhin meint die erste Person: 'Nunja, vielleicht'. Der Witz besteht also darin, dass die erzählende Person in der Tat einen Lernerfolg hatte und nun so stark verinnerlicht hat, dass eine beobachtete Korrelation nicht gleich einem ursächlichen Zusammenhang ist, dass sie in Frage stellt, ob wirklich der Besuch der Vorlesung ursächlich für diese Erkenntnis war (da Erkenntnisgewinn und Vorlesungsbesuch von außen betrachtet zunächst lediglich korrelieren")
+cat("Eine Person erzählt der anderen, dass sie bisher immer dachte, dass eine Korrelation zwischen zwei Variablen bedeute, dass die eine Variable die andere kausal, also ursächlich, beeinflusse. Im zweiten Panel erzählt sie weiter, dass sie in ihrer Statistik-Vorlesung gelernt habe, dass diese Implikation im Allgemeinen aber gar nicht stimme. Daraufhin entgegnet die linke Person, dass der Besuch der Statistik-Vorlesung also etwas gebracht hätte (im Sinne eines Lernerfolgs). Darauhin meint die erste Person: 'Nunja, vielleicht'. Der Witz besteht also darin, dass die erzählende Person in der Tat einen Lernerfolg hatte und nun so stark verinnerlicht hat, dass eine beobachtete Korrelation nicht gleich einem ursächlichen Zusammenhang ist, dass sie in Frage stellt, ob wirklich der Besuch der Vorlesung ursächlich für diese Erkenntnis war (da Erkenntnisgewinn und Vorlesungsbesuch von außen betrachtet zunächst lediglich korrelieren")
 ```
 
 ## Aufgabe 4
@@ -202,17 +210,17 @@ Gegeben seien zwei Variablen, die hier nur $x$ und $y$ heißen. Es sei bekannt,
 dass deren Korrelation in einer Stichprobe $r= `r round(ct2$estimate,2)`$ sei. Die Stichprobengröße sei $N= `r nrow(x2)`$. Der kritische Wert einer t-Verteilung mit 140 Freiheitsgraden ist `r round( qt(p=0.975,140),2) `.
 Testen Sie, ob diese Korrelation von Null verschieden ist mit folgenden Schritten:
 
-a) Stellen Sie die Null- und Alternativhypothese in Worten auf
-b) Berechnen Sie die Prüfgröße
-c) Treffen Sie eine statistische Entscheidung
+1. Stellen Sie die Null- und Alternativhypothese in Worten auf
+2. Berechnen Sie die Prüfgröße
+3. Treffen Sie eine statistische Entscheidung
 
 ```{r results="asis", eval=include_solution, fig.width=5, fig.height=3}
 cat(solution_header())
 
 section("1. Hypothesen aufstellen")
 
-cat("$H_0$: Die wahre Korrelation ist Null.\n")
-cat("$H_1$: Die wahre Korrelation ist von Null verschieden.\n")
+cat("$H_0$: Die wahre Korrelation ist Null.\n\n")
+cat("$H_1$: Die wahre Korrelation ist von Null verschieden.\n\n")
 
 section("\n2. Prüfgröße berechnen")
 
@@ -223,7 +231,7 @@ erg = round( (r*sqrt(n-2))/sqrt(1-r^2) , 2 )
 
 cat("$$t=\\frac{",r,"\\cdot(",n,"-2)}{\\sqrt{1-",r,"^2 }}=",erg," $$\n")
 
-cat("Die Freiheitsgrade dieser t-Statistik sind n-2=",(n-2),".\n")
+cat("Die Freiheitsgrade dieser t-Statistik sind $n-2$=",(n-2),".\n\n")
 
 section("\n3. Statistische Entscheidung treffen")
 
@@ -233,15 +241,15 @@ cat("Da die empirische Prüfgröße betragsmäßig kleiner ist als der kritische
 
 ## Aufgabe 5
 
-Hier sehen Sie ein Punktewolke der Variablen $x$ und $y$ aus der vorherigen Aufgabe:
+Hier sehen Sie eine Punktewolke ("Scatterplot") der Variablen $x$ und $y$ aus der vorherigen Aufgabe:
 
-```{r}
+```{r fig.cap="Punktewolke in Form eines Dinosauriers. Quelle: datasauRus R Paket von Gillespie et al. (2025)."}
 datasauRus::datasaurus_dozen %>% filter(dataset=="dino") %>% ggplot(ggplot2::aes(x=x,y=y))+ggplot2::geom_point()+facet_wrap(~dataset)+#+jaspGraphs::themeJaspRaw()
 scale_x_continuous(limits=c(0,100))+
   scale_y_continuous(limits=c(0,100))
 ```
 
-Wie interpretieren Sie das Ergebnis ihres vorherigen Signifikanztests im Lichte dieser Darstellung?
+Wie interpretieren Sie das Ergebnis Ihres vorherigen Signifikanztests im Lichte dieser Darstellung?
 
 ```{r results="asis", eval=include_solution, fig.width=5, fig.height=3}
 cat(solution_header())
