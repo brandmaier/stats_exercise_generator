@@ -12,6 +12,22 @@ mainfont: SourceSansPro
 header-includes:
    - \usepackage[T1]{fontenc}
    - \usepackage{booktabs}
+   - \usepackage{tcolorbox}
+   - \usepackage{xcolor}
+   - \usepackage{setspace}
+   - \setstretch{1.05}
+   - \setlength{\parskip}{6pt}
+   - \setlength{\parindent}{0pt}
+   - \usepackage{caption}
+   - \captionsetup[table]{position=bottom}
+   - \usepackage[ngerman]{babel}
+   - \usepackage{microtype}
+   - \usepackage{fancyhdr}
+   - \pagestyle{fancy}
+   - \fancyhf{}
+   - \lhead{Statistik II}
+   - \chead{Allgemeines lineares Modell}
+   - \rhead{Prof. Brandmaier}
 ---
 
 
@@ -31,11 +47,29 @@ empty_str <- "\\ "
 library(fastDummies)
 
 ```
+`r start_intro_box()`
+Dieses Arbeitsblatt dient dazu, Rechenaufgaben zum Allgemeinen Linearen Modell (ALM) zu üben.
 
+\textbf{Voraussetzungen:}
+\begin{itemize}
+\item Grundlagen der einfachen und multiplen Regression
+\item Verständnis von Dummy-Codierung
+\item Grundlagen des Hypothesentestens
+\end{itemize}
+\textbf{Sie üben heute:}
+\begin{itemize}
+\item Kategoriale Prädiktoren dummy-codieren
+\item Regressionskoeffizienten interpretieren
+\item Modelle vergleichen mit dem F-Test
+\item Adjustiertes $R^2$ berechnen
+\end{itemize}
+\end{tcolorbox}
 # Aufgabe 1 - Dummy-Codierung
 
-In einer Studie wurde erhoben, mit welchem Verkehrsmittel Studierende zur Uni gelangen. Die vier Antwortmöglichkeiten waren: zu Fuß, Fahrrad, Öffentlich, oder Anders. Damit dieses Merkmal als Prädiktor in einer Regression benutzt werden kann, soll es dummy-codiert werden. Die Referenzkategorie soll "Fahrrad" sein. Erstellen Sie eine Dummy-Codierung und tragen Sie diese in folgende Tabelle ein. In dieser Tabelle finden Sie die Daten, die für das Merkmal "Verkehrsmittel" erhoben wurden, in der ersten Spalte. Nutzen Sie die übrigen Spalten, um die Dummy-Codierung zu erstellen. Tragen Sie aussagekräftige Namen für die übrigen Spalten ein.
+In einer Studie wurde erhoben, mit welchem Verkehrsmittel Studierende zur Uni gelangen. Die vier Antwortmöglichkeiten waren: zu Fuß, Fahrrad, Öffentlich, oder Anders. Damit dieses Merkmal als Prädiktor in einer Regression benutzt werden kann, soll es dummy-codiert werden. Die Referenzkategorie soll "Fahrrad" sein. Erstellen Sie eine Dummy-Codierung und tragen Sie diese in folgende Tabelle ein.
 
+In dieser Tabelle finden Sie die Daten, die für das Merkmal "Verkehrsmittel" erhoben wurden, in der ersten Spalte. Nutzen Sie die übrigen Spalten, um die Dummy-Codierung zu erstellen. Tragen Sie aussagekräftige Namen für die übrigen Spalten ein.
+\newpage
 ```{r, echo=FALSE}
 set.seed(4359)
 N <- 12
@@ -51,13 +85,8 @@ result <- result[,-3]
 
 
 ```{r results="asis", echo=FALSE}
-
 rdisplay <- result
-
-if (include_solution) {
-
-} else {
-  # wipe solution and leave some space for answers
+if (!include_solution) {
   invisible_space <- " "
   rdisplay[,-1]<-paste0(rep(invisible_space,8),sep="",collapse = "")
   names(rdisplay)[2:4]<-"___________"
@@ -67,8 +96,7 @@ if (include_solution) {
 ```{r results="asis"}
 if (include_solution)
   solution_header()
-
-knitr::kable(rdisplay, booktabs = FALSE)
+knitr::kable(rdisplay, booktabs = FALSE, caption = "Dummy-Codierung des Merkmals Verkehrsmittel")
 ```
 
 
@@ -96,37 +124,35 @@ colnames(cfs)<-c("Schätzer","Standardfehler","t-Wert","p-Wert")
 
 cfs <- round(cfs,2)
 
-knitr::kable(cfs, booktabs=TRUE)
+knitr::kable(cfs, booktabs=TRUE, caption = "Regressionsergebnisse der Zufriedenheit mit dem Weg zur Universität")
 ```
 
 Ferner ergab sich $R^2=`r r2 `$ als Modellgütemaß.
 
 a) Wie interpretiert man hier nun Regressionskonstante und -gewichte?
+b) Welche Prädiktoren haben einen signifikanten Einfluss?
+c) Berechnen Sie das adjustierte $R^2$ aus den gegebenen Informationen.
 
 ```{r, eval=include_solution, results="asis"}
 ests <- round(coef(regmod),2)
-
 solution_header()
-
+cat("a) ")
 cat("Die Regressionskonstante entspricht dem durchschnittlichen Wert der Referenzkategorie, die hier 'Fahrrad' sein sollte.",
     "Wir entnehmen der Tabelle also, dass die durchschnittliche Zufriedenheit der Fahrradfahrer ", ests[1], " Skalenpunkte ist.",
     "Die Regressionsgewichte entsprechen nun den Unterschieden der jeweiligen Kategorien zur Referenzkategorie, d.h., dass",
     " Fußgänger beispielsweise ", abs(ests[4]), "Punkte ",ifelse(ests[4]>0,"mehr","weniger")," zufrieden sind als Fahrradfahrer.",
-    "Daraus folgt, dass die Zufriedenheit von Fußgängern ",ests[1],"+(",ests[4],")=",(ests[1]+ests[4])," beträgt.")
+    paste0("Daraus folgt, dass die Zufriedenheit von Fußgängern ", ests[1], " + (", ests[4], ") = ", (ests[1]+ests[4]), " beträgt."))
+
+cat("\n\nb) ")
+cat("Keiner der Prädiktoren hat einen signifikanten Einfluss, da alle p>0.05.")
+
+
+cat("\n\nc) ")
+cat("Adjustiertes Bestimmtheitsmaß berechnen: ")
+cat("\\vspace{-1cm}")
 ```
-b) Welche Prädiktoren haben einen signifikaten Einfluß?
 
 ```{r, eval=include_solution, results="asis"}
-solution_header()
-cat("Keiner der Prädiktoren hat einen signifikaten Einfluß, da alle p>0.05.")
-```
-
-
-c) Berechnen Sie das adjustierte $R^2$ aus den gegebenen Informationen.
-
-```{r, eval=include_solution, results="asis"}
-solution_header()
-
 k <-  length(regmod$coefficients)-1
 
  #r2 <- round(model$r2,2)
@@ -158,12 +184,22 @@ x <- list(df1=df1, df2=df2, alpha=0.05, Fcrit=round(qf(0.95, df1, df2),2))
 
 ``` 
 
-Das obengenannte Modell soll verglichen werden mit einem Regressionsmodell, in das noch zwei weitere Prädiktoren aufgenommen werden. Man möchte prüfen, ob die Vorhersagekraft des Modells verbessert werden kann, indem man die Merkmale Außentemperatur und Luftfeuchtigkeit mitaufnimmt. Dieses alternative Modell hat eine geschätzte Modellgüte von $R^2=`r r22`$. Ist das Modell signifikant besser oder sind die Daten plausibel unter der Annahme, dass die Modelle in Wahrheit gleich gut vorhersagen? Führen Sie einen Modellvergleich rechnerisch durch und treffen Sie eine Entscheidungin Bezug auf die Nullhypothese. 
+Das obengenannte Modell soll verglichen werden mit einem Regressionsmodell, in das noch zwei weitere Prädiktoren aufgenommen werden. Man möchte prüfen, ob die Vorhersagekraft des Modells verbessert werden kann, indem man die Merkmale Außentemperatur und Luftfeuchtigkeit mitaufnimmt. Dieses alternative Modell hat eine geschätzte Modellgüte von $R^2=`r r22`$. 
+
+Ist das Modell signifikant besser oder sind die Daten plausibel unter der Annahme, dass die Modelle in Wahrheit gleich gut vorhersagen? Führen Sie einen Modellvergleich rechnerisch durch und treffen Sie eine Entscheidung in Bezug auf die Nullhypothese.
+
 `r f_crit(x)`
 
 ```{r, eval=include_solution, results="asis"}
 solution_header()
+section("1. Hypothesen aufstellen")
+wrap_math_block("H_0: R^2_u = R^2_e \\text{ (Die zusätzlichen Prädiktoren verbessern die Vorhersage nicht.)}")
+wrap_math_block("H_1: R^2_u > R^2_e \\text{ (Die zusätzlichen Prädiktoren verbessern die Vorhersage.)}")
+cat("\n\n")
+cat("\\vspace{0.5cm}\n")
 
+section("2. Prüfgröße berechnen")
+cat("\\vspace{-0.5cm}\n")
 modelComparison <- function(m1, m2) {
   r2u <-  round(summary(m1)$r.squared,2)
   r2e <-  round(summary(m2)$r.squared,2)
@@ -183,7 +219,9 @@ wrap_math_flalign(modelComparison(regmod2, regmod))
 
 # in R:
 #  anova(regmod, regmod2)
-
+cat("\n\n")
+cat("\\vspace{0.5cm}\n")
+section("3. Statistische Entscheidung treffen")
 cat("Da der empirische F-Wert kleiner als der kritische F-Wert ist, behalten wir die Nullhypothese bei. Wir haben keinen signifikanten Unterschied zwischen den beiden Modellen gefunden. Temperatur und Luftfeuchtigkeit haben gemeinsam keinen signifikanten Beitrag. Aufgrund des Parsimonitätsprinzips behalten wir das ursprüngliche Modell bei.")
 
 ```
@@ -196,3 +234,4 @@ cat("Da der empirische F-Wert kleiner als der kritische F-Wert ist, behalten wir
 <!-- ``` -->
 
 <!-- Welche Vorhersage macht das Modell für eine Person -->
+
