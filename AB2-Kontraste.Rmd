@@ -10,8 +10,24 @@ mainfont: SourceSansPro
 header-includes:
    - \usepackage[T1]{fontenc}
    - \usepackage{booktabs}
+   - \usepackage[ngerman]{babel}
+   - \usepackage{caption}
+   - \captionsetup[table]{position=bottom}
+   - \usepackage{tcolorbox}
+   - \usepackage{xcolor}
+   - \usepackage{setspace}
+   - \setstretch{1.05}
+   - \setlength{\parskip}{6pt}
+   - \setlength{\parindent}{0pt}
+   - \usepackage{microtype}
+   - \usepackage{fancyhdr}
+   - \usepackage{needspace}
+   - \pagestyle{fancy}
+   - \fancyhf{}
+   - \lhead{Statistik II}
+   - \chead{Kontrastanalyse}
+   - \rhead{Prof. Brandmaier}
 ---
-
 ```{r setup, include=TRUE, results = "hide", eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 library(tidyverse)
 knitr::opts_chunk$set(echo = FALSE)
@@ -26,6 +42,22 @@ empty_str <- "\\ "
 
 ```
 
+`r start_intro_box()`
+Dieses Arbeitsblatt dient dazu, Rechenaufgaben zur Kontrastanalyse zu üben.
+
+\textbf{Voraussetzungen:}
+\begin{itemize}
+\item Verständnis der einfaktoriellen Varianzanalyse
+\item Grundlagen der Inferenzstatistik
+\end{itemize}
+\textbf{Sie üben heute:}
+\begin{itemize}
+\item Kontraste formulieren und berechnen
+\item Gerichtete und ungerichtete Hypothesen unterscheiden
+\item Orthogonalität von Kontrasten prüfen
+\end{itemize}
+\end{tcolorbox}
+
 
 # Aufgabe 1
 ```{r}
@@ -35,13 +67,19 @@ alpha <- 0.05
 
 aov1 <- generate_anova(factor_level_names = c("Eigene Texte","Fremde Texte", "Fotos","Videos"), within = 3, between=c(4,3,9.2,5.5), obs_round = 1, num.facs = 4, num.obs.per.fac = 5,alpha=alpha)
 ```
-In einer Studie wurde untersucht, inwiefern unterschiedliche Bereitstellungsformen von Social-Media-Inhalten die Beliebtheit von Content-Ersteller\*innen auf einer Fotografieplatform beeinflusst. Konkret wurden Proband\*innen randomisiert in verschiedene Gruppen aufgeteilt, die Social-Media-Inhalte nur über eine der vier Formen verbreiten sollten (Eigene Texte, Übernahme fremder Texte, eigene Fotos, eigene Videos). Als abhängige Variable wurde die Anzahl der _likes_ für die Inhalte der Proband\*innen erhoben. Eine einfaktorielle Varianzanalyse zeigte signifikante Unterschiede zwischen den vier Bedingungen. Dabei waren folgende Faktorstufenmittelwerte gefunden worden:
-```{r}
-knitr::kable( data.frame(aov1$factor_level_names, aov1$factor_means),
-              col.names = c("Bedingung","Mittelwert")) #%>% kableExtra::kable_styling(latex_options = c("hold_position"))
+In einer Studie wurde untersucht, inwiefern unterschiedliche Bereitstellungsformen von Social-Media-Inhalten die Beliebtheit von Content-Ersteller:innen auf einer Fotografieplatform beeinflusst. Konkret wurden Proband:innen randomisiert in verschiedene Gruppen aufgeteilt, die Social-Media-Inhalte nur über eine der vier Formen verbreiten sollten (Eigene Texte, Übernahme fremder Texte, eigene Fotos, eigene Videos). Als abhängige Variable wurde die Anzahl der _Likes_ für die Inhalte der Proband:innen erhoben. Eine einfaktorielle Varianzanalyse zeigte signifikante Unterschiede zwischen den vier Bedingungen. Dabei waren folgende Faktorstufenmittelwerte gefunden worden:
+```{r tab.cap="Auswirkung des Typs der Social-Media-Inhalte auf die Anzahl der Likes (Mittelwerte) von Content-Ersteller:innen"}
+knitr::kable(data.frame(aov1$factor_level_names, aov1$factor_means),
+             col.names = c("Typ der Social-Media-Inhalte","Anzahl der likes"))
 ```
 
-Außerdem ist die mittlere Innerhalb-Quadratsumme bekannt: $MQS_{inn}=`r aov1$mqs_wth`$ mit Freiheitsgraden $df_{inn}=`r aov1$df2`$. In jeder Bedingung wurden `r aov1$nz` Personen beobachtet. Das Signifikanzniveau sei `r print_alpha(alpha)`.
+Außerdem sind bekannt:
+\begin{itemize}
+\item Mittlere Innerhalb-Quadratsumme: $MQS_{inn} = `r aov1$mqs_wth`$
+\item Freiheitsgrade: $df_{inn} = `r aov1$df2`$
+\item Anzahl Personen pro Bedingung: `r aov1$nz`
+\item Signifikanzniveau: `r paste0(alpha*100, "\\%")`
+\end{itemize}
 ```{r results="asis"}
 ctr_coeff1 <- c(-1,-1,1,1)
 ctr_coeff2 <- c(0,0,-1,1)
@@ -57,10 +95,12 @@ ctr2 <- generate_contrast(aov1, ctr_coeff2, directed=TRUE)
 
 Die folgenden zwei spezifischen Hypothesen standen bereits vor der Datenerhebung fest und sollen mittels einer Kontrastanalyse untersucht werden:
 
-1. Gibt es Unterschiede in der Beliebheit, wenn statt Textinhalten Fotos oder Videos geteilt werden?
-2. Ist die Beliebtheit größer in der Gruppe, die Videos teilt, als in der Gruppe, die Bilder teilt?
+a) Gibt es Unterschiede in der Beliebtheit, wenn statt Textinhalten Fotos oder Videos geteilt werden?
+b) Ist die Beliebtheit größer in der Gruppe, die Videos teilt, als in der Gruppe, die Bilder teilt?
 
-Führen Sie die Kontrastanalyse durch. Entscheiden Sie anhand der Fragestellung, ob es sich um einen gerichteten oder ungerichteten Test handeln muss. Sind die beiden Kontraste orthogonal?
+Führen Sie die Kontrastanalyse durch. Entscheiden Sie anhand der Fragestellung, ob es sich um einen gerichteten oder ungerichteten Test handeln muss. 
+
+c) Sind die beiden Kontraste orthogonal?
 
 ```{r results="asis"}
 cat("Für den ersten Kontrast gilt: ",f_crit(ctr1))
@@ -70,35 +110,51 @@ cat("Für den zweiten Kontrast gilt (beim gerichteten Testen wird das doppelte A
 
 ```{r results="asis", eval=include_solution}
 solution_header()
-
-
-
-cat("Zum ersten Kontrast: Aufgrund der Fragestellung handelt es sich offenbar um eine ungerichtete Hypothese. Geprüft werden laut Text lediglich Unterschiede (ohne Richtung).\n")
+cat("\\begin{itemize}\n")
+cat("\\item[a)] Aufgrund der Fragestellung handelt es sich offenbar um eine ungerichtete Hypothese. Geprüft werden laut Text lediglich Unterschiede (ohne Richtung).\n\n")
+cat("\\end{itemize}\n")
+section("1. Hypothesen aufstellen")
 cat(contrast_hypotheses(ctr1,0))
-cat("\n")
-cat(contrast_qs(ctr1))
-cat("\n")
+section("2. Kontrast aufstellen")
+ctr <- ctr1$ctr
+ln <- length(ctr)
+cat(paste0("$$\\Lambda=", paste0(ctr, "\\cdot \\mu_", 1:ln, collapse="+"), "$$"))
+section("3. Kontrastwert berechnen")
+cat(paste0("$$L=", paste0(ctr, "\\cdot", ctr1$aov$factor_means, collapse="+"), "=", ctr1$L, "$$"))
+section("4. Quadratsumme berechnen")
+cat(paste0("$$QS_{Kontrast}=\\frac{L^2}{\\frac{1}{n_z} \\cdot \\sum^J_{j=1}{K^2_j}}=\\frac{", ctr1$L2, "}{", ctr1$ksum, "}=", ctr1$qs_kontrast, "$$"))
+section("5. Prüfgröße berechnen")
 cat(contrast_F(ctr1))
-cat("\n")
+section("6. Statistische Entscheidung treffen")
 cat(f_crit(ctr1))
-cat("Wir lehnen die Nullhypothese ab. Es gibt signifikante Unterschiede zwischen Text- und Nicht-Text-Inhalten.")
-cat("\n\n")
-cat("Zum zweiten Kontrast: Aufgrund der Fragestellung handelt es sich um eine gerichtete Hypothese. Nur Unterschiede in eine Richtung können zu einem Ablehnen der Nullhypothese führen.")
+cat("Wir lehnen die Nullhypothese ab. Es gibt signifikante Unterschiede zwischen Text- und Nicht-Text-Inhalten.\n\n")
+cat("\\begin{itemize}\n")
+cat("\\item[b)] Aufgrund der Fragestellung handelt es sich um eine gerichtete Hypothese. Nur Unterschiede in eine Richtung können zu einem Ablehnen der Nullhypothese führen.\n\n")
+cat("\\end{itemize}\n")
+section("1. Hypothesen aufstellen")
 cat(contrast_hypotheses(ctr2,1))
-cat("\n")
-cat(contrast_qs(ctr2))
-cat("\n")
+section("2. Kontrast aufstellen")
+ctr <- ctr2$ctr
+ln <- length(ctr)
+cat(paste0("$$\\Lambda=", paste0(ctr, "\\cdot \\mu_", 1:ln, collapse="+"), "$$"))
+section("3. Kontrastwert berechnen")
+cat(paste0("$$L=", paste0(ctr, "\\cdot", ctr2$aov$factor_means, collapse="+"), "=", ctr2$L, "$$"))
+section("4. Quadratsumme berechnen")
+cat(paste0("$$QS_{Kontrast}=\\frac{L^2}{\\frac{1}{n_z} \\cdot \\sum^J_{j=1}{K^2_j}}=\\frac{", ctr2$L2, "}{", ctr2$ksum, "}=", ctr2$qs_kontrast, "$$"))
+section("5. Prüfgröße berechnen")
 cat(contrast_F(ctr2))
-cat("\n")
+section("6. Statistische Entscheidung treffen")
 cat(f_crit(ctr2))
-cat("Wir lehnen die Nullhypothese aber *nicht* ab, da der Kontrast in die falsche Richtung zeigt! Achtung: die Richtung der gerichteten Hypothese kann direkt vom Kontrast $L$ abgelesen werden. Es ist also hier gar nicht nötig, die QS und Prüfgröße zu berechnen.")
-cat("\n\n\n")
+cat("Wir lehnen die Nullhypothese aber *nicht* ab, da der Kontrast in die falsche Richtung zeigt! Achtung: die Richtung der gerichteten Hypothese kann direkt vom Kontrast $L$ abgelesen werden. Es ist also hier gar nicht nötig, die QS und Prüfgröße zu berechnen.\n\n")
+cat("\\begin{itemize}\n")
+cat("\\item[c)]")
 cat(orthogonal(ctr1, ctr2))
+cat("\\end{itemize}\n")
 ```
 
 # Aufgabe 2
 
-Wir betrachten nochmal die Aufgabe des Arbeitsblattes "Einfaktorielle Varianzanalyse", in der _working alliance_ (also das Vertrauen und die Bereitschaft zur Zusammenarbeit) von Patienten in einer psychiatrischen Klinik untersucht wurde.
+Wir betrachten nochmal die Aufgabe des Arbeitsblattes "Einfaktorielle Varianzanalyse", in der _Working Alliance_ (also das Vertrauen und die Bereitschaft zur Zusammenarbeit) von Patienten in einer psychiatrischen Klinik untersucht wurde.
 ```{r}
 alpha = 0.01
 set.seed(34059)
@@ -122,35 +178,57 @@ aov1 <- generate_anova(factor_level_names = c("Abhängigkeitssyndrom","Angststö
 ```
 
 Dabei waren folgende Faktorstufenmittelwerte gefunden worden:
-```{r}
-knitr::kable( data.frame(aov1$factor_level_names, aov1$factor_means),col.names = c("Störung","Mittelwert"))# %>% kableExtra::kable_styling(latex_options = c("hold_position"))
+```{r tab.cap="Selbstangaben der Patient:innen zur Working Alliance (Mittelwerte) in der Therapie nach Diagnose"}
+knitr::kable(data.frame(aov1$factor_level_names, aov1$factor_means),
+             col.names = c("Diagnose", "Working-Alliance-Score"))
 
 ctr_coeff1 <- c(-1,1,-1,+1)
 ctr1 <- generate_contrast(aov1,ctr_coeff1, directed=TRUE, alpha=alpha)
 
 ```
 
-Außerdem ist die mittlere Innerhalb-Quadratsumme bekannt: $MQS_{inn}=`r aov1$mqs_wth`$  mit Freiheitsgraden $df_{inn}=`r aov1$df2`$. In jeder Bedingung wurden `r aov1$nz` Personen beobachtet. Als Signifikanzniveau wurde `r print_alpha(alpha)` festgelegt. 
+Außerdem sind bekannt:
+\begin{itemize}
+\item Mittlere Innerhalb-Quadratsumme: $MQS_{inn}=`r aov1$mqs_wth`$
+\item Freiheitsgrade: $df_{inn}=`r aov1$df2`$
+\item Anzahl Personen pro Bedingung: `r aov1$nz`
+\item Signifikanzniveau: `r paste0(alpha*100, "\\%")`
+\end{itemize}
+
 ```{r results="asis"}
 cat("Für den Kontrast gilt (beim gerichteten Testen wird das doppelte Alpha angesetzt): ",f_crit(ctr1))
 ```
 
-Im Vorfeld gab es die Vermutung, dass die _working alliance_ von Personen mit einer emotional instabilen Persönlichkeitsstörung oder einer Angststörung höher ist als bei den anderen untersuchten Störungen. Formulieren Sie das passende Hypothesenpaar und testen Sie dies in einem Kontrast. Formulieren Sie zusätzlich noch einen Kontrast, der orthogonal zu dem ersten ist.
+Im Vorfeld gab es die Vermutung, dass die _Working Alliance_ von Personen mit einer emotional instabilen Persönlichkeitsstörung oder einer Angststörung höher ist als bei den anderen untersuchten Störungen.
+\begin{itemize}
+\item[a)] Formulieren Sie das passende Hypothesenpaar und testen Sie dies in einem Kontrast.
+\item[b)] Formulieren Sie zusätzlich noch einen Kontrast, der orthogonal zu dem ersten ist.
+\end{itemize}
  
 ```{r results="asis", eval=include_solution}
 cat(solution_header())
-
+cat("\\begin{itemize}\n")
+cat("\\item[a)]\n\n")
+cat("\\end{itemize}\n")
+section("1. Hypothesen aufstellen")
 cat(contrast_hypotheses(ctr1,1))
-cat("\n")
-cat(contrast_qs(ctr1))
-
-cat("\n")
+section("2. Kontrast aufstellen")
+ctr <- ctr1$ctr
+ln <- length(ctr)
+cat(paste0("$$\\Lambda=", paste0(ctr, "\\cdot \\mu_", 1:ln, collapse="+"), "$$"))
+section("3. Kontrastwert berechnen")
+cat(paste0("$$L=", paste0(ctr, "\\cdot", ctr1$aov$factor_means, collapse="+"), "=", ctr1$L, "$$"))
+section("4. Quadratsumme berechnen")
+cat(paste0("$$QS_{Kontrast}=\\frac{L^2}{\\frac{1}{n_z} \\cdot \\sum^J_{j=1}{K^2_j}}=\\frac{", ctr1$L2, "}{", ctr1$ksum, "}=", ctr1$qs_kontrast, "$$"))
+section("5. Prüfgröße berechnen")
 cat(contrast_F(ctr1))
-cat("\n")
+section("6. Statistische Entscheidung treffen")
 cat(f_crit(ctr1))
-cat("Wir können die Nullhypothese ablehnen.")
-cat("\n\n")
+cat("Wir können die Nullhypothese ablehnen.\n\n")
+cat("\\begin{itemize}\n")
+cat("\\item[b)]\n\n")
 cat("Es gibt verschiedene Möglichkeiten für weitere, orthogonale Kontraste. Ein Beispiel wäre (-1,0,+1,0) oder (0,-1,0,+1). Diese beiden sind so konstruiert, dass Sie Unterschiede innerhalb der Gruppen testen, die im ersten Kontrast definiert sind. Dies führt immer zu einem Kontrast, der zu dem ersten orthogonal ist.")
+cat("\\end{itemize}\n")
 ```
 
 ## Aufgabe 3
@@ -169,31 +247,41 @@ ctr1 <- generate_contrast(aov1,ctr_coeff1, directed=TRUE, alpha=alpha)
 
 Im Rahmen der Statistik-Vorlesung wurde die Zufriedenheit mit der Vorlesung erhoben. Die Zufriedenheit sei auf einer Skala zwischen 0 und 100 erhoben worden, die wir als intervallskaliert annehmen. Die Teilnehmenden kamen aus sechs Kursen. Im Rahmen einer Varianzanalyse wurde die Nullhypothese "Es gibt keine Mittelwertsunterschiede zwischen den sechs Gruppen" abgelehnt (auf einem Signifikanzniveau von `r print_alpha(alpha)`). Folgende Gruppenmittelwerte sind bekannt:
 
-```{r}
-knitr::kable( data.frame(aov1$factor_level_names, aov1$factor_means),col.names = c("Zufriedenheit","Mittelwert"))
+```{r tab.cap="Zufriedenheit (Mittelwerte) von Studierenden mit der Statistik-Vorlesung nach Kurs"}
+knitr::kable(data.frame(aov1$factor_level_names, aov1$factor_means),
+             col.names = c("Kurs","Zufriedenheit"))
 ```
+Außerdem sind bekannt:
+\begin{itemize}
+\item Mittlere Innerhalb-Quadratsumme: $MQS_{inn}=`r aov1$mqs_wth`$
+\item Freiheitsgrade: $df_{inn}=`r aov1$df2`$
+\item Anzahl Personen pro Bedingung: `r aov1$nz`
+\item Signifikanzniveau: `r paste0(alpha*100, "\\%")`
+\end{itemize}
 
-Außerdem ist die mittlere Innerhalb-Quadratsumme aus der Varianzanalyse bekannt: $MQS_{inn}=`r aov1$mqs_wth`$  mit Freiheitsgraden $df_{inn}=`r aov1$df2`$. In jeder Bedingung wurden `r aov1$nz` Personen beobachtet. Als Signifikanzniveau wurde `r print_alpha(alpha)` festgelegt. 
 ```{r results="asis"}
 cat(" Für den Kontrast gilt (beim gerichteten Testen wird das doppelte Alpha angesetzt): ",f_crit(ctr1))
 ```
-Die Gruppen mit geraden Kursnummern fanden immer Montags statt und die ungeraden immer Freitags. Es soll nun (einseitig!) geprüft werden, ob die "geraden" Kurse zufriedener waren als die "ungeraden" Kurse. Führen sie die entsprechende Kontrastanalyse durch.
+
+Die Gruppen mit geraden Kursnummern fanden immer Montags statt und die ungeraden immer Freitags. Es soll nun (einseitig!) geprüft werden, ob die "geraden" Kurse zufriedener waren als die "ungeraden" Kurse. Führen Sie die entsprechende Kontrastanalyse durch.
 
 
 
 ```{r results="asis", eval=include_solution}
 cat(solution_header())
-
-
-
+section("1. Hypothesen aufstellen")
 cat(contrast_hypotheses(ctr1,1))
-cat("\n")
-cat(contrast_qs(ctr1))
-
-cat("\n")
+section("2. Kontrast aufstellen")
+ctr <- ctr1$ctr
+ln <- length(ctr)
+cat(paste0("$$\\Lambda=", paste0(ctr, "\\cdot \\mu_", 1:ln, collapse="+"), "$$"))
+section("3. Kontrastwert berechnen")
+cat(paste0("$$L=", paste0(ctr, "\\cdot", ctr1$aov$factor_means, collapse="+"), "=", ctr1$L, "$$"))
+section("4. Quadratsumme berechnen")
+cat(paste0("$$QS_{Kontrast}=\\frac{L^2}{\\frac{1}{n_z} \\cdot \\sum^J_{j=1}{K^2_j}}=\\frac{", ctr1$L2, "}{", ctr1$ksum, "}=", ctr1$qs_kontrast, "$$"))
+section("5. Prüfgröße berechnen")
 cat(contrast_F(ctr1))
-cat("\n")
+section("6. Statistische Entscheidung treffen")
 cat(f_crit(ctr1))
-cat("Wir können die Nullhypothese ablehnen.")
-cat("\n\n")
+cat("Wir können die Nullhypothese ablehnen.\n\n")
 ```
