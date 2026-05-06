@@ -27,7 +27,9 @@ header-includes:
   - \chead{Hauptkomponentenanalyse}
   - \rhead{Prof. Brandmaier}
 ---
-
+```{r, include=FALSE}
+source("R/helper.R")
+```
 `r start_intro_box()`
 Dieses Arbeitsblatt dient dazu, Rechenaufgaben zur Hauptkomponentenanalyse zu üben.
 
@@ -101,13 +103,11 @@ knitr::kable(df,caption = "Faktorladungsmatrix",booktabs=TRUE ) #%>% kableExtra:
 
 Führen Sie folgende Aufgaben der Reihe nach aus:
 
-a) Berechnen Sie die Kommunalitäten aller Items und die Eigenwerte aller Hauptkomponenten.
+1. Berechnen Sie die Kommunalitäten aller Items und die Eigenwerte aller Hauptkomponenten.
 
-b) Wieviel Varianz wird durch die erste Hauptkomponente erklärt? Und wieviel wird durch die ersten beiden gemeinsam erklärt?
+2. Wieviel Varianz wird durch die erste Hauptkomponente erklärt? Und wieviel wird durch die ersten beiden gemeinsam erklärt?
 
-c) Wie könnte man die Hauptkomponenten inhaltlich aussagekräftig benennen?
-
-d) In JASP ist von der "Uniqueness" der Items die Rede? Wie verhält sich diese zur Kommunalität?
+3. Wie könnte man die Hauptkomponenten inhaltlich aussagekräftig benennen?
 
 ```{r results="asis", eval=include_solution}
 cat(solution_header())
@@ -143,16 +143,16 @@ Wird eine Hauptkomponentenanalyse eingesetzt, betrifft eine wesentliche Entschei
 Beantworten Sie zu diesem Thema folgende Fragen:
 
 a) Was ist der Scree-Test und was ist die wesentliche Kritik an dessen Verwendung zur Bestimmung der Anzahl der Hauptkomponenten?
-
-```{r results="asis", eval=include_solution}
-cat(solution_header())
-cat("Im Eigenwert-Diagramm wird ein Knick gesucht. Dieser Knickpunkt bestimmt dann die Anzahl der zu behaltenden Hauptkomponenten. Das Kriterium ist unscharf definiert. Es ist unklar, wo der sogenannte 'Knick' i m Diagramm sein soll.")
-```
-
 b) Nennen Sie ein weiteres Kriterium zur Bestimmung der Anzahl der Hauptkomponenten. Wie wird es durchgeführt?
 
 ```{r results="asis", eval=include_solution}
 cat(solution_header())
-cat("Kaiser-Gutmann-Kriterium (man behält alle Hauptkomponenten mit Eigenwert größer als 1) oder Parallelanalyse (durch ein Simulationsverfahren werden zufällige Datensätze mit identischer Anzahl Personen und Variablen erzeugt und dann werden die entstehenden Eigenwerte gemittelt. Diese dienen dann als eine Grundlage zur Entscheidung, ob ein bestimmter beobachteter Eigenwert dann größer ist als der, den man bei zufälligen, unstrukturierten Daten erwarten würde.")
+
+cat("a) Im Eigenwert-Diagramm wird ein Knick gesucht. Dieser Knickpunkt bestimmt dann die Anzahl der zu behaltenden Hauptkomponenten. Das Kriterium ist unscharf definiert. Es ist unklar, wo der sogenannte 'Knick' i m Diagramm sein soll.")
+```
+
+
+```{r results="asis", eval=include_solution}
+cat("b) Kaiser-Gutmann-Kriterium (man behält alle Hauptkomponenten mit Eigenwert größer als 1) oder Parallelanalyse (durch ein Simulationsverfahren werden zufällige Datensätze mit identischer Anzahl Personen und Variablen erzeugt und dann werden die entstehenden Eigenwerte gemittelt. Diese dienen dann als eine Grundlage zur Entscheidung, ob ein bestimmter beobachteter Eigenwert dann größer ist als der, den man bei zufälligen, unstrukturierten Daten erwarten würde.")
 ```
 
