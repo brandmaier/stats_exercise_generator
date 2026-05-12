@@ -123,12 +123,12 @@ cat("Die totale Quadratsumme ergibt sich aus der Summe der beiden Quadratsummen"
 
 cat("$$QS_{inn}+QS_{zw}=",aov1$qs_wth,"+",aov1$qs_btw,"=",aov1$qs_tot,"$$")
 
-section("4. Mittleree Quadratsummen berechnen")
+section("4. Mittlere Quadratsummen berechnen")
 
 #wrap_math_block( mqs_solution(aov1) ) 
 wrap_math_flalign( mqs_solution(aov1) )
 
-section("5. Empirischen Prüfgröße berechnen")
+section("5. Empirische Prüfgröße berechnen")
 
 wrap_math_block( f_solution(aov1) )
 
