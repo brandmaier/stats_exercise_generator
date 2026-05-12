@@ -20,6 +20,7 @@ header-includes:
   - \setlength{\parindent}{0pt}
   - \usepackage{microtype}
   - \usepackage{fancyhdr}
+  - \usepackage{needspace}
   - \pagestyle{fancy}
   - \fancyhf{}
   - \lhead{Statistik II}
@@ -69,17 +70,21 @@ aov1 <- generate_anova(factor_level_names = c("Nähen","Tanzen","Gedichte"), wit
 ```
 
 In einer fiktiven Studie wurde untersucht, inwiefern sich verschiedene Freizeitbeschäftigungen auf das Wohlbefinden auswirken können. Dazu wurden 12 Proband\*innen, die vorher kein Hobby hatten, zufällig auf gleichgroße Gruppen aufgeteilt, die je ein unterschiedliches Hobby ausüben sollten. Eine Gruppe beschäftigte sich mit Nähen, eine Gruppe mit Tanzen, und eine Gruppe lernte Gedichte auswendig. Nach Ablauf von zwei Wochen, gaben die Proband\*innen ihr Wohlbefinden an (höhere Werte = höheres Wohlbefinden). Dies sind die beobachteten Werte:
-
+\needspace{10cm}
 ```{r tab.cap="Selbstberichtetes Wohlbefinden aufgeschlüsselt nach verschiedenen Hobbies. Jede Zahl entspricht dem Urteil einer Versuchsperson in der Studie."}
 data_table(aov1)
 ```
 
 Bearbeiten Sie folgende Aufgaben:
+Führen Sie eine einfaktorielle Varianzanalyse durch zur Beantwortung der Frage, ob sich das mittlere Wohlbefinden zwischen den Gruppen unterscheidet.
 
-a) Formulieren Sie die Nullhypothese und die Alternativhypothese.
-b) Führen Sie eine einfaktorielle Varianzanalyse durch zur Beantwortung der Frage, ob sich das mittlere Wohlbefinden zwischen den Gruppen unterscheidet. Berechnen Sie dazu alle notwendigen Mittelwerte, Quadratsummen, mittleren Quadratsummen und den F-Wert.
-c) Berechnen Sie die Effektgröße $\hat{\eta}^2$. 
-d) Treffen Sie eine statistische Entscheidung und formulieren Sie einen Antwortsatz.
+1. Formulieren Sie die Nullhypothese und die Alternativhypothese.
+2. Berechnen Sie dazu die notwendigen Mittelwerte.
+3. Berechnen Sie dazu die notwendigen Quadratsummen.
+4. Berechnen Sie dazu die notwendigen mittleren Quadratsummen.
+5. Berechnen Sie den den F-Wert.
+6. Berechnen Sie die Effektgröße $\hat{\eta}^2$. 
+7. Treffen Sie eine statistische Entscheidung und formulieren Sie einen Antwortsatz.
 
 ```{r results="asis"}
 cat(f_crit(aov1))
@@ -100,7 +105,7 @@ section("2. Gruppenmittelwerte berechnen")
   
 wrap_math_flalign(group_means_solution(aov1))
 
-section("3. Berechnung der Quadratsummen")
+section("3. Quadratsummen berechnen")
 
 cat("In der Formelsammlung finden wir:")
   
@@ -118,30 +123,30 @@ cat("Die totale Quadratsumme ergibt sich aus der Summe der beiden Quadratsummen"
 
 cat("$$QS_{inn}+QS_{zw}=",aov1$qs_wth,"+",aov1$qs_btw,"=",aov1$qs_tot,"$$")
 
-section("4. Berechnung der mittleren Quadratsummen")
+section("4. Mittlere Quadratsummen berechnen")
 
 #wrap_math_block( mqs_solution(aov1) ) 
 wrap_math_flalign( mqs_solution(aov1) )
 
-section("5. Berechnung der empirischen Prüfgröße")
+section("5. Empirische Prüfgröße berechnen")
 
 wrap_math_block( f_solution(aov1) )
 
 cat(f_crit(aov1),"\n\n")
 
-section("6. Berechnung der Effektstärke")
+section("6. Effektstärke berechnen")
 
 wrap_math_block(effect_solution(aov1))
 
-cat("Da der empirische F-Wert kleiner als der kritische F-Wert ist, behalten wir die Nullhypothese bei. ")
-cat("Wir finden keinen signifikanten Unterschied im Wohlbefinden zwischen den Gruppen.")
+section("7. Statistische Entscheidung treffen")
+cat(paste0("Da der empirische F-Wert kleiner als der kritische F-Wert ist, behalten wir die Nullhypothese bei. Wir finden keinen signifikanten Unterschied im Wohlbefinden zwischen den Gruppen. Die Effektstärke beträgt $\\hat{\\eta}^2 = ", round(aov1$qs_btw/aov1$qs_tot, 2), "$, was einem großen Effekt entspricht."))
 
 ```
 
 \begin{tcolorbox}[
-  colback=blue!5,
-  colframe=blue!50,
-  title= Erinnerung,
+  colback=orange!10,
+  colframe=orange!80,
+  title=Erinnerung,
   sharp corners,
   boxrule=0.5pt
 ]
@@ -169,7 +174,7 @@ aov1 <- generate_anova(factor_level_names = c("Abhängigkeitssyndrom","Angststö
 ```
 
 
-In einer Studie wurde die _Working Alliance_ (also das Vertrauen und die Bereitschaft zur Zusammenarbeit) von Patient:innen in einer psychiatrischen Klinik untersucht. Die durchführende Psychologin vermutet, dass sich die Patient:innen abhängig von ihrer Diagnose unterscheiden und möchte diese Vermutung statistisch absichern. Sie befragt je `r aov1$nz` Personen mit der gleichen Diagnose und bewertet ihre Working Alliance auf einer Skala von $1--20$. Dies sind die notierten Werte:
+In einer Studie wurde die _Working Alliance_ (also das Vertrauen und die Bereitschaft zur Zusammenarbeit) von Patient:innen in einer psychiatrischen Klinik untersucht. Die durchführende Psychologin vermutet, dass sich die Patient:innen abhängig von ihrer Diagnose unterscheiden und möchte diese Vermutung statistisch absichern. Sie befragt je `r aov1$nz` Personen mit der gleichen Diagnose und bewertet ihre Working Alliance auf einer Skala von $1\text{--}20$. Dies sind die notierten Werte:
 
 ```{r tab.cap="Working Alliance aufgeschlüsselt nach Diagnose."}
 data_table(aov1, longtable=FALSE)
@@ -183,7 +188,7 @@ cat(f_crit(aov1))
 ```
 
 ```{r, results="asis", eval=include_solution}
-cat("_Lösung:_")
+solution_header()
 
 section("1. Nullhypothese aufstellen")
 
@@ -208,9 +213,9 @@ cat("Die Nullhypothese wird verworfen, da der empirische F-Wert größer als der
 ```
 
 \begin{tcolorbox}[
-  colback=blue!5,
-  colframe=blue!50,
-  title= Erinnerung,
+  colback=orange!10,
+  colframe=orange!80,
+  title=Erinnerung,
   sharp corners,
   boxrule=0.5pt
 ]
@@ -225,7 +230,10 @@ groß sind im Vergleich zur Streuung innerhalb der Gruppen.
 
 Warum ist das Berichten von $\hat{\eta}^2$ als Effektstärkemaß problematisch? <!--Was könnte man alternativ berechnen? Führen Sie die Berechnung der Alternative für das obige Beispiel aus.-->
 
-`r if (isTRUE(include_solution)){ "_Lösung:_ \n Weil Eta-Quadrat ein verzerrter Schätzer ist. Im Allgemeinen weisst es einen zu optimistischen, also zu großen Effekt aus. Besser wäre ein korrigierter Schätzer, wie bspw. Omega-Quadrat."} `
+```{r, results="asis", eval=include_solution}
+solution_header()
+cat("Weil Eta-Quadrat ein verzerrter Schätzer ist. Im Allgemeinen weist es einen zu optimistischen, also zu großen Effekt aus. Besser wäre ein korrigierter Schätzer, wie bspw. Omega-Quadrat.")
+```
 
 
 # Aufgabe 4
@@ -246,8 +254,8 @@ cat("- Hat die Art der Belohnung (materiell vs. verbal vs. keine Belohnung) eine
 
 
 \begin{tcolorbox}[
-  colback=gray!8,
-  colframe=gray!60,
+  colback=orange!10,
+  colframe=orange!80,
   title=Erinnerung,
   sharp corners,
   boxrule=0.5pt
