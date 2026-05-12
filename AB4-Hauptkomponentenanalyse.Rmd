@@ -148,7 +148,7 @@ b) Nennen Sie ein weiteres Kriterium zur Bestimmung der Anzahl der Hauptkomponen
 ```{r results="asis", eval=include_solution}
 cat(solution_header())
 
-cat("a) Im Eigenwert-Diagramm wird ein Knick gesucht. Dieser Knickpunkt bestimmt dann die Anzahl der zu behaltenden Hauptkomponenten. Das Kriterium ist unscharf definiert. Es ist unklar, wo der sogenannte 'Knick' i m Diagramm sein soll.")
+cat("a) Im Eigenwert-Diagramm wird ein Knick gesucht. Dieser Knickpunkt bestimmt dann die Anzahl der zu behaltenden Hauptkomponenten. Das Kriterium ist unscharf definiert. Es ist unklar, wo der sogenannte 'Knick' im Diagramm sein soll.")
 ```
 
 
