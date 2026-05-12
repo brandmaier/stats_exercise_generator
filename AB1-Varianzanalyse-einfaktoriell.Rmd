@@ -174,7 +174,7 @@ aov1 <- generate_anova(factor_level_names = c("Abhängigkeitssyndrom","Angststö
 ```
 
 
-In einer Studie wurde die _Working Alliance_ (also das Vertrauen und die Bereitschaft zur Zusammenarbeit) von Patient:innen in einer psychiatrischen Klinik untersucht. Die durchführende Psychologin vermutet, dass sich die Patient:innen abhängig von ihrer Diagnose unterscheiden und möchte diese Vermutung statistisch absichern. Sie befragt je `r aov1$nz` Personen mit der gleichen Diagnose und bewertet ihre Working Alliance auf einer Skala von $1-20$. Dies sind die notierten Werte:
+In einer Studie wurde die _Working Alliance_ (also das Vertrauen und die Bereitschaft zur Zusammenarbeit) von Patient:innen in einer psychiatrischen Klinik untersucht. Die durchführende Psychologin vermutet, dass sich die Patient:innen abhängig von ihrer Diagnose unterscheiden und möchte diese Vermutung statistisch absichern. Sie befragt je `r aov1$nz` Personen mit der gleichen Diagnose und bewertet ihre Working Alliance auf einer Skala von $1\text{--}20$. Dies sind die notierten Werte:
 
 ```{r tab.cap="Working Alliance aufgeschlüsselt nach Diagnose."}
 data_table(aov1, longtable=FALSE)
