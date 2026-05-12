@@ -118,7 +118,7 @@ dat <- data.frame(anz_freunde, anz_follower, happy)
 model <- generate_multipleregression(lm(happy~.,dat))
 ```
 
-In einer empirischen Studie wurde untersucht, inwieweit die Lebenszufriedenheit durch die Anzahl der Social-Media-Follower der und Freunde im echten Leben vorhergesagt werden kann. Dazu wurde als abhängige Variable die Lebenszufriedenheit untersucht (metrische Skala von 0--100). Die unabhängigen Variablen waren Anzahl der Freunde  (anz_freunde) und Anzahl der Instagram-Follower (Variablenname: anz_follower). Untersucht wurde eine Stichprobe von $N=`r N`$ Personen.
+In einer empirischen Studie wurde untersucht, inwieweit die Lebenszufriedenheit durch die Anzahl der Social-Media-Follower und der Freunde im echten Leben vorhergesagt werden kann. Dazu wurde als abhängige Variable die Lebenszufriedenheit untersucht (metrische Skala von 0--100). Die unabhängigen Variablen waren Anzahl der Freunde  (anz_freunde) und Anzahl der Instagram-Follower (Variablenname: anz_follower). Untersucht wurde eine Stichprobe von $N=`r N`$ Personen.
 
 Bei der statistischen Analyse mittels _multipler linearer Regression_ erhielt man folgendes Ergebnis:
 
