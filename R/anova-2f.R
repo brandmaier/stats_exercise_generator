@@ -387,8 +387,8 @@ table_of_means <- function(x, round=3) {
   temporary_data
 }
 
-show_table_of_means <- function(x, booktabs=TRUE, round=3) {
-  knitr::kable(table_of_means(x, round=round), booktabs=booktabs)
+show_table_of_means <- function(x, booktabs=TRUE, round=3, caption=NULL) {
+  knitr::kable(table_of_means(x, round=round), booktabs=booktabs, caption=caption)
 }
 
 #' @export
@@ -436,7 +436,9 @@ solution_mqs <- function(x) {
       x$df_AxB,
       "}=",
       x$mqs_AxB
-    )
+    ),
+    "\\\\",
+    paste0("MQS_{inn} = \\frac{ ", x$qs_inn, "}{", x$df_inn, "}=", x$mqs_inn)
   )
 }
 
@@ -461,7 +463,7 @@ solution_f <- function(x) {
 }
 
 #' @export
-result_table <- function(x, booktabs = TRUE) {
+result_table <- function(x, booktabs = TRUE, caption = NULL) {
   report_table <-
     data.frame(
       Quelle = c(
@@ -474,12 +476,12 @@ result_table <- function(x, booktabs = TRUE) {
       df = c(x$df_A, x$df_B, x$df_AxB, x$df_inn),
       MQS = c(x$mqs_A, x$mqs_B, x$mqs_AxB, x$mqs_inn),
       F = c(x$Fval_A, x$Fval_B, x$Fval_AxB, ""),
-      p = c(wrap_p(x$p_A), wrap_p(x$p_B), wrap_p(x$p_AxB,tex_math=FALSE), "")
+      p = c(wrap_p(x$p_A), wrap_p(x$p_B), wrap_p(x$p_AxB), "")
      #p = c(x$p_A, x$p_B, x$p_AxB, "")
     )
   #eta2=c(x$eta2,NA,NA))
   
-  knitr::kable(report_table, booktabs=booktabs)
+  knitr::kable(report_table, booktabs=booktabs, caption=caption)
 }
 
 #' @export
