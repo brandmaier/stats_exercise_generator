@@ -55,6 +55,11 @@ section <- function(x) {
   cat("\\emph{",x,"}\n\n")
 }
 
+subsection <- function(x) {
+  cat("\\hspace{2cm} \\emph{",x,"}\n\n")
+}
+
+
 highlight <- function(x) {
   cat("\\hl{",x,"}")
 }

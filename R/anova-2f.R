@@ -360,13 +360,26 @@ table_of_means <- function(x, round=3) {
                                                    values_from = m,
                                                    id_cols = b)
   
+  # compute row means as means of means
+#  temporary_data <-
+#    temporary_data %>% mutate(rowMeans = round(rowMeans(select(., 2:3)), 2))
   temporary_data <-
-    temporary_data %>% mutate(rowMeans = round(rowMeans(select(., 2:3)), 2))
+    temporary_data %>%
+    mutate(rowMeans = round(rowMeans(pick(2:3)), 2))
   
-  temporary_data <- rbind(temporary_data,
-                          c(b = "", round(
-                            temporary_data %>% select(where(is.numeric)) %>% colMeans(), 2
-                          )))
+ # temporary_data <- rbind(temporary_data,
+#                          c(b = "", round(
+#                            temporary_data %>% select(where(is.numeric)) %>% colMeans(), 2
+#                          )))
+  temporary_data <-
+    temporary_data %>%
+    bind_rows(
+      summarise(
+        .,
+        across(where(is.numeric), ~ round(mean(.x, na.rm = TRUE), 2)),
+        b = ""
+      )
+    )
   
   colnames(temporary_data)[1] <- ""
   colnames(temporary_data)[ncol(temporary_data)] <- ""
